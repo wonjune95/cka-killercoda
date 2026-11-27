@@ -50,7 +50,7 @@ spec:
         type: Utilization
         averageUtilization: 50
 EOF
-# (imperative alternative: kubectl autoscale deployment load-app -n exercise-16 --cpu-percent=50 --min=1 --max=5)
+# (imperative alternative: kubectl autoscale deployment load-app -n exercise-16 --cpu=50% --min=1 --max=5 ; older kubectl: --cpu-percent=50)
 kubectl get hpa load-app -n exercise-16 -o yaml | grep -A4 target:
 # terminal 1 - generate load:
 kubectl run load-gen -n exercise-16 --image=busybox:1.36 --rm -it --restart=Never -- sh -c "while true; do wget -q -O- http://load-svc; done"

@@ -1,5 +1,5 @@
-kubectl autoscale deployment web-app -n production --min=2 --max=10 --cpu-percent=70
-# (kubectl 1.35 may print a deprecation note for --cpu-percent; the result is the same autoscaling/v2 object)
+kubectl autoscale deployment web-app -n production --min=2 --max=10 --cpu=70%
+# (older kubectl: --cpu-percent=70 - deprecated, kubectl 1.37 still accepts it with a warning; check kubectl autoscale -h)
 kubectl get hpa web-app -n production          # TARGETS cpu: 0%/70% after ~30-60s
 kubectl describe hpa web-app -n production
 # YAML version:

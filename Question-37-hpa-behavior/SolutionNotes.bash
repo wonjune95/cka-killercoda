@@ -24,6 +24,6 @@ spec:
 EOF2
 kubectl -n exercise-37 get hpa apache-server
 kubectl -n exercise-37 get hpa apache-server -o yaml | grep -A2 scaleDown
-# alternative: kubectl -n exercise-37 autoscale deployment apache-server --name=apache-server --cpu-percent=50 --min=1 --max=4
+# alternative: kubectl -n exercise-37 autoscale deployment apache-server --name=apache-server --cpu=50% --min=1 --max=4
 #              then kubectl -n exercise-37 edit hpa apache-server and add the behavior block
-# 참고: 최신 kubectl 은 --cpu-percent 대신 --cpu=50% 를 쓸 수 있다 (kubectl autoscale -h 로 확인).
+# 참고: kubectl 1.37(시험 버전)은 --cpu=50% 형식을 쓴다. 예전 --cpu-percent=50 은 deprecated 라 경고가 나온다 (kubectl autoscale -h 로 확인).

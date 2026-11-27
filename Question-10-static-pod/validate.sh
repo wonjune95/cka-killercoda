@@ -14,7 +14,8 @@ if [ -n "$F" ]; then
   warn "now do tasks 4-6 (delete via kubectl, then remove the manifest) and validate again"
 else
   echo "  (no static-web manifest in $SP - checking tasks 5-6)"
-  sleep 5
+  # the kubelet checks the manifest directory every ~20s, so the mirror pod can live a little longer
+  for i in $(seq 1 15); do kubectl get pod "$POD" >/dev/null 2>&1 || break; sleep 3; done
   if kubectl get pod "$POD" >/dev/null 2>&1; then fail "pod $POD still exists"; else pass "manifest removed and pod $POD is gone"; fi
 fi
 summary

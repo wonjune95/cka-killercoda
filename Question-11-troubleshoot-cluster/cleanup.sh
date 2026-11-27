@@ -10,5 +10,5 @@ fi
 R=$(cat /root/.cka-lab/coredns-replicas 2>/dev/null); R=${R:-2}
 kubectl -n kube-system scale deploy coredns --replicas="$R" >/dev/null 2>&1
 kubectl -n kube-system rollout restart deploy coredns >/dev/null 2>&1
-kubectl delete pod test-dns --ignore-not-found --now >/dev/null 2>&1
+kubectl delete pod test-dns --ignore-not-found --force --grace-period=0 >/dev/null 2>&1
 true

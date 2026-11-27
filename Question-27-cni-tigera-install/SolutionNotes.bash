@@ -1,3 +1,4 @@
+# Flannel does not enforce NetworkPolicy, so of the two only Calico meets the requirements.
 kubectl -n kube-system get pod -l component=kube-controller-manager -o yaml | grep cluster-cidr
 # or: kubectl get cm kubeadm-config -n kube-system -o yaml | grep -i podSubnet
 CIDR=<the value above, e.g. 192.168.0.0/16>

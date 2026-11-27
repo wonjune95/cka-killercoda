@@ -1,6 +1,6 @@
 # CKA Killercoda 랩 – 가이드
 
-Killercoda CKA 플레이그라운드용 연습 랩 50개와 시간 제한 모의고사 3회분입니다. **풀이 보기**를 누르면 풀이가 열립니다.
+Killercoda CKA 플레이그라운드용 연습 랩 54개와 시간 제한 모의고사 3회분입니다. **풀이 보기**를 누르면 풀이가 열립니다.
 
 ## 1. 준비
 
@@ -23,7 +23,7 @@ chmod +x lab.sh mock.sh lib/*.sh Question-*/*.sh Question-*/*.bash Mock-Exam-*/*
 **연습 랩**
 
 ```bash
-./lab.sh list            # 랩 50개 전체
+./lab.sh list            # 랩 54개 전체
 ./lab.sh 5               # 랩 5 셋업(또는 초기화) 후 문제 출력
 ./lab.sh 5 validate      # 답 채점
 ./lab.sh 5 solution      # 풀이 보기
@@ -1197,7 +1197,7 @@ spec:
         type: Utilization
         averageUtilization: 50
 EOF
-# (명령형 대안: kubectl autoscale deployment load-app -n exercise-16 --cpu-percent=50 --min=1 --max=5)
+# (명령형 대안: kubectl autoscale deployment load-app -n exercise-16 --cpu=50% --min=1 --max=5 ; 예전 kubectl: --cpu-percent=50)
 kubectl get hpa load-app -n exercise-16 -o yaml | grep -A4 target:
 # 터미널 1 - 부하 생성:
 kubectl run load-gen -n exercise-16 --image=busybox:1.36 --rm -it --restart=Never -- sh -c "while true; do wget -q -O- http://load-svc; done"
@@ -1900,21 +1900,27 @@ kubectl get nodes -o wide                  # node01 Ready, CONTAINER-RUNTIME doc
 ```
 
 ```text
-랩 셋업에서 클러스터의 CNI를 제거했습니다. Tigera operator로 Calico v3.30.3을 설치하세요.
-매니페스트:
-  https://raw.githubusercontent.com/projectcalico/calico/v3.30.3/manifests/tigera-operator.yaml
-  https://raw.githubusercontent.com/projectcalico/calico/v3.30.3/manifests/custom-resources.yaml
+랩 셋업에서 클러스터의 CNI를 제거했습니다. 실제 시험 문제처럼, 요구 사항을 충족하는 CNI(Container Network Interface)를
+직접 골라 설치하고 구성하세요. 다음 중 하나를 고르세요.
+  Flannel v0.26.1  https://github.com/flannel-io/flannel/releases/download/v0.26.1/kube-flannel.yml
+  Calico v3.30.3   https://raw.githubusercontent.com/projectcalico/calico/v3.30.3/manifests/tigera-operator.yaml
+                   https://raw.githubusercontent.com/projectcalico/calico/v3.30.3/manifests/custom-resources.yaml
+선택한 CNI는 다음을 만족해야 합니다.
+  - Pod 간 통신이 가능할 것
+  - NetworkPolicy 적용(enforcement)을 지원할 것
+  - 매니페스트 파일로 설치할 것 (Helm 사용 금지)
 
 작업
-1. 클러스터 Pod CIDR(kube-controller-manager --cluster-cidr)을 찾으세요
-2. 매니페스트로 Tigera operator를 설치하고 operator Deployment가 준비될 때까지 기다리세요
-3. Calico Installation 커스텀 리소스를 만드세요:
+1. 두 CNI 중 모든 요구 사항을 충족하는 것을 정하세요 (채점기는 그 CNI를 기대합니다)
+2. 클러스터 Pod CIDR(kube-controller-manager --cluster-cidr)을 찾으세요
+3. 매니페스트로 Tigera operator를 설치하고 operator Deployment가 준비될 때까지 기다리세요
+4. Calico Installation 커스텀 리소스를 만드세요:
    - IP 풀 CIDR을 클러스터 CIDR과 같게 설정하세요
    - VXLAN(또는 VXLANCrossSubnet) 캡슐화를 쓰세요
-4. calico-system Pod가 Ready가 되고 노드가 Ready가 될 때까지 기다리세요
-5. CNI 변경 전에 만들어진 Pod(예: CoreDNS)를 재시작해서 새 IP를 받게 하세요
-6. 서로 다른 노드의 Pod끼리 통신되는지 확인하세요
-7. NetworkPolicy 차단이 동작하는지 테스트하세요
+5. calico-system Pod가 Ready가 되고 노드가 Ready가 될 때까지 기다리세요
+6. CNI 변경 전에 만들어진 Pod(예: CoreDNS)를 재시작해서 새 IP를 받게 하세요
+7. 서로 다른 노드의 Pod끼리 통신되는지 확인하세요
+8. NetworkPolicy 차단이 동작하는지 테스트하세요
 ```
 
 ```bash
@@ -1925,6 +1931,7 @@ kubectl get nodes -o wide                  # node01 Ready, CONTAINER-RUNTIME doc
 <summary><b>풀이 보기</b></summary>
 
 ```bash
+# Flannel은 NetworkPolicy를 적용하지 못하므로, 둘 중 요구 사항을 충족하는 것은 Calico뿐이다.
 kubectl -n kube-system get pod -l component=kube-controller-manager -o yaml | grep cluster-cidr
 # 또는: kubectl get cm kubeadm-config -n kube-system -o yaml | grep -i podSubnet
 CIDR=<the value above, e.g. 192.168.0.0/16>
@@ -2577,9 +2584,9 @@ spec:
 EOF2
 kubectl -n exercise-37 get hpa apache-server
 kubectl -n exercise-37 get hpa apache-server -o yaml | grep -A2 scaleDown
-# 다른 방법: kubectl -n exercise-37 autoscale deployment apache-server --name=apache-server --cpu-percent=50 --min=1 --max=4
+# 다른 방법: kubectl -n exercise-37 autoscale deployment apache-server --name=apache-server --cpu=50% --min=1 --max=4
 #            후 kubectl -n exercise-37 edit hpa apache-server 로 behavior 블록 추가
-# 참고: 최신 kubectl 은 --cpu-percent 대신 --cpu=50% 를 쓸 수 있다 (kubectl autoscale -h 로 확인).
+# 참고: kubectl 1.37(시험 버전)은 --cpu=50% 형식을 쓴다. 예전 --cpu-percent=50 은 deprecated 라 경고가 나온다 (kubectl autoscale -h 로 확인).
 ```
 
 </details>
@@ -3174,6 +3181,209 @@ kubectl -n exercise-50-frontend exec deploy/frontend -- curl -s -m3 backend.exer
 ```
 
 </details>
+### 랩 51 – 기존 Deployment에 로깅 sidecar 추가  (트러블슈팅 | 보통 | 15분)
+
+```bash
+./lab.sh 51
+```
+
+```text
+(원본 시험 문제 · 한글 문제집 34번)
+
+레거시 앱을 Kubernetes 기본 로깅 구조(kubectl logs)에 통합해야 합니다. 로그를 스트리밍하는 보조 컨테이너를
+같은 Pod에 추가하는 것이 일반적이고 좋은 방법입니다.
+
+exercise-51 네임스페이스에 Deployment synergy-deployment가 실행 중입니다. 이 Deployment의 컨테이너는 컨테이너 안의
+/var/log/synergy-deployment.log 파일에 로그를 씁니다.
+
+1. 기존 Deployment synergy-deployment를 수정해, busybox:stable 이미지를 쓰는 sidecar라는 컨테이너를
+   기존 Pod에 추가하세요. 새 컨테이너는 다음 명령을 실행해야 합니다.
+     /bin/sh -c "tail -n+1 -f /var/log/synergy-deployment.log"
+2. /var/log에 마운트한 볼륨을 써서 sidecar 컨테이너가 synergy-deployment.log 파일을 읽을 수 있게 하세요
+3. 기존 컨테이너의 사양은 필요한 볼륨 마운트를 추가하는 것 말고는 수정하지 마세요
+```
+
+```bash
+./lab.sh 51 validate
+```
+
+<details>
+<summary><b>풀이 보기</b></summary>
+
+```bash
+kubectl -n exercise-51 get deployment synergy-deployment -o yaml > synergy-backup.yaml     # 먼저 백업
+kubectl -n exercise-51 edit deployment synergy-deployment
+# 공유 emptyDir 볼륨을 추가해 기존 컨테이너의 /var/log에 마운트하고, sidecar를 추가한다:
+#     spec:
+#       containers:
+#       - name: synergy                      # existing container: only volumeMounts is new
+#         ...
+#         volumeMounts:
+#         - name: logs
+#           mountPath: /var/log
+#       - name: sidecar
+#         image: busybox:stable
+#         command: ["/bin/sh", "-c", "tail -n+1 -f /var/log/synergy-deployment.log"]
+#         volumeMounts:
+#         - name: logs
+#           mountPath: /var/log
+#       volumes:
+#       - name: logs
+#         emptyDir: {}
+# kubectl edit 대신 명령 하나로 같은 변경을 하는 방법 (JSON patch):
+kubectl -n exercise-51 patch deployment synergy-deployment --type=json -p='[
+  {"op":"add","path":"/spec/template/spec/volumes","value":[{"name":"logs","emptyDir":{}}]},
+  {"op":"add","path":"/spec/template/spec/containers/0/volumeMounts","value":[{"name":"logs","mountPath":"/var/log"}]},
+  {"op":"add","path":"/spec/template/spec/containers/-","value":{"name":"sidecar","image":"busybox:stable","command":["/bin/sh","-c","tail -n+1 -f /var/log/synergy-deployment.log"],"volumeMounts":[{"name":"logs","mountPath":"/var/log"}]}}]'
+kubectl -n exercise-51 rollout status deployment synergy-deployment
+kubectl -n exercise-51 logs deploy/synergy-deployment -c sidecar | tail -3
+# 참고: 두 컨테이너가 같은 emptyDir 을 /var/log 에 마운트해야 sidecar 가 로그 파일을 볼 수 있다.
+#       tail -f 는 파일이 아직 없으면 바로 끝나므로(-F 는 기다림), 앱이 파일을 만든 뒤에야 sidecar 가 계속 돈다.
+#       네이티브 sidecar(initContainers + restartPolicy: Always) 로 추가해도 된다.
+```
+
+</details>
+
+### 랩 52 – 기존 Deployment 노출: 컨테이너 포트 + NodePort Service  (서비스와 네트워킹 | 쉬움 | 10분)
+
+```bash
+./lab.sh 52
+```
+
+```text
+(원본 시험 문제 · 한글 문제집 20번)
+
+exercise-52 네임스페이스에 Deployment front-end(컨테이너 nginx)가 실행 중입니다.
+
+1. 기존 Deployment front-end를 수정해 기존 컨테이너 nginx의 포트 80/tcp를 노출하세요
+2. 컨테이너 포트 80/tcp를 노출하는 새 Service front-end-svc를 만드세요
+3. 새 Service가 NodePort로 개별 Pod도 노출하도록 설정하세요
+```
+
+```bash
+./lab.sh 52 validate
+```
+
+<details>
+<summary><b>풀이 보기</b></summary>
+
+```bash
+kubectl -n exercise-52 edit deployment front-end
+# nginx 컨테이너 아래에 추가:
+#        ports:
+#        - containerPort: 80
+#          protocol: TCP
+# kubectl edit 대신 명령 하나로 같은 변경을 하는 방법 (JSON patch):
+kubectl -n exercise-52 patch deployment front-end --type=json -p='[{"op":"add","path":"/spec/template/spec/containers/0/ports","value":[{"containerPort":80,"protocol":"TCP"}]}]'
+kubectl -n exercise-52 rollout status deployment front-end
+kubectl -n exercise-52 expose deployment front-end --name=front-end-svc --port=80 --target-port=80 --protocol=TCP --type=NodePort
+kubectl -n exercise-52 get svc front-end-svc                                    # 80:3xxxx/TCP
+kubectl -n exercise-52 get endpointslices -l kubernetes.io/service-name=front-end-svc
+NP=$(kubectl -n exercise-52 get svc front-end-svc -o jsonpath='{.spec.ports[0].nodePort}')
+curl -s http://node01:$NP | grep title
+# 참고: 특정 nodePort 값을 요구하면 expose 에는 옵션이 없으므로 만든 뒤 고친다:
+#       kubectl -n exercise-52 patch svc front-end-svc -p '{"spec":{"ports":[{"port":80,"nodePort":30080}]}}'
+```
+
+</details>
+
+### 랩 53 – 최댓값보다 1 작은 PriorityClass + Deployment patch  (워크로드와 스케줄링 | 보통 | 10분)
+
+```bash
+./lab.sh 53
+```
+
+```text
+(원본 시험 문제 · 한글 문제집 17번)
+
+1. 사용자 워크로드용 PriorityClass high-priority를 새로 만드세요. 값은 기존 사용자 정의 PriorityClass 중
+   가장 높은 값보다 정확히 1 작아야 합니다 (기본 제공 system-* 클래스는 사용자 정의가 아닙니다)
+2. exercise-53 네임스페이스의 기존 Deployment busybox-logger가 PriorityClass high-priority를 쓰도록 patch하세요
+3. 새 PriorityClass가 적용된 busybox-logger Deployment가 정상적으로 롤아웃되는지 확인하세요
+4. exercise-53 네임스페이스의 다른 Deployment는 수정하지 마세요
+
+(시험에서는 high-priority Pod가 뜰 때 다른 Pod가 축출될 수 있습니다. 예상된 동작입니다.)
+```
+
+```bash
+./lab.sh 53 validate
+```
+
+<details>
+<summary><b>풀이 보기</b></summary>
+
+```bash
+kubectl get priorityclass --sort-by=.value                 # system-* 가 아닌 것 중 가장 높은 값
+MAX=$(kubectl get priorityclass -o jsonpath='{range .items[*]}{.metadata.name} {.value}{"\n"}{end}' | grep -v '^system-' | awk '{print $2}' | sort -n | tail -1)
+echo "highest user-defined value: $MAX"
+kubectl create priorityclass high-priority --value=$((MAX-1)) --description="high priority for user workloads"
+kubectl -n exercise-53 patch deployment busybox-logger -p '{"spec":{"template":{"spec":{"priorityClassName":"high-priority"}}}}'
+kubectl -n exercise-53 rollout status deployment busybox-logger
+kubectl -n exercise-53 get pods -o custom-columns=NAME:.metadata.name,CLASS:.spec.priorityClassName,PRIORITY:.spec.priority
+# 참고: system-cluster-critical(2000000000) / system-node-critical(2000001000) 은 기본 제공 클래스라 제외한다.
+#       사용자 정의 PriorityClass 값은 최대 1000000000 까지 가능하다.
+```
+
+</details>
+
+### 랩 54 – 노드 자원을 Pod 3개에 분배 (init 컨테이너 포함)  (워크로드와 스케줄링 | 어려움 | 20분)
+
+```bash
+./lab.sh 54
+```
+
+```text
+(원본 시험 문제 · 한글 문제집 16번)
+
+exercise-54 네임스페이스에 WordPress 애플리케이션이 실행 중입니다: Deployment wordpress, 레플리카 3개, 모두
+node01 노드에 묶여 있습니다. 리소스 requests가 너무 커서 Pod가 전부 실행되지 못합니다.
+
+Deployment의 리소스 requests를 다음과 같이 조정하세요.
+1. node01의 리소스를 Pod 3개에 균등하게 나누세요
+2. 각 Pod에 CPU와 메모리를 공평하게 배분하세요
+3. 노드가 안정적으로 유지되도록 충분한 여유분(overhead)을 남기세요 (node01에는 다른 Pod도 실행됩니다)
+4. 컨테이너와 init 컨테이너 모두에 정확히 같은 requests를 쓰세요 (limits는 바꾸지 않아도 됩니다)
+5. 조정 후 레플리카 3개가 모두 node01에서 Running·Ready 상태여야 합니다
+
+힌트: requests를 고치는 동안 Deployment를 잠시 레플리카 0개로 줄이면 도움이 됩니다.
+```
+
+```bash
+./lab.sh 54 validate
+```
+
+<details>
+<summary><b>풀이 보기</b></summary>
+
+```bash
+kubectl -n exercise-54 get pods -o wide                              # 일부 Pending: Insufficient cpu / memory
+kubectl -n exercise-54 scale deployment wordpress --replicas=0
+# wordpress가 0개일 때 "Allocated resources"는 그 노드의 다른 Pod들이 이미 요청한 양이다
+kubectl describe node node01 | grep -A8 -E '^Allocatable:|^Allocated resources:'
+#   예:  Allocatable  cpu 1 (1000m)  memory 1930Mi      다른 Pod 요청량  cpu 250m  memory 290Mi
+#     cpu:    (1000m - 250m) / 3 = 250m  -> 여유분 약 15% -> Pod당 210m
+#     memory: (1930Mi - 290Mi) / 3 = 546Mi -> 여유분 약 15% -> Pod당 460Mi
+# 같은 계산을 셸로 하면:
+A_CPU=$(kubectl get node node01 -o jsonpath='{.status.allocatable.cpu}'); case $A_CPU in *m) A_CPU=${A_CPU%m};; *) A_CPU=$((A_CPU*1000));; esac
+A_MEM=$(( $(kubectl get node node01 -o jsonpath='{.status.allocatable.memory}' | tr -d 'Ki') / 1024 ))
+O_CPU=$(kubectl describe node node01 | awk '/^Allocated resources:/{f=1} f && $1=="cpu"{print $2; exit}'); case $O_CPU in *m) O_CPU=${O_CPU%m};; *) O_CPU=$((O_CPU*1000));; esac
+O_MEM=$(kubectl describe node node01 | awk '/^Allocated resources:/{f=1} f && $1=="memory"{print $2; exit}'); case $O_MEM in *Gi) O_MEM=$(( ${O_MEM%Gi} * 1024 ));; *Mi) O_MEM=${O_MEM%Mi};; *Ki) O_MEM=$(( ${O_MEM%Ki} / 1024 ));; *) O_MEM=$(( O_MEM / 1048576 ));; esac
+CPU=$(( (A_CPU - O_CPU) * 85 / 100 / 3 ))m; MEM=$(( (A_MEM - O_MEM) * 85 / 100 / 3 ))Mi
+echo "per Pod: cpu=$CPU memory=$MEM"
+kubectl -n exercise-54 edit deployment wordpress      # initContainers[0]과 containers[0]에 같은 requests를 넣는다
+# kubectl edit 대신 명령 하나로 같은 변경을 하는 방법 (JSON patch):
+kubectl -n exercise-54 patch deployment wordpress --type=json -p="[
+  {\"op\":\"replace\",\"path\":\"/spec/template/spec/initContainers/0/resources/requests\",\"value\":{\"cpu\":\"$CPU\",\"memory\":\"$MEM\"}},
+  {\"op\":\"replace\",\"path\":\"/spec/template/spec/containers/0/resources/requests\",\"value\":{\"cpu\":\"$CPU\",\"memory\":\"$MEM\"}}]"
+kubectl -n exercise-54 scale deployment wordpress --replicas=3
+kubectl -n exercise-54 rollout status deployment wordpress
+kubectl -n exercise-54 get pods -o wide                              # node01에서 3/3 Running
+# 참고: Pod 의 실효 요청량은 max(init 컨테이너 중 최댓값, 일반 컨테이너 합)이라 둘을 같게 두면 Pod 요청량도 그 값이다.
+#       스케줄링은 실제 사용량이 아니라 requests 합계 기준이다 (kubectl top 은 실제 사용량).
+```
+
+</details>
+
 ## 4. 모의고사 1회
 
 시험 전체는 `./mock.sh 1 start`로 시작하고 `./mock.sh 1 score`로 채점합니다.
@@ -3678,8 +3888,8 @@ production 네임스페이스의 Deployment web-app이 레플리카 2개로 실�
 <summary><b>풀이 보기</b></summary>
 
 ```bash
-kubectl autoscale deployment web-app -n production --min=2 --max=10 --cpu-percent=70
-# (kubectl 1.35는 --cpu-percent에 대해 deprecation 안내를 출력할 수 있지만, 결과는 같은 autoscaling/v2 객체)
+kubectl autoscale deployment web-app -n production --min=2 --max=10 --cpu=70%
+# (예전 kubectl: --cpu-percent=70 - deprecated, kubectl 1.37은 경고와 함께 아직 받아 준다. kubectl autoscale -h 로 확인)
 kubectl get hpa web-app -n production          # TARGETS cpu: 0%/70% after ~30-60s
 kubectl describe hpa web-app -n production
 # YAML 버전:
@@ -5220,6 +5430,7 @@ Pod에 exec로 들어가서 curl로 Kubernetes API에서 (클러스터 전체의
 ```bash
 kubectl -n project-swan run api-contact --image=nginx:1-alpine --dry-run=client -o yaml \
   --overrides='{"spec":{"serviceAccountName":"secret-reader"}}' | kubectl apply -f -
+kubectl -n project-swan wait --for=condition=Ready pod/api-contact --timeout=60s
 kubectl -n project-swan exec -it api-contact -- sh
   TOKEN=$(cat /var/run/secrets/kubernetes.io/serviceaccount/token)
   CACERT=/var/run/secrets/kubernetes.io/serviceaccount/ca.crt
@@ -5722,6 +5933,8 @@ kube-proxy가 동작하는지 확인하세요. 네임스페이스 project-lynx�
 ```bash
 kubectl -n project-lynx run p2-pod --image=nginx:1-alpine
 kubectl -n project-lynx expose pod p2-pod --name p2-service --port 3000 --target-port 80
+kubectl -n project-lynx wait --for=condition=Ready pod/p2-pod --timeout=60s
+sleep 5      # kube-proxy는 Pod가 Ready가 된 뒤 잠시 후에 DNAT 규칙을 쓴다 (그 전에는 "has no endpoints" REJECT 규칙 하나뿐)
 kubectl -n project-lynx get pod,svc,endpointslice
 crictl ps | grep kube-proxy; crictl logs <id> 2>&1 | grep -i proxier   # "Using iptables proxy"
 iptables-save | grep p2-service

@@ -15,9 +15,12 @@ else fail "CoreDNS Corefile has no 'kubernetes cluster.local' block"; fi
 RR=$(jp '{.status.readyReplicas}' deploy coredns -n kube-system)
 if [ "${RR:-0}" -ge 1 ]; then pass "CoreDNS has $RR ready replica(s)"; else fail "CoreDNS has no ready replicas"; fi
 nonempty "kube-dns service has endpoints" "$(jp '{.subsets[*].addresses[*].ip}' endpoints kube-dns -n kube-system)"
-kubectl delete pod test-dns --ignore-not-found --now >/dev/null 2>&1
-if kubectl run test-dns --image=busybox:1.36 --restart=Never --rm -i --quiet --command -- nslookup kubernetes.default.svc.cluster.local 2>/dev/null | grep -q 'Name:'; then
+# A test pod that landed on the node whose kubelet is down stays Terminating: a normal delete would wait
+# for it forever, so force-delete, and never let the test itself block.
+kubectl delete pod test-dns --ignore-not-found --force --grace-period=0 >/dev/null 2>&1
+if timeout 90 kubectl run test-dns --image=busybox:1.36 --restart=Never --rm -i --quiet --command -- nslookup kubernetes.default.svc.cluster.local 2>/dev/null | grep -q 'Name:'; then
   pass "DNS resolution works from a pod"; else fail "DNS resolution from a pod failed"; fi
+kubectl delete pod test-dns --ignore-not-found --force --grace-period=0 >/dev/null 2>&1
 if kubectl get ds kube-proxy -n kube-system >/dev/null 2>&1; then
   eq "kube-proxy running on all nodes" "$(jp '{.status.numberReady}' ds kube-proxy -n kube-system)" "$(jp '{.status.desiredNumberScheduled}' ds kube-proxy -n kube-system)"
 fi

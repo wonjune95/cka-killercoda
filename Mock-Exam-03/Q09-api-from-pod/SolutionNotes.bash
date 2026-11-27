@@ -1,5 +1,6 @@
 kubectl -n project-swan run api-contact --image=nginx:1-alpine --dry-run=client -o yaml \
   --overrides='{"spec":{"serviceAccountName":"secret-reader"}}' | kubectl apply -f -
+kubectl -n project-swan wait --for=condition=Ready pod/api-contact --timeout=60s
 kubectl -n project-swan exec -it api-contact -- sh
   TOKEN=$(cat /var/run/secrets/kubernetes.io/serviceaccount/token)
   CACERT=/var/run/secrets/kubernetes.io/serviceaccount/ca.crt

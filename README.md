@@ -1,13 +1,13 @@
-# CKA Killercoda 실습 랩 (연습 50문제 + 모의고사 3회)
+# CKA Killercoda 실습 랩 (연습 54문제 + 모의고사 3회)
 
 [norbutlepcha25/CKA-Certified-Kubernetes-Administrator](https://github.com/norbutlepcha25/CKA-Certified-Kubernetes-Administrator)의
 연습문제 31개와 모의고사 2회를 실습 랩으로 만든 저장소에, 한글 문제집(CKA 실습문제, 35문제) 가운데 랩이 없던 문제를
-32~50번 랩으로 더했습니다. 문제마다 랩 셋업, 문제, 풀이, 자동 채점기가 있습니다.
+32~54번 랩으로 더했습니다. 문제마다 랩 셋업, 문제, 풀이, 자동 채점기가 있습니다.
 Killercoda CKA 플레이그라운드(`controlplane` + `node01`, root 로그인) 기준으로 만들었습니다.
 
-- `lab.sh`: 연습 랩 50개 실행 (아래 참고)
+- `lab.sh`: 연습 랩 54개 실행 (아래 참고)
 - `mock.sh`: 시간 제한 모의고사 3회 실행 ([모의고사](#모의고사) 참고)
-- [GUIDE.md](GUIDE.md): 셋업 방법과 전체 100문제, 접어 둔 풀이를 한 파일에 모은 한글 문서
+- [GUIDE.md](GUIDE.md): 셋업 방법과 전체 104문제, 접어 둔 풀이를 한 파일에 모은 한글 문서
 
 GUIDE.md는 문제·풀이까지 모두 한글입니다. 터미널에서 `./lab.sh`·`./mock.sh`로 보는 문제는 실제 시험처럼 영어로 두었습니다.
 
@@ -81,29 +81,73 @@ Question-NN-주제/
 | 42 | Envoy Gateway v1.5.4 + GatewayClass `eg` 설치 (15번과 같음) | 설치된 채로 남음 |
 | 44 | `local-path`를 기본 StorageClass로 지정 (필요하면 local-path-provisioner v0.0.32 설치) | `cleanup`이 원래 기본 클래스로 복원 |
 | 46 | admin.conf를 포트를 틀리게 바꿔 `/root/CKA/admin.kubeconfig`로 복사 | - |
+| 53 | PriorityClass `user-low`·`user-medium`·`user-critical` 생성, `high-priority` 삭제 (22·24번과 같은 이름을 씀) | `cleanup`이 모두 삭제 |
+| 54 | node01에 묶인 Deployment `wordpress`를 requests가 너무 크게 생성 (Pod 일부가 Pending) | - |
 
 팁: 되돌리기 어려운 랩(09, 18, 26, 27)은 세션 마지막에 하거나 각각 새 세션에서 하세요.
 
-## 32~50번 랩 (한글 문제집에서 추가)
+## 32~54번 랩 (한글 문제집에서 추가)
 
 `CKA_실습문제`에서 랩이 없던 문제를 옮겼습니다. "원본"은 문제집 안의 실제 시험 문제지에서 온 문제입니다.
+문제집의 원본 16문제는 모두 대응하는 랩이 있습니다 (표에 없는 원본: 1번 → 26, 9번 → 27, 12번 → 30, 22번 → 19와 모의 1회 Q10, 31번 → 29).
 
 | 랩 | 주제 | 문제집 | 랩 | 주제 | 문제집 |
 |---|---|---|---|---|---|
-| 32 | 사용자 CSR + Role | 5 | 42 | TLS Ingress → Gateway API | 23 (원본) |
-| 33 | Argo CD: helm template + CRD 없이 설치 | 7 (원본) | 43 | Service / Pod DNS 레코드 | 25 |
-| 34 | Kustomize 네임스페이스·접두사·레플리카·이미지 | 8 | 44 | 새 기본 StorageClass | 26 (원본) |
-| 35 | CRD 목록(기본 출력) + explain | 10 (원본) | 45 | Retain된 PV 재사용 | 28 (원본) |
-| 36 | Secret을 읽기 전용 볼륨으로 | 13 | 46 | 고장 난 kubeconfig | 30 |
-| 37 | 스케일 다운 안정화 윈도우가 있는 HPA | 14 (원본) | 47 | 실패하는 init 컨테이너 | 33 |
-| 38 | liveness / readiness 프로브 | 15 | 48 | Service 셀렉터 / targetPort | 35 |
-| 39 | taint + toleration | 18 | 49 | HA 컨트롤 플레인 (명령만) | 3 |
-| 40 | node affinity | 19 | 50 | 최소 권한 NetworkPolicy 고르기 | 24 (원본) |
-| 41 | LoadBalancer Service | 21 | | | |
+| 32 | 사용자 CSR + Role | 5 | 44 | 새 기본 StorageClass | 26 (원본) |
+| 33 | Argo CD: helm template + CRD 없이 설치 | 7 (원본) | 45 | Retain된 PV 재사용 | 28 (원본) |
+| 34 | Kustomize 네임스페이스·접두사·레플리카·이미지 | 8 | 46 | 고장 난 kubeconfig | 30 |
+| 35 | CRD 목록(기본 출력) + explain | 10 (원본) | 47 | 실패하는 init 컨테이너 | 33 |
+| 36 | Secret을 읽기 전용 볼륨으로 | 13 | 48 | Service 셀렉터 / targetPort | 35 |
+| 37 | 스케일 다운 안정화 윈도우가 있는 HPA | 14 (원본) | 49 | HA 컨트롤 플레인 (명령만) | 3 |
+| 38 | liveness / readiness 프로브 | 15 | 50 | 최소 권한 NetworkPolicy 고르기 | 24 (원본) |
+| 39 | taint + toleration | 18 | 51 | 기존 Deployment에 로깅 sidecar 추가 | 34 (원본) |
+| 40 | node affinity | 19 | 52 | 기존 Deployment 포트 노출 + NodePort Service | 20 (원본) |
+| 41 | LoadBalancer Service | 21 | 53 | 최댓값보다 1 작은 PriorityClass + patch | 17 (원본) |
+| 42 | TLS Ingress → Gateway API | 23 (원본) | 54 | 노드 자원을 Pod 3개에 분배 (init 컨테이너 포함) | 16 (원본) |
+| 43 | Service / Pod DNS 레코드 | 25 | | | |
 
-26번은 원본 시험 문제(문제집 1번)처럼 sysctl 설정 4개도 요구합니다.
+26번은 원본 시험 문제(문제집 1번)처럼 sysctl 설정 4개도 요구하고, 27번은 원본(문제집 9번)처럼 Flannel과 Calico 중
+요구 사항에 맞는 CNI를 고르는 형태입니다.
 
-### 기존 랩과 모의고사 수정 사항
+## 시험 범위 대응표 (CKA 커리큘럼 v1.37)
+
+[CNCF 커리큘럼 v1.37](https://github.com/cncf/curriculum)의 항목마다 연습할 수 있는 랩과 모의고사 문제입니다 (2026-11-27 확인,
+시험 환경도 Kubernetes v1.37). `1-Q04`는 모의고사 1회 Q04를 뜻합니다.
+
+| 영역 (비중) | 커리큘럼 항목 | 연습 랩 | 모의고사 |
+|---|---|---|---|
+| 스토리지 (10%) | StorageClass와 동적 볼륨 프로비저닝 | 25, 44 | 1-Q12, 2-Q14 |
+| | 볼륨 유형·접근 모드·회수 정책 | 12, 25, 45 | 1-Q04 |
+| | PV·PVC 관리 | 07, 12, 45 | 3-Q06 |
+| 트러블슈팅 (30%) | 클러스터·노드 장애 해결 | 11, 46 | 2-Q10, 3-Q08 |
+| | 클러스터 컴포넌트 장애 해결 | 11, 29 | 1-Q11, 2-Q05 |
+| | 클러스터·애플리케이션 리소스 사용량 모니터링 | 16, 23, 54 | 1-Q09, 3-Q07 |
+| | 컨테이너 출력 스트림(로그) 관리·평가 | 02, 47, 51 | 1-Q01, 1-Q15, 3-Q17 |
+| | 서비스·네트워킹 장애 해결 | 11, 48 | 2-Q01, 3-Q19 |
+| 워크로드와 스케줄링 (15%) | 배포, 롤링 업데이트·롤백 | 06 | 2-Q02 |
+| | ConfigMap·Secret으로 애플리케이션 구성 | 03, 30, 36 | 1-Q01, 2-Q03, 2-Q06 |
+| | 워크로드 오토스케일링 | 16, 37 | 1-Q09, 3-Q05 |
+| | 자가 복구되는 배포의 기본 요소 | 07, 10, 21, 38 | 2-Q09, 2-Q11, 3-Q03 |
+| | Pod admission·스케줄링 (limits, node affinity 등) | 20, 22, 23, 24, 39, 40, 53, 54 | 1-Q13, 1-Q14, 2-Q04, 2-Q07, 2-Q13, 2-Q15, 3-Q04, 3-Q11, 3-Q12 |
+| 클러스터 아키텍처·설치·구성 (25%) | RBAC 관리 | 04, 32 | 1-Q02, 3-Q09, 3-Q10 |
+| | 클러스터 설치를 위한 기반 인프라 준비 | 18, 26 | 1-Q07 |
+| | kubeadm으로 클러스터 생성·관리 | 49 | 3-Q08 |
+| | 클러스터 수명 주기 관리 | 08, 09 | 1-Q03, 2-Q10, 3-Q14 |
+| | 고가용성 컨트롤 플레인 | 49 | - |
+| | Helm·Kustomize로 클러스터 구성요소 설치 | 13, 14, 33, 34 | 1-Q06, 3-Q02, 3-Q05 |
+| | 확장 인터페이스 (CNI, CSI, CRI) | 18, 26, 27, 44 | 1-Q07, 3-Q17 |
+| | CRD 이해, 오퍼레이터 설치·구성 | 31, 35 | 2-Q12, 3-Q02 |
+| 서비스와 네트워킹 (20%) | Pod 간 연결 | 05, 27, 28 | 3-Q15 |
+| | NetworkPolicy 정의·적용 | 05, 28, 50 | 1-Q05, 3-Q15 |
+| | ClusterIP·NodePort·LoadBalancer와 엔드포인트 | 41, 48, 52 | 2-Q08, 3-Q19, 3-Q20 |
+| | Gateway API로 인그레스 트래픽 관리 | 15, 42 | 3-Q13 |
+| | Ingress 컨트롤러와 Ingress 리소스 | 19 | 1-Q10 |
+| | CoreDNS | 11, 43 | 2-Q01, 3-Q16 |
+
+2노드 플레이그라운드에서 직접 만들어 볼 수 없는 것: `kubeadm init`으로 새 클러스터 만들기와 HA 컨트롤 플레인(49번은 명령만 연습).
+이 둘은 kubernetes.io의 "Creating a cluster with kubeadm", "Creating Highly Available Clusters with kubeadm" 문서를 한 번 읽어 두세요.
+
+## 기존 랩과 모의고사 수정 사항
 
 - Q26 / 모의 1 Q07: 셋업이 `kubeadm-flags.env`, `config.yaml`, `/etc/default/kubelet`를 모두 백업하고, cleanup이 답에서 바꾼
   파일을 복원합니다 (전에는 `config.yaml`로 답하면 node01이 NotReady로 남았음). 백업은 실행마다 새로 받습니다. Q26 채점도 `config.yaml`을 읽습니다.
@@ -115,6 +159,10 @@ Question-NN-주제/
 - 모의 2 Q11: drain에 `--pod-selector=app=my-app`을 씁니다. 그냥 drain하면 다른 문제의 Pod에서 멈췄고 `--force`는 그 Pod를 지웠음.
 - 모의 3 Q08: `start` 직후 맨 먼저 풉니다 (node01을 빼면 컨트롤러 없는 Pod가 삭제됨). Q15의 Pod는 이름이 같은 StatefulSet으로 바꿔 Q08을 거쳐도 남습니다.
 - 모의 3 Q16: 백업 확인과 복원 방법 모두 `resourceVersion`/`uid`를 지운 뒤 apply합니다.
+- Q11: kubelet을 고치기 전에 채점을 두 번 돌리면 멈추던 문제를 고쳤습니다 (죽은 노드에 남은 테스트 Pod를 강제 삭제).
+- Q10, Q15: 채점이 static Pod 삭제와 Gateway `Programmed`를 잠시 기다립니다 (바로 채점하면 FAIL이 나던 문제).
+- Q35: kubectl 1.37의 `kubectl get crd` 출력(SCOPE·VERSIONS 열 추가)도 기본 형식으로 인정합니다.
+- 모의 3 Q09: 채점이 python3 없이도 동작합니다. Q09·Q19 풀이에 Pod 준비를 기다리는 줄을 넣었습니다.
 
 ## 원래 연습문제에서 바꾼 점
 
@@ -226,44 +274,37 @@ Q20에는 Kubernetes 1.33 이상이 필요합니다 (ServiceCIDR API).
 
 ## 테스트 현황
 
-원본 저장소는 Killercoda처럼 꾸민 2노드 kind 클러스터(Kubernetes v1.35.1, NetworkPolicy를 적용하는 kindnet CNI, 컨트롤 플레인에 root 로그인,
-워커로 `ssh`, systemd, crictl)에서 랩마다 셋업 → 풀이 → 채점을 돌렸습니다. 모의고사는 풀기 전에도 채점해 FAIL이 나는지 확인했습니다.
+### 전체 테스트 (2026-11-27, Kubernetes v1.37.0 = 현재 CKA 시험 버전)
 
-| 랩 | 결과 |
-|---|---|
-| 연습 01-08, 10-17, 19-25, 28-30 | 모두 통과 (Pod Running, ingress-nginx·Gateway 경유 curl, DNS 조회, TLS 1.2/1.3 연결, NetworkPolicy 차단 포함) |
-| 연습 11 | 두 고장(워커 kubelet 중지, CoreDNS 오타 + 레플리카 0)이 만들어지고 고치면 통과 |
-| 연습 29 | etcd 주소 고장과 수정 통과 |
-| 모의 1회 Q1-Q6, Q8-Q15 | 풀이로 통과, 풀기 전 FAIL. `./mock.sh 1 start` + `score`로도 확인 |
-| 모의 2회 15문제 | 풀이로 통과, 풀기 전 FAIL. `./mock.sh 2 start` → 풀이 → `./mock.sh 2 score` 결과 15/15 |
+Killercoda처럼 꾸민 2노드 kind 클러스터(컨트롤 플레인 taint 없음, 컨트롤 플레인에 root 로그인, 워커로 `ssh`)에서 문제마다
+셋업 → 채점(풀기 전) → **공개된 풀이 그대로 실행** → 채점 → cleanup 순서로 돌렸습니다. `vi`·`kubectl edit`·`watch`·대화형 `ssh`
+단계만 같은 결과를 내는 명령으로 바꿨습니다. 모의고사는 `./mock.sh N start` → 전 문제 풀이 → `./mock.sh N score` 흐름 그대로입니다.
 
-원본 저장소에서 테스트하지 않은 것 (arm64 kind 테스트 클러스터에서 실행할 수 없거나 실제 kubeadm 노드가 필요): 연습 09(kubeadm 업그레이드),
-18·26(cri-dockerd), 27(CNI 설치), 31(Argo CD), 모의 1회 Q07(cri-dockerd).
+| 대상 | 풀기 전 | 풀이 후 |
+|---|---|---|
+| 연습 01~08, 10~17, 19~25, 28~54 (50개) | 전부 FAIL (2단계로 채점하는 10번만 예외) | 전부 PASS |
+| 모의 1회 | 0/15 | 14/15 (Q07은 kind에서 실행 불가) |
+| 모의 2회 | 0/15 | 15/15 |
+| 모의 3회 | 0/20 | 19/20 (Q08은 kind에서 실행 불가) |
 
-원본 테스트 중에 고친 것:
+`./mock.sh N cleanup` 뒤 클러스터가 원래대로 돌아오는 것도 확인했습니다 (노드 Ready, kube-apiserver 매니페스트·Service CIDR·taint 복원).
+
+kind에서 통째로 돌릴 수 없어 Killercoda에서 확인이 필요한 것: 연습 09(kubeadm 업그레이드), 18·26과 모의 1회 Q07(cri-dockerd),
+27(CNI 교체), 모의 3회 Q08(노드 재조인). 이 가운데 09번의 apt 저장소 로직과 cri-dockerd 백업·복원 로직은 따로 떼어 검증했고,
+이 랩들이 내려받는 파일(cri-dockerd deb·tgz, Calico·Flannel 매니페스트, pkgs.k8s.io 저장소)은 모두 응답합니다.
+
+이 테스트에서 찾아 고친 것은 위 [기존 랩과 모의고사 수정 사항](#기존-랩과-모의고사-수정-사항)에 있습니다. 그 밖에:
+
+- 31번 뒤에 33번을 하면 `helm install`이 실패하던 문제: 31번 cleanup이 Argo CD의 ClusterRole·ClusterRoleBinding을 남겼습니다. 두 랩의 cleanup이 지웁니다.
+- HPA 풀이의 `kubectl autoscale --cpu-percent=70`을 kubectl 1.37 형식인 `--cpu=70%`로 바꿨습니다 (예전 플래그는 deprecated 경고가 나옵니다).
+
+### 원본 저장소의 테스트 (Kubernetes v1.35.1)
+
+원본 저장소는 같은 방식의 kind 클러스터(v1.35.1, arm64)에서 연습 01-08, 10-17, 19-25, 28-30과 모의 1회(Q07 제외)·2회를 통과시켰고,
+그때 다음을 고쳤습니다.
 
 - Q19와 모의고사의 ingress 셋업: ingress-nginx admission webhook이 응답할 때까지 기다립니다. 설치 직후에는 Deployment가 Available이어도 webhook이 연결을 거부해서 첫 Ingress가 실패했습니다.
 - Q24 채점: 아직 종료 중인 이전 ReplicaSet의 Pod를 새 Pod 대신 검사할 수 있었습니다.
 - Q12, Q25 풀이: `kubectl exec` 전에 Pod가 Ready가 될 때까지 기다립니다.
-
-### 32~50번 랩과 이번 수정의 테스트 (2026-11-27)
-
-2노드 kind 클러스터(Kubernetes v1.37.0, kindnet, amd64)에서 Killercoda처럼 컨트롤 플레인에 root로 들어가 워커로 `ssh`가 되게 꾸민 뒤,
-문제마다 셋업 → 채점(풀기 전) → 풀이 → 채점(풀이 후) → cleanup 순서로 돌렸습니다. `vi`·`kubectl edit`처럼 대화형인 풀이 단계는
-같은 결과를 내는 명령으로 바꿔 실행했습니다.
-
-| 대상 | 결과 |
-|---|---|
-| 연습 32~50 (19개) | 모두 풀기 전 FAIL, 풀이 후 전 항목 PASS |
-| 연습 10 (다른 파일 이름의 static Pod 매니페스트), 20 (Pod·컨테이너 양쪽 runAsNonRoot), 29 | 풀이 후 PASS, cleanup 뒤 매니페스트·etcd 주소 정상 |
-| 모의 2회 Q02 | revision 1~4의 change-cause와 이미지가 일치, 롤백 후 PASS |
-| 모의 2회 Q11 | `--pod-selector` drain이 PDB에서 막히고 다른 문제의 Pod는 그대로 남음, PASS |
-| 모의 3회 Q15 (StatefulSet), Q16 (백업 확인) | 풀이 후 PASS |
-
-이 테스트에서 고친 것: 35번 채점이 `kubectl get crd`의 2열 출력(NAME, CREATED AT)만 기본 형식으로 인정했는데,
-kubectl 1.37은 SCOPE·VERSIONS 열을 추가해서 정답이 FAIL이었습니다. 이제 열 수와 상관없이 인정합니다.
-
-kind에서 테스트할 수 없어 아직 확인하지 못한 것: 연습 09(kubeadm 업그레이드), 18·26과 모의 1회 Q07(cri-dockerd), 27(CNI 교체),
-모의 3회 Q08(노드 재조인). Killercoda에서 확인해 주세요.
 
 잘못된 [FAIL]이 나오면 이슈로 알려 주세요.

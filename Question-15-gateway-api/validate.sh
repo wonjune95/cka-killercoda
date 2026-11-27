@@ -13,7 +13,9 @@ if [ -n "$GC" ] && kubectl get gatewayclass "$GC" >/dev/null 2>&1; then pass "Ga
 eq "listener port 80" "$(jp '{.spec.listeners[0].port}' $GW)" 80
 eq "listener protocol HTTP" "$(jp '{.spec.listeners[0].protocol}' $GW)" HTTP
 eq "Gateway Accepted" "$(jp '{.status.conditions[?(@.type=="Accepted")].status}' $GW)" True
+# the Envoy proxy of a new Gateway needs up to a minute: wait for Programmed before testing traffic
 P=$(jp '{.status.conditions[?(@.type=="Programmed")].status}' $GW)
+if kubectl get $GW >/dev/null 2>&1; then for i in $(seq 1 30); do [ "$P" = True ] && break; sleep 3; P=$(jp '{.status.conditions[?(@.type=="Programmed")].status}' $GW); done; fi
 if [ "$P" = True ]; then pass "Gateway Programmed: True"; else warn "Gateway Programmed is '$P' (on NodePort it can take a minute)"; fi
 eq "HTTPRoute parent is web-gateway" "$(jp '{.spec.parentRefs[0].name}' $RT)" web-gateway
 eq "HTTPRoute path PathPrefix /" "$(jp '{.spec.rules[0].matches[0].path.type} {.spec.rules[0].matches[0].path.value}' $RT)" "PathPrefix /"
@@ -23,5 +25,6 @@ eq "HTTPRoute ResolvedRefs" "$(jp '{.status.parents[0].conditions[?(@.type=="Res
 SVC=$(jp '{.items[0].metadata.name}' svc -n envoy-gateway-system -l gateway.envoyproxy.io/owning-gateway-name=web-gateway,gateway.envoyproxy.io/owning-gateway-namespace=$NS)
 NP=$(jp '{.spec.ports[?(@.port==80)].nodePort}' svc "$SVC" -n envoy-gateway-system)
 IP=$(jp '{.items[0].status.addresses[?(@.type=="InternalIP")].address}' nodes)
-if [ -n "$NP" ] && [ "$(curl -s -m5 -o /dev/null -w '%{http_code}' http://$IP:$NP/)" = 200 ]; then pass "HTTP 200 through the gateway ($IP:$NP)"; else fail "no HTTP 200 through the gateway"; fi
+C=; [ -n "$NP" ] && for i in 1 2 3 4 5; do C=$(curl -s -m5 -o /dev/null -w '%{http_code}' http://$IP:$NP/); [ "$C" = 200 ] && break; sleep 3; done
+if [ "$C" = 200 ]; then pass "HTTP 200 through the gateway ($IP:$NP)"; else fail "no HTTP 200 through the gateway"; fi
 summary
