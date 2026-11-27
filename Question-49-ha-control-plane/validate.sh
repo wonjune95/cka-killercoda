@@ -8,7 +8,7 @@ check "$F exists" test -s $F
 C=$(sed -e ':a' -e '/\\$/N; s/\\\n//; ta' $F 2>/dev/null | grep -v '^[[:space:]]*#')
 has(){ echo "$C" | grep -E -e "$2" | grep -qE -e "$3" && pass "$1" || fail "$1"; }
 has "kubeadm init with --control-plane-endpoint lb.example.com:6443" 'kubeadm init ' 'control-plane-endpoint[= ]"?lb\.example\.com:6443'
-has "kubeadm init uploads the certificates (--upload-certs)" 'kubeadm init ' '--upload-certs'
+has "kubeadm init uploads the certificates (--upload-certs)" 'kubeadm init .*control-plane-endpoint' '--upload-certs'
 has "re-upload: kubeadm init phase upload-certs --upload-certs" 'kubeadm init phase upload-certs' '--upload-certs'
 has "new join command: kubeadm token create --print-join-command" 'kubeadm token create' '--print-join-command'
 has "cp2 joins with --control-plane" 'kubeadm join ' '--control-plane( |$)'

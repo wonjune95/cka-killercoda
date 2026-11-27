@@ -56,6 +56,6 @@ np netpol-5 '  - from:
     - protocol: TCP
       port: 80'
 kubectl -n $B get netpol deny-all -o jsonpath='{.spec}' > /root/.cka-lab/q50-denyall
-for n in $F $B; do kubectl -n $n rollout status deploy --timeout=120s >/dev/null; done
+for d in $F/frontend $F/other $B/backend; do kubectl -n ${d%/*} rollout status deploy/${d#*/} --timeout=120s >/dev/null; done
 ls /root/netpol
 echo "Lab ready."

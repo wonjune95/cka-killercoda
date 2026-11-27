@@ -13,6 +13,8 @@ if [ $changed = 1 ]; then
   for f in $FILES; do b=/root/.cka-lab/$(basename "$f").bak; [ -f "$b" ] && cp "$b" "$f"; done
   systemctl daemon-reload; systemctl start kubelet
 fi
+# backups belong to one lab run; the next setup takes fresh ones (kubeadm upgrade/join rewrite these files)
+for f in $FILES; do rm -f /root/.cka-lab/$(basename "$f").bak; done
 systemctl disable --now cri-docker.service cri-docker.socket >/dev/null 2>&1
 dpkg -s cri-dockerd >/dev/null 2>&1 && dpkg -r cri-dockerd >/dev/null 2>&1
 rm -f /etc/systemd/system/cri-docker.service /etc/systemd/system/cri-docker.socket /usr/local/bin/cri-dockerd

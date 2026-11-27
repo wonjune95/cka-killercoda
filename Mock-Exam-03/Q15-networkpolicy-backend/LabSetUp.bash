@@ -50,5 +50,5 @@ pod backend-0 backend "backend" "listen 80;"
 pod db1-0 db1 "database one" "listen 1111; listen 2222;"
 pod db2-0 db2 "database two" "listen 1111; listen 2222;"
 pod vault-0 vault "vault secret storage" "listen 3333;"
-wait_ready $NS app 180s
+for s in backend db1 db2 vault; do kubectl -n $NS rollout status sts/$s --timeout=180s >/dev/null; done
 echo "Q15 ready: namespace project-snake"

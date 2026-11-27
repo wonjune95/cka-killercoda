@@ -71,7 +71,7 @@ Question-NN-topic/
 | 29 | Points kube-apiserver at a wrong etcd endpoint (backup in `/root/.cka-lab/`) | `cleanup` restores the manifest |
 | 30 | Creates an nginx Deployment that only allows TLS 1.3 | - |
 | 31 | Removes any previous Argo CD install | Argo CD needs ~1.5 GB RAM |
-| 33 | Installs Helm if missing and the Argo CD CRDs (v3.1.9); removes the `argo` repo and any Argo CD release | Argo CD needs ~1.5 GB RAM. Shares namespace `argocd` with 31 - each setup removes the other |
+| 33 | Installs Helm if missing and the Argo CD CRDs (v3.1.8); removes the `argo` repo and any Argo CD release | Argo CD needs ~1.5 GB RAM. Shares namespace `argocd` with 31 - each setup removes the other |
 | 35 | Installs cert-manager v1.19.1 if missing | `cleanup` removes it again (only if the lab installed it) |
 | 37 | Installs metrics-server if missing | Stays installed |
 | 39 | Your answer taints node01 (`env_type=production:NoSchedule`) | `cleanup` removes the taint - do it before other labs |
