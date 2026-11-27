@@ -6,9 +6,13 @@
 # Tasks
 # 1. SSH into node01
 # 2. Install cri-dockerd from /root/cri-dockerd.deb using dpkg
-# 3. Configure the system for cri-dockerd:
-#    - Enable IP forwarding with sysctl (persistently)
-#    - Load the kernel modules overlay and br_netfilter
+# 3. Configure the system for cri-dockerd (as in the real exam task):
+#    - Load the kernel modules overlay, br_netfilter and nf_conntrack
+#    - Set these parameters persistently (in /etc/sysctl.d/) and apply them:
+#        net.bridge.bridge-nf-call-iptables = 1
+#        net.ipv6.conf.all.forwarding       = 1
+#        net.ipv4.ip_forward                = 1
+#        net.netfilter.nf_conntrack_max     = 131072
 # 4. Enable and start the cri-docker service and socket
 #    (the systemd units are called cri-docker.service / cri-docker.socket)
 # 5. Verify the cri-dockerd socket /run/cri-dockerd.sock is available

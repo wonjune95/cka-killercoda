@@ -1,6 +1,6 @@
 # CKA Killercoda Labs – Guide
 
-31 practice labs and 3 timed mock exams for the Killercoda CKA playground. Click **Show solution** to open a solution.
+50 practice labs and 3 timed mock exams for the Killercoda CKA playground. Click **Show solution** to open a solution.
 
 ## 1. Setup
 
@@ -8,8 +8,8 @@
 2. In the terminal, clone the repo:
 
 ```bash
-git clone https://github.com/norbutlepcha25/CKA-Killercoda-Labs.git
-cd CKA-Killercoda-Labs
+git clone https://github.com/wonjune95/cka-killercoda.git
+cd cka-killercoda
 ```
 
 3. If a script says *Permission denied*, run once:
@@ -23,7 +23,7 @@ chmod +x lab.sh mock.sh lib/*.sh Question-*/*.sh Question-*/*.bash Mock-Exam-*/*
 **Practice labs**
 
 ```bash
-./lab.sh list            # all 31 labs
+./lab.sh list            # all 50 labs
 ./lab.sh 5               # set up (or reset) lab 5 and print the question
 ./lab.sh 5 validate      # check your answer
 ./lab.sh 5 solution      # show the solution
@@ -52,7 +52,7 @@ chmod +x lab.sh mock.sh lib/*.sh Question-*/*.sh Question-*/*.bash Mock-Exam-*/*
 
 Answer files that a mock question asks for go in `/root/mock1/`, `/root/mock2/` or `/root/mock3/`.
 
-**Labs that change the cluster:** 09, 18, 26, 27 – do them last or in a fresh session (27 removes the network plugin). 11 and 29 break the cluster on purpose – `./lab.sh 11 cleanup` / `./lab.sh 29 cleanup` repairs it.
+**Labs that change the cluster:** 09, 18, 26, 27, 39, 40, 44 – do them last or in a fresh session (27 removes the network plugin). 11 and 29 break the cluster on purpose – `./lab.sh 11 cleanup` / `./lab.sh 29 cleanup` repairs it.
 
 ## 3. Practice labs
 
@@ -1838,9 +1838,13 @@ The lab setup downloaded the package to /root/cri-dockerd.deb on node01.
 Tasks
 1. SSH into node01
 2. Install cri-dockerd from /root/cri-dockerd.deb using dpkg
-3. Configure the system for cri-dockerd:
-   - Enable IP forwarding with sysctl (persistently)
-   - Load the kernel modules overlay and br_netfilter
+3. Configure the system for cri-dockerd (as in the real exam task):
+   - Load the kernel modules overlay, br_netfilter and nf_conntrack
+   - Set these parameters persistently (in /etc/sysctl.d/) and apply them:
+       net.bridge.bridge-nf-call-iptables = 1
+       net.ipv6.conf.all.forwarding       = 1
+       net.ipv4.ip_forward                = 1
+       net.netfilter.nf_conntrack_max     = 131072
 4. Enable and start the cri-docker service and socket
    (the systemd units are called cri-docker.service / cri-docker.socket)
 5. Verify the cri-dockerd socket /run/cri-dockerd.sock is available
@@ -1860,10 +1864,16 @@ Tasks
 ```bash
 ssh node01
 dpkg -i /root/cri-dockerd.deb             # needs docker: apt-get install -y docker.io if it complains
-modprobe overlay && modprobe br_netfilter
-printf "overlay\nbr_netfilter\n" > /etc/modules-load.d/k8s.conf
-echo "net.ipv4.ip_forward = 1" > /etc/sysctl.d/kube.conf
+modprobe overlay && modprobe br_netfilter && modprobe nf_conntrack
+printf "overlay\nbr_netfilter\nnf_conntrack\n" > /etc/modules-load.d/k8s.conf
+cat <<'EOF' > /etc/sysctl.d/kube.conf
+net.bridge.bridge-nf-call-iptables = 1
+net.ipv6.conf.all.forwarding = 1
+net.ipv4.ip_forward = 1
+net.netfilter.nf_conntrack_max = 131072
+EOF
 sysctl --system
+sysctl net.bridge.bridge-nf-call-iptables net.ipv6.conf.all.forwarding net.ipv4.ip_forward net.netfilter.nf_conntrack_max
 systemctl enable --now cri-docker.socket cri-docker.service
 systemctl status cri-docker --no-pager
 ls -la /run/cri-dockerd.sock
@@ -2274,6 +2284,917 @@ kubectl get deploy,svc guestbook-ui
 kubectl get secret argocd-initial-admin-secret -n argocd -o jsonpath='{.data.password}' | base64 -d; echo
 kubectl port-forward -n argocd svc/argocd-server 8080:443 --address 0.0.0.0
 # Exam variant (other labs): helm template ... --set crds.install=false when the CRDs are pre-installed
+```
+
+</details>
+
+### Lab 32 – User certificate (CSR) + Role  (Cluster Architecture | Medium | 15 min)
+
+```bash
+./lab.sh 32
+```
+
+```text
+한글: 사용자 john의 CSR을 제출·승인하고 Role/RoleBinding으로 Pod 권한을 준다. (문서 5번)
+
+The lab setup created a private key and a certificate signing request for the user john:
+  /root/exercise-32/john.key   /root/exercise-32/john.csr
+
+Tasks
+1. Create a CertificateSigningRequest named john-developer from /root/exercise-32/john.csr
+   (signer kubernetes.io/kube-apiserver-client, usage client auth) and approve it
+2. In namespace exercise-32 create a Role named developer that allows
+   create, list, get, update and delete on pods
+3. Create a RoleBinding named developer-role-binding that grants the Role to the user john
+4. Verify with kubectl auth can-i ... --as=john
+```
+
+```bash
+./lab.sh 32 validate
+```
+
+<details>
+<summary><b>Show solution</b></summary>
+
+```bash
+cat <<EOF2 | kubectl apply -f -
+apiVersion: certificates.k8s.io/v1
+kind: CertificateSigningRequest
+metadata:
+  name: john-developer
+spec:
+  request: $(base64 -w0 /root/exercise-32/john.csr)
+  signerName: kubernetes.io/kube-apiserver-client
+  usages:
+  - client auth
+EOF2
+kubectl get csr john-developer                       # Pending
+kubectl certificate approve john-developer
+kubectl get csr john-developer                       # Approved,Issued
+kubectl create role developer -n exercise-32 --verb=create,list,get,update,delete --resource=pods
+kubectl create rolebinding developer-role-binding -n exercise-32 --role=developer --user=john
+kubectl auth can-i create pods -n exercise-32 --as=john   # yes
+kubectl auth can-i create pods -n default --as=john       # no
+# 참고: 발급된 인증서는 kubectl get csr john-developer -o jsonpath='{.status.certificate}' | base64 -d
+#       request 는 줄바꿈 없는 base64 한 줄이어야 한다 (base64 -w0 또는 | tr -d '\n').
+```
+
+</details>
+
+### Lab 33 – Argo CD with Helm (template + install, no CRDs)  (Cluster Architecture | Medium | 15 min)
+
+```bash
+./lab.sh 33
+```
+
+```text
+한글: 원본 시험 16번. Argo CD 차트 8.6.4의 helm template 저장 후 같은 설정으로 설치, CRD는 설치하지 않는다.
+
+The Argo CD CRDs are already installed in the cluster.
+
+Tasks
+1. Add the official Argo CD Helm repository with the name argo:
+     https://argoproj.github.io/argo-helm
+2. Generate a helm template of the Argo CD chart (argo/argo-cd) version 8.6.4 for the namespace
+   argocd and save it to /root/argo-helm.yaml. Configure the chart NOT to install CRDs.
+3. Install Argo CD with Helm: release name argocd, same chart version and configuration as the
+   template, namespace argocd, CRDs NOT installed by the chart
+4. You do not need to configure access to the Argo CD server UI
+
+Argo CD needs about 1.5 GB RAM. Lab 31 also uses namespace argocd - their setups clean each other.
+```
+
+```bash
+./lab.sh 33 validate
+```
+
+<details>
+<summary><b>Show solution</b></summary>
+
+```bash
+helm repo add argo https://argoproj.github.io/argo-helm
+helm repo update
+helm search repo argo/argo-cd --versions | grep 8.6.4
+helm show values argo/argo-cd --version 8.6.4 | grep -A3 '^crds:'     # crds.install: true by default
+helm template argocd argo/argo-cd --version 8.6.4 --namespace argocd \
+  --set crds.install=false > /root/argo-helm.yaml
+grep -c 'kind: CustomResourceDefinition' /root/argo-helm.yaml          # 0
+helm install argocd argo/argo-cd --version 8.6.4 --namespace argocd --create-namespace \
+  --set crds.install=false
+helm list -n argocd                                                    # argo-cd-8.6.4 deployed
+kubectl get pods -n argocd
+# 참고: 이미 설치된 CRD를 차트가 다시 만들려고 하면 소유권 충돌이 난다. 그래서 crds.install=false.
+```
+
+</details>
+
+### Lab 34 – Kustomize overlay: namespace, prefix, replicas, image  (Cluster Architecture | Medium | 15 min)
+
+```bash
+./lab.sh 34
+```
+
+```text
+한글: base는 그대로 두고 prod 오버레이로 네임스페이스·접두사·레플리카·이미지 태그를 바꿔 배포한다. (문서 8번)
+
+/root/kustomize/base defines a Deployment web (nginx:1.26, 1 replica) and a Service web.
+Do NOT change the base. Create the overlay /root/kustomize/overlays/prod that:
+  - deploys everything to namespace exercise-34
+  - adds the name prefix prod- to every resource
+  - runs 3 replicas of the Deployment
+  - uses the nginx image tag 1.27
+Then deploy the overlay to the cluster.
+```
+
+```bash
+./lab.sh 34 validate
+```
+
+<details>
+<summary><b>Show solution</b></summary>
+
+```bash
+mkdir -p /root/kustomize/overlays/prod
+cat <<'EOF2' > /root/kustomize/overlays/prod/kustomization.yaml
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- ../../base
+namespace: exercise-34
+namePrefix: prod-
+replicas:
+- name: web          # the name BEFORE the prefix
+  count: 3
+images:
+- name: nginx
+  newTag: "1.27"
+EOF2
+kubectl kustomize /root/kustomize/overlays/prod        # preview
+kubectl create namespace exercise-34                   # "namespace:" does not create the namespace
+kubectl apply -k /root/kustomize/overlays/prod
+kubectl -n exercise-34 get deploy,svc,pods
+# 참고: 위 항목으로 못 바꾸는 필드는 patches 로 (target: kind/name + JSON patch 또는 strategic merge).
+```
+
+</details>
+
+### Lab 35 – CRDs: list and explain  (Cluster Architecture | Easy | 10 min)
+
+```bash
+./lab.sh 35
+```
+
+```text
+한글: 원본 시험 14번. cert-manager CRD 목록과 Certificate spec.subject 필드 문서를 파일로 저장한다.
+
+cert-manager is deployed in the cluster (namespace cert-manager).
+
+Tasks
+1. Check the cert-manager application
+2. Create a list of all cert-manager Custom Resource Definitions (CRDs) and save it to
+   /root/resources.yaml. Use kubectl's DEFAULT output format - do NOT set an output format (-o).
+3. Using kubectl, extract the documentation for the subject specification field of the
+   Certificate custom resource and save it to /root/subject.yaml
+   (any output format kubectl supports is fine here)
+```
+
+```bash
+./lab.sh 35 validate
+```
+
+<details>
+<summary><b>Show solution</b></summary>
+
+```bash
+kubectl get pods -n cert-manager
+kubectl get crd | grep cert-manager > /root/resources.yaml       # no -o !
+cat /root/resources.yaml
+kubectl explain certificate.spec.subject > /root/subject.yaml
+cat /root/subject.yaml
+# 참고: 화면에도 보면서 저장하려면 | tee /root/resources.yaml
+#       CRD는 보통 오퍼레이터와 같이 설치된다: 오퍼레이터가 CR(Certificate 등)을 읽어 동작한다.
+```
+
+</details>
+
+### Lab 36 – Secret mounted as a volume  (Workloads & Scheduling | Easy | 10 min)
+
+```bash
+./lab.sh 36
+```
+
+```text
+한글: 기존 Secret을 읽기 전용 볼륨으로 마운트하는 Pod를 만든다. (문서 13번)
+
+Namespace exercise-36 contains the Secret dotfile-secret.
+Create a Pod named secret-1401 in namespace exercise-36:
+  - image busybox, command: sleep 4800
+  - the container is named secret-admin (not the Pod name!)
+  - mount the Secret dotfile-secret as a volume named secret-volume, read-only, at /etc/secret-volume
+```
+
+```bash
+./lab.sh 36 validate
+```
+
+<details>
+<summary><b>Show solution</b></summary>
+
+```bash
+kubectl -n exercise-36 get secret dotfile-secret
+kubectl run secret-1401 -n exercise-36 --image=busybox --dry-run=client -o yaml --command -- sleep 4800 > secret-1401.yaml
+# edit: container name secret-admin, add the volume and the mount. The finished file:
+cat <<'EOF2' > secret-1401.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: secret-1401
+  namespace: exercise-36
+spec:
+  volumes:
+  - name: secret-volume
+    secret:
+      secretName: dotfile-secret
+  containers:
+  - name: secret-admin
+    image: busybox
+    command: ["sleep", "4800"]
+    volumeMounts:
+    - name: secret-volume
+      mountPath: /etc/secret-volume
+      readOnly: true
+EOF2
+kubectl apply -f secret-1401.yaml
+kubectl -n exercise-36 exec secret-1401 -c secret-admin -- ls -a /etc/secret-volume   # .secret-file
+# 참고: 이름이 점(.)으로 시작하는 파일은 ls -a 로만 보인다. --command 뒤 인자는 명령 맨 끝에 둔다.
+```
+
+</details>
+
+### Lab 37 – HPA with a scale-down stabilization window  (Workloads & Scheduling | Medium | 10 min)
+
+```bash
+./lab.sh 37
+```
+
+```text
+한글: 원본 시험 2번. CPU 50%, 1~4개, 스케일 다운 안정화 윈도우 30초인 HPA를 만든다.
+
+The lab setup installed metrics-server and created Deployment apache-server in namespace exercise-37.
+
+Create a new HorizontalPodAutoscaler named apache-server in namespace exercise-37 that targets
+the existing Deployment apache-server:
+  - target 50% CPU usage per Pod
+  - at least 1 and at most 4 Pods
+  - set the downscale stabilization window to 30 seconds
+```
+
+```bash
+./lab.sh 37 validate
+```
+
+<details>
+<summary><b>Show solution</b></summary>
+
+```bash
+cat <<'EOF2' | kubectl apply -f -
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: apache-server
+  namespace: exercise-37
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: apache-server
+  minReplicas: 1
+  maxReplicas: 4
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 50
+  behavior:
+    scaleDown:
+      stabilizationWindowSeconds: 30
+EOF2
+kubectl -n exercise-37 get hpa apache-server
+kubectl -n exercise-37 get hpa apache-server -o yaml | grep -A2 scaleDown
+# alternative: kubectl -n exercise-37 autoscale deployment apache-server --name=apache-server --cpu-percent=50 --min=1 --max=4
+#              then kubectl -n exercise-37 edit hpa apache-server and add the behavior block
+# 참고: 최신 kubectl 은 --cpu-percent 대신 --cpu=50% 를 쓸 수 있다 (kubectl autoscale -h 로 확인).
+```
+
+</details>
+
+### Lab 38 – Liveness and readiness probes  (Workloads & Scheduling | Easy | 10 min)
+
+```bash
+./lab.sh 38
+```
+
+```text
+한글: readiness·liveness 프로브가 있는 Deployment를 만들고 자가 복구를 확인한다. (문서 15번)
+
+In namespace exercise-38 create Deployment probe-web (image nginx, 2 replicas) whose container has:
+  - readinessProbe: HTTP GET / on port 80, initialDelaySeconds 5, periodSeconds 5
+  - livenessProbe:  HTTP GET / on port 80, initialDelaySeconds 10, periodSeconds 10, failureThreshold 3
+Delete one Pod and check that the Deployment brings the replica count back to 2 by itself.
+```
+
+```bash
+./lab.sh 38 validate
+```
+
+<details>
+<summary><b>Show solution</b></summary>
+
+```bash
+kubectl create deployment probe-web -n exercise-38 --image=nginx --replicas=2 --port=80 --dry-run=client -o yaml > probe-web.yaml
+# add the probes under the container. The finished container section:
+#      containers:
+#      - image: nginx
+#        name: nginx
+#        ports:
+#        - containerPort: 80
+#        readinessProbe:
+#          httpGet: {path: /, port: 80}
+#          initialDelaySeconds: 5
+#          periodSeconds: 5
+#        livenessProbe:
+#          httpGet: {path: /, port: 80}
+#          initialDelaySeconds: 10
+#          periodSeconds: 10
+#          failureThreshold: 3
+kubectl apply -f probe-web.yaml
+kubectl -n exercise-38 rollout status deploy probe-web
+kubectl -n exercise-38 describe deploy probe-web | grep -E 'Liveness|Readiness'
+kubectl -n exercise-38 delete pod $(kubectl -n exercise-38 get pod -l app=probe-web -o jsonpath='{.items[0].metadata.name}')
+kubectl -n exercise-38 get pods -l app=probe-web          # a new pod replaces it
+# 참고: 시작이 느린 앱은 startupProbe 로 liveness 를 늦춘다.
+```
+
+</details>
+
+### Lab 39 – Taints and tolerations  (Workloads & Scheduling | Easy | 10 min)
+
+```bash
+./lab.sh 39
+```
+
+```text
+한글: 워커에 taint를 걸고, 그 taint를 허용하는 Pod를 만든다. (문서 18번)
+
+1. Add a taint to node01: key env_type, value production, effect NoSchedule
+2. In namespace exercise-39 create a Pod prod-redis (image redis:alpine) that tolerates this taint
+
+./lab.sh 39 cleanup removes the taint again - other labs need node01 schedulable.
+```
+
+```bash
+./lab.sh 39 validate
+```
+
+<details>
+<summary><b>Show solution</b></summary>
+
+```bash
+kubectl taint nodes node01 env_type=production:NoSchedule
+kubectl describe node node01 | grep -i taint
+kubectl run prod-redis -n exercise-39 --image=redis:alpine --dry-run=client -o yaml > prod-redis.yaml
+# add under spec:
+#   tolerations:
+#   - key: "env_type"
+#     operator: "Equal"
+#     value: "production"
+#     effect: "NoSchedule"
+kubectl apply -f prod-redis.yaml
+kubectl get pod prod-redis -n exercise-39 -o wide
+# 참고: effect 종류 - NoSchedule(새 Pod 금지), PreferNoSchedule(가급적 피함), NoExecute(실행 중인 Pod도 축출).
+#       특정 노드에 꼭 보내려면 nodeSelector/nodeAffinity 를 같이 쓴다. taint 제거: kubectl taint nodes node01 env_type-
+```
+
+</details>
+
+### Lab 40 – Node affinity (required + preferred)  (Workloads & Scheduling | Medium | 10 min)
+
+```bash
+./lab.sh 40
+```
+
+```text
+한글: 노드 레이블을 붙이고 required·preferred node affinity를 가진 Pod를 만든다. (문서 19번)
+
+1. Add the label disktype=ssd to node01
+2. In namespace exercise-40 create a Pod affinity-pod (image nginx) that
+   - may only be scheduled on nodes with the label disktype=ssd (required node affinity)
+   - prefers nodes with the label zone=a (preferred node affinity, weight 50)
+
+./lab.sh 40 cleanup removes the label again.
+```
+
+```bash
+./lab.sh 40 validate
+```
+
+<details>
+<summary><b>Show solution</b></summary>
+
+```bash
+kubectl label node node01 disktype=ssd
+kubectl get nodes -L disktype
+cat <<'EOF2' | kubectl apply -f -
+apiVersion: v1
+kind: Pod
+metadata:
+  name: affinity-pod
+  namespace: exercise-40
+spec:
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: disktype
+            operator: In
+            values: ["ssd"]
+      preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 50
+        preference:
+          matchExpressions:
+          - key: zone
+            operator: In
+            values: ["a"]
+  containers:
+  - name: nginx
+    image: nginx
+EOF2
+kubectl get pod affinity-pod -n exercise-40 -o wide        # on node01
+# 참고: nodeSelectorTerms 항목 여러 개 = OR, 한 항목 안의 matchExpressions 여러 개 = AND.
+#       Pending 이면 describe 의 Events 에서 "didn't match Pod's node affinity" 확인.
+```
+
+</details>
+
+### Lab 41 – Service of type LoadBalancer  (Services & Networking | Easy | 10 min)
+
+```bash
+./lab.sh 41
+```
+
+```text
+한글: LoadBalancer Service로 Deployment를 노출하고 엔드포인트를 확인한다. (문서 21번)
+
+In namespace exercise-41:
+1. Create Deployment lb-web (image nginx, 2 replicas)
+2. Expose it on port 80 with a Service lb-web-svc of type LoadBalancer
+3. Verify the Service has both Pods as endpoints and answers on its NodePort
+
+Killercoda has no cloud load balancer, so EXTERNAL-IP stays <pending> - that is expected.
+```
+
+```bash
+./lab.sh 41 validate
+```
+
+<details>
+<summary><b>Show solution</b></summary>
+
+```bash
+kubectl create deployment lb-web -n exercise-41 --image=nginx --replicas=2 --port=80
+kubectl expose deployment lb-web -n exercise-41 --name=lb-web-svc --type=LoadBalancer --port=80 --target-port=80
+kubectl get svc lb-web-svc -n exercise-41                       # 80:3xxxx/TCP, EXTERNAL-IP <pending>
+kubectl get endpointslices -n exercise-41 -l kubernetes.io/service-name=lb-web-svc
+NP=$(kubectl get svc lb-web-svc -n exercise-41 -o jsonpath='{.spec.ports[0].nodePort}')
+curl -s http://node01:$NP | grep title
+# 참고: Endpoints API 는 v1.33 부터 deprecated - EndpointSlice 로 본다 (kubectl get endpoints 도 경고와 함께 동작).
+#       Service 유형: ClusterIP(기본, 내부) ⊂ NodePort(30000-32767) ⊂ LoadBalancer.
+```
+
+</details>
+
+### Lab 42 – Migrate an Ingress (with TLS) to the Gateway API  (Services & Networking | Hard | 20 min)
+
+```bash
+./lab.sh 42
+```
+
+```text
+한글: 원본 시험 5번. TLS가 있는 Ingress를 Gateway + HTTPRoute로 옮기고 Ingress를 지운다 (GatewayClass는 eg).
+      시험에서는 GatewayClass 이름이 nginx 였지만, 이 랩은 Envoy Gateway 의 eg 를 쓴다.
+
+Namespace exercise-42 runs a web application exposed by the Ingress web (TLS, host web.k8s.local).
+The GatewayClass eg is installed. Migrate the application from the Ingress to the Gateway API;
+HTTPS access must keep working.
+
+1. Create a Gateway named web-gateway with the hostname gateway.web.k8s.local that keeps the
+   TLS and listener configuration of the existing Ingress web
+2. Create an HTTPRoute named web-route with the hostname gateway.web.k8s.local that keeps the
+   routing rules of the existing Ingress web
+3. Test it (the Envoy proxy is a NodePort Service in envoy-gateway-system), e.g.:
+     curl -k --resolve gateway.web.k8s.local:<nodeport>:<node-ip> https://gateway.web.k8s.local:<nodeport>
+4. Finally delete the Ingress web
+```
+
+```bash
+./lab.sh 42 validate
+```
+
+<details>
+<summary><b>Show solution</b></summary>
+
+```bash
+kubectl -n exercise-42 get ingress web -o yaml       # tls.secretName web-tls, rule / -> web:80
+kubectl get gatewayclass                              # eg
+cat <<'EOF2' | kubectl apply -f -
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: web-gateway
+  namespace: exercise-42
+spec:
+  gatewayClassName: eg
+  listeners:
+  - name: https
+    protocol: HTTPS
+    port: 443
+    hostname: gateway.web.k8s.local
+    tls:
+      mode: Terminate
+      certificateRefs:
+      - kind: Secret
+        name: web-tls
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: web-route
+  namespace: exercise-42
+spec:
+  parentRefs:
+  - name: web-gateway
+  hostnames:
+  - gateway.web.k8s.local
+  rules:
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /
+    backendRefs:
+    - name: web
+      port: 80
+EOF2
+kubectl -n exercise-42 get gateway,httproute         # PROGRAMMED True
+SVC=$(kubectl get svc -n envoy-gateway-system -l gateway.envoyproxy.io/owning-gateway-name=web-gateway -o jsonpath='{.items[0].metadata.name}')
+NP=$(kubectl get svc $SVC -n envoy-gateway-system -o jsonpath='{.spec.ports[?(@.port==443)].nodePort}')
+IP=$(kubectl get node node01 -o jsonpath='{.status.addresses[?(@.type=="InternalIP")].address}')
+curl -k --resolve gateway.web.k8s.local:$NP:$IP https://gateway.web.k8s.local:$NP
+kubectl -n exercise-42 delete ingress web
+# 참고: 문법이 기억나지 않으면 kubectl explain gateway.spec.listeners.tls
+```
+
+</details>
+
+### Lab 43 – DNS records of a Service and a Pod  (Services & Networking | Easy | 10 min)
+
+```bash
+./lab.sh 43
+```
+
+```text
+한글: Service와 Pod의 DNS 이름을 nslookup으로 조회해 파일로 저장한다. (문서 25번)
+
+In namespace exercise-43:
+1. Create a Pod nginx-resolver (image nginx) and expose it with a ClusterIP Service
+   nginx-resolver-service on port 80
+2. From a temporary Pod with image busybox:1.28, look up the Service and the Pod with nslookup
+   and save the output to /root/CKA/nginx.svc and /root/CKA/nginx.pod
+```
+
+```bash
+./lab.sh 43 validate
+```
+
+<details>
+<summary><b>Show solution</b></summary>
+
+```bash
+kubectl run nginx-resolver -n exercise-43 --image=nginx
+kubectl expose pod nginx-resolver -n exercise-43 --name=nginx-resolver-service --port=80 --target-port=80
+kubectl run test-nslookup -n exercise-43 --image=busybox:1.28 --rm -it --restart=Never \
+  -- nslookup nginx-resolver-service.exercise-43.svc.cluster.local > /root/CKA/nginx.svc
+IP=$(kubectl get pod nginx-resolver -n exercise-43 -o jsonpath='{.status.podIP}'); echo $IP
+kubectl run test-nslookup -n exercise-43 --image=busybox:1.28 --rm -it --restart=Never \
+  -- nslookup ${IP//./-}.exercise-43.pod.cluster.local > /root/CKA/nginx.pod
+cat /root/CKA/nginx.svc /root/CKA/nginx.pod
+# 참고: 클러스터 DNS = kube-system 의 CoreDNS Deployment(라벨 k8s-app=kube-dns) + Service kube-dns,
+#       설정은 ConfigMap coredns 의 Corefile. 이름 조회가 안 되면 Pod 의 /etc/resolv.conf 도 확인.
+```
+
+</details>
+
+### Lab 44 – New default StorageClass  (Storage | Medium | 10 min)
+
+```bash
+./lab.sh 44
+```
+
+```text
+한글: 원본 시험 4번. 새 StorageClass를 만들어 클러스터 기본으로 지정한다. 기존 Deployment·PVC는 건드리지 않는다.
+
+1. Create a new StorageClass named low-latency that uses the existing provisioner
+   rancher.io/local-path
+2. Set its VolumeBindingMode to WaitForFirstConsumer (mandatory)
+3. Make low-latency the default StorageClass of the cluster
+4. Do NOT modify any existing Deployment or PersistentVolumeClaim
+   (namespace exercise-44 has some that use the current default class)
+
+./lab.sh 44 cleanup removes low-latency and restores the original default class.
+```
+
+```bash
+./lab.sh 44 validate
+```
+
+<details>
+<summary><b>Show solution</b></summary>
+
+```bash
+kubectl get storageclass                               # local-path (default)
+cat <<'EOF2' | kubectl apply -f -
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: low-latency
+  annotations:
+    storageclass.kubernetes.io/is-default-class: "true"
+provisioner: rancher.io/local-path
+reclaimPolicy: Delete
+volumeBindingMode: WaitForFirstConsumer
+EOF2
+kubectl patch storageclass local-path -p '{"metadata":{"annotations":{"storageclass.kubernetes.io/is-default-class":"false"}}}'
+kubectl get storageclass                               # only low-latency (default)
+# 참고: 기본 SC 가 둘이면 새 PVC 는 가장 최근 것을 쓰지만, 시험에서는 하나만 남기는 게 정답.
+```
+
+</details>
+
+### Lab 45 – Reuse a retained PersistentVolume  (Storage | Medium | 15 min)
+
+```bash
+./lab.sh 45
+```
+
+```text
+한글: 원본 시험 3번. 삭제된 MariaDB Deployment를 Retain된 PV를 재사용해 복구한다.
+
+A user accidentally deleted the MariaDB Deployment in namespace exercise-45. It used persistent
+storage. Restore it and reuse the existing PersistentVolume so the data is kept.
+The PersistentVolume exists and was retained for reuse (there is only one PV).
+
+1. Create a PersistentVolumeClaim named mariadb in namespace exercise-45:
+     access mode ReadWriteOnce, storage 250Mi
+2. Edit the MariaDB Deployment file /root/mariadb-deploy.yaml to use the PVC
+3. Apply the edited Deployment file to the cluster
+4. Make sure the MariaDB Deployment is running and stable
+```
+
+```bash
+./lab.sh 45 validate
+```
+
+<details>
+<summary><b>Show solution</b></summary>
+
+```bash
+kubectl get pv                                        # mariadb-pv  250Mi RWO Retain Released
+kubectl get pv mariadb-pv -o yaml | grep -A6 -E 'claimRef|storageClassName'
+kubectl patch pv mariadb-pv -p '{"spec":{"claimRef":null}}'     # Released -> Available
+cat <<'EOF2' | kubectl apply -f -
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mariadb
+  namespace: exercise-45
+spec:
+  accessModes: ["ReadWriteOnce"]
+  storageClassName: ""          # same as the PV (it has no class); "" stops the default class being added
+  resources:
+    requests:
+      storage: 250Mi
+EOF2
+kubectl -n exercise-45 get pvc mariadb                # Bound to mariadb-pv
+vi /root/mariadb-deploy.yaml                           # replace the emptyDir with:
+#      volumes:
+#      - name: mariadb-storage
+#        persistentVolumeClaim:
+#          claimName: mariadb
+kubectl apply -f /root/mariadb-deploy.yaml
+kubectl -n exercise-45 rollout status deployment mariadb
+kubectl -n exercise-45 get pods,pvc
+# 참고: PVC 의 storageClassName 은 PV 와 같아야 한다. PV 에 클래스가 없으면 "" 를 명시.
+```
+
+</details>
+
+### Lab 46 – Fix a broken kubeconfig  (Troubleshooting | Easy | 10 min)
+
+```bash
+./lab.sh 46
+```
+
+```text
+한글: kubeconfig 파일로 클러스터에 접속되지 않는다. 원인을 찾아 파일을 고친다. (문서 30번)
+
+The kubeconfig file /root/CKA/admin.kubeconfig does not work against this cluster.
+Find the problem and fix the file so that
+  kubectl --kubeconfig /root/CKA/admin.kubeconfig get nodes
+works. Do not touch /etc/kubernetes/admin.conf.
+```
+
+```bash
+./lab.sh 46 validate
+```
+
+<details>
+<summary><b>Show solution</b></summary>
+
+```bash
+kubectl cluster-info --kubeconfig /root/CKA/admin.kubeconfig     # connection refused / timeout
+grep server: /root/CKA/admin.kubeconfig
+grep server: /etc/kubernetes/admin.conf                           # compare
+ss -ltnp | grep 6443                                              # the API server listens on 6443
+vi /root/CKA/admin.kubeconfig                                     # fix the port to 6443
+kubectl get nodes --kubeconfig /root/CKA/admin.kubeconfig
+# 참고: 문제마다 지정된 컨텍스트가 있으면 먼저 kubectl config use-context <name>.
+```
+
+</details>
+
+### Lab 47 – Pod with a failing init container  (Troubleshooting | Easy | 10 min)
+
+```bash
+./lab.sh 47
+```
+
+```text
+한글: Pod orange가 시작되지 않는다. 원인을 찾아 고친다. (문서 33번)
+
+The Pod orange in namespace exercise-47 does not start. Find the cause and fix it.
+The Pod must keep its name and its main container must stay as it is.
+```
+
+```bash
+./lab.sh 47 validate
+```
+
+<details>
+<summary><b>Show solution</b></summary>
+
+```bash
+kubectl -n exercise-47 get pod orange                    # Init:CrashLoopBackOff / Init:Error
+kubectl -n exercise-47 describe pod orange
+kubectl -n exercise-47 logs orange -c init-myservice     # sh: sleeeep: not found
+kubectl -n exercise-47 get pod orange -o yaml > orange.yaml
+vi orange.yaml                                           # initContainers command: sleeeep 2 -> sleep 2
+kubectl replace --force -f orange.yaml                   # delete + create in one step
+kubectl -n exercise-47 get pod orange                    # Running
+# 참고: init 컨테이너가 성공(exit 0)해야 본 컨테이너가 시작된다. 여러 개면 순서대로 하나씩.
+```
+
+</details>
+
+### Lab 48 – Service not reachable  (Troubleshooting | Medium | 15 min)
+
+```bash
+./lab.sh 48
+```
+
+```text
+한글: Service web-svc로 접속되지 않는다. Deployment는 그대로 두고 원인을 찾아 고친다. (문서 35번)
+
+The Service web-svc in namespace exercise-48 does not answer. The Pods of Deployment web
+(nginx, container port 80) are running fine.
+Find the cause, fix the Service, and verify that web-svc answers from inside the cluster.
+Do NOT modify the Deployment.
+```
+
+```bash
+./lab.sh 48 validate
+```
+
+<details>
+<summary><b>Show solution</b></summary>
+
+```bash
+kubectl -n exercise-48 run tmp --rm -it --image=busybox:1.28 --restart=Never -- wget -qO- -T 3 web-svc   # times out
+kubectl -n exercise-48 get svc web-svc -o wide                                       # SELECTOR app=webapp
+kubectl -n exercise-48 get endpointslices -l kubernetes.io/service-name=web-svc      # no endpoints
+kubectl -n exercise-48 get pods --show-labels -o wide                                # pods have app=web
+kubectl -n exercise-48 edit svc web-svc
+#   selector:   app: webapp  ->  app: web
+#   targetPort: 8080         ->  80
+kubectl -n exercise-48 get endpointslices -l kubernetes.io/service-name=web-svc      # 2 pods, port 80
+kubectl -n exercise-48 run tmp --rm -it --image=busybox:1.28 --restart=Never -- wget -qO- -T 3 web-svc   # nginx page
+# 참고: 그다음 점검 - Pod Ready 여부, NetworkPolicy, kube-proxy·CoreDNS Pod 상태.
+```
+
+</details>
+
+### Lab 49 – HA control plane with kubeadm (commands only)  (Cluster Architecture | Medium | 10 min)
+
+```bash
+./lab.sh 49
+```
+
+```text
+한글: 2노드 환경에서는 HA를 만들 수 없어서, 실행할 명령을 파일로 써서 채점한다. (문서 3번)
+
+You must build a highly available kubeadm cluster with stacked etcd. A load balancer for the
+API server is ready at lb.example.com:6443. This cannot be built on the 2-node playground, so
+write the commands you would run into /root/exercise-49/ha-commands.sh:
+
+1. On the first control plane node cp1: initialise the cluster with the load balancer as the
+   control plane endpoint, and upload the certificates so other control plane nodes can get them
+2. If the uploaded certificates have expired (after 2 hours): upload them again and print a new
+   join command
+3. On the second control plane node cp2: join it as a control plane node
+4. Check that the etcd members of both nodes are listed
+```
+
+```bash
+./lab.sh 49 validate
+```
+
+<details>
+<summary><b>Show solution</b></summary>
+
+```bash
+cat <<'EOF2' > /root/exercise-49/ha-commands.sh
+# 1. cp1
+kubeadm init --control-plane-endpoint "lb.example.com:6443" --upload-certs --pod-network-cidr=192.168.0.0/16
+# 2. certificates expire after 2h (Secret kubeadm-certs): upload again + new join command
+kubeadm init phase upload-certs --upload-certs        # prints a new certificate key
+kubeadm token create --print-join-command
+# 3. cp2
+kubeadm join lb.example.com:6443 --token <token> --discovery-token-ca-cert-hash sha256:<hash> \
+  --control-plane --certificate-key <certificate-key>
+# 4. etcd members
+kubectl -n kube-system exec etcd-cp1 -- etcdctl --endpoints=https://127.0.0.1:2379 \
+  --cacert=/etc/kubernetes/pki/etcd/ca.crt --cert=/etc/kubernetes/pki/etcd/server.crt \
+  --key=/etc/kubernetes/pki/etcd/server.key member list -w table
+EOF2
+# 참고: etcd 는 과반(쿼럼)이 필요해서 실제 HA 는 컨트롤 플레인 3대 이상.
+#       --control-plane-endpoint 없이 만든 단일 컨트롤 플레인은 나중에 HA 로 바꿀 수 없다.
+#       현재 값: kubectl -n kube-system get cm kubeadm-config -o yaml | grep controlPlaneEndpoint
+```
+
+</details>
+
+### Lab 50 – Pick the least-privilege NetworkPolicy  (Services & Networking | Medium | 15 min)
+
+```bash
+./lab.sh 50
+```
+
+```text
+한글: 원본 시험 7번. 주어진 파일 중 frontend→backend 통신을 허용하는 가장 제한적인 정책 하나만 적용한다.
+
+Deployment frontend runs in namespace exercise-50-frontend, Deployment backend in namespace
+exercise-50-backend. They must be able to talk to each other (frontend -> backend).
+
+1. Analyse the frontend and backend Deployments and find out what the communication needs
+2. Choose ONE of the NetworkPolicy files in /root/netpol and apply it. It must
+   - allow the communication from frontend to backend
+   - be as restrictive as possible (least privilege)
+3. Do NOT delete or change the existing deny-all NetworkPolicy
+```
+
+```bash
+./lab.sh 50 validate
+```
+
+<details>
+<summary><b>Show solution</b></summary>
+
+```bash
+kubectl get ns --show-labels | grep exercise-50
+kubectl -n exercise-50-frontend get deploy,pods --show-labels
+kubectl -n exercise-50-backend get deploy,pods --show-labels
+kubectl -n exercise-50-backend get deploy backend -o yaml | grep -A3 ports:     # containerPort 80
+kubectl get netpol -A | grep exercise-50                                         # deny-all
+cat /root/netpol/*.yaml
+#  netpol-1: from every namespace (namespaceSelector: {})            -> too wide
+#  netpol-2: namespaceSelector and podSelector as TWO list items = OR -> too wide
+#  netpol-3: ipBlock 0.0.0.0/0                                        -> too wide
+#  netpol-4: frontend ns AND app=frontend, but every port             -> wider than needed
+#  netpol-5: frontend ns AND app=frontend, TCP 80 only                -> the answer
+kubectl apply -f /root/netpol/netpol-5.yaml
+kubectl -n exercise-50-frontend exec deploy/frontend -- curl -s -m3 backend.exercise-50-backend | grep title
+# 참고: from 아래 한 항목에 namespaceSelector 와 podSelector 를 함께 = AND, "-" 로 나누면 = OR.
 ```
 
 </details>
@@ -3660,7 +4581,8 @@ more than 2 pods at once to voluntary disruptions such as node drains.
 
 Tasks
 1. Create PodDisruptionBudget app-pdb in pdb-demo that enforces this
-2. Test it: drain node01 (ignore DaemonSets, use --timeout=60s) and watch the evictions get blocked
+2. Test it: drain node01 (ignore DaemonSets, only the app=my-app pods, use --timeout=60s) and
+   watch the evictions get blocked. Do not use --force: pods of other questions also run on node01
 3. Uncordon node01 afterwards and make sure all 10 replicas are available again
 ```
 
@@ -3675,7 +4597,9 @@ Tasks
 kubectl create pdb app-pdb -n pdb-demo --selector=app=my-app --min-available=8
 #   (equivalent: --max-unavailable=2)
 kubectl get pdb app-pdb -n pdb-demo                 # ALLOWED DISRUPTIONS 2
-kubectl drain node01 --ignore-daemonsets --timeout=60s
+kubectl drain node01 --ignore-daemonsets --pod-selector=app=my-app --timeout=60s
+#   (a plain drain stops at "cannot delete Pods that declare no controller" because pods from other
+#    questions run on node01; --force would delete them)
 #   evicting pod pdb-demo/my-app-...
 #   error when evicting pods/"my-app-..." -n "pdb-demo" (will retry after 5s): Cannot evict pod as it
 #   would violate the pod's disruption budget.
@@ -3930,7 +4854,7 @@ kubectl get pod fits -n batch-jobs
 ## 6. Mock Exam 3 (Killer Shell style)
 
 Start the whole exam with `./mock.sh 3 start`, check it with `./mock.sh 3 score`.
-Q8 and Q20 change the cluster heavily, so `start` skips them – set them up when you reach them and do them last.
+Q8 and Q20 change the cluster heavily, so `start` skips them. Do Q8 first (`./mock.sh 3 8` right after `start`) and Q20 last.
 
 ### Exam 3 · Q1 – Contexts  (Cluster access with kubeconfig | 4%)
 
@@ -4266,8 +5190,9 @@ of the cluster yet.
 2. Add node01 to the cluster using kubeadm
 
 ssh node01 works from controlplane.
-This question is set up on demand (./mock.sh 3 8) because it removes node01 from the cluster:
-do it near the end of the exam.
+This question is set up on demand (./mock.sh 3 8) because it removes node01 from the cluster.
+Do it FIRST, right after ./mock.sh 3 start: removing the node deletes every pod on it that no
+controller recreates, so pods you created for other questions would be lost.
 ```
 
 ```bash
@@ -4716,7 +5641,9 @@ kubectl run bb --image=busybox:1 -- sh -c 'sleep 1d'
 kubectl exec bb -- nslookup kubernetes.default.svc.custom-domain
 kubectl exec bb -- nslookup kubernetes.default.svc.cluster.local
 # restore if needed:
-#   kubectl apply -f /root/mock3/16/coredns_backup.yaml   (or delete + apply) && kubectl -n kube-system rollout restart deploy coredns
+#   sed -E '/^  (resourceVersion|uid|creationTimestamp):/d' /root/mock3/16/coredns_backup.yaml | kubectl apply -f -
+#   kubectl -n kube-system rollout restart deploy coredns
+#   (applying the file as it is fails with "the object has been modified": it still holds the old resourceVersion)
 ```
 
 </details>

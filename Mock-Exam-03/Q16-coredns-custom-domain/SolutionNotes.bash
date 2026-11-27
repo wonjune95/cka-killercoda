@@ -8,4 +8,6 @@ kubectl run bb --image=busybox:1 -- sh -c 'sleep 1d'
 kubectl exec bb -- nslookup kubernetes.default.svc.custom-domain
 kubectl exec bb -- nslookup kubernetes.default.svc.cluster.local
 # restore if needed:
-#   kubectl apply -f /root/mock3/16/coredns_backup.yaml   (or delete + apply) && kubectl -n kube-system rollout restart deploy coredns
+#   sed -E '/^  (resourceVersion|uid|creationTimestamp):/d' /root/mock3/16/coredns_backup.yaml | kubectl apply -f -
+#   kubectl -n kube-system rollout restart deploy coredns
+#   (applying the file as it is fails with "the object has been modified": it still holds the old resourceVersion)

@@ -5,5 +5,6 @@
 #
 # Tasks
 # 1. Create PodDisruptionBudget app-pdb in pdb-demo that enforces this
-# 2. Test it: drain node01 (ignore DaemonSets, use --timeout=60s) and watch the evictions get blocked
+# 2. Test it: drain node01 (ignore DaemonSets, only the app=my-app pods, use --timeout=60s) and
+#    watch the evictions get blocked. Do not use --force: pods of other questions also run on node01
 # 3. Uncordon node01 afterwards and make sure all 10 replicas are available again

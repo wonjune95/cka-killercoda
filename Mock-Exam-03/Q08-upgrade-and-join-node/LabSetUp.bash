@@ -8,7 +8,7 @@ if [ -z "$W" ] || [ "$W" = "$CP" ] || ! kubectl get node "$W" >/dev/null 2>&1; t
 CPV=$(jp '{.status.nodeInfo.kubeletVersion}' node "$CP")        # e.g. v1.34.1
 MIN=$(echo "$CPV" | cut -d. -f2); PREV="1.$((MIN - 1))"
 echo "$W" > /root/.cka-lab/mock3-q8-node
-echo "Removing $W from the cluster (pods move to $CP) ..."
+echo "Removing $W from the cluster (pods without a controller on $W are deleted) ..."
 kubectl drain "$W" --ignore-daemonsets --delete-emptydir-data --force --timeout=120s >/dev/null 2>&1
 kubectl delete node "$W" >/dev/null
 on_node "$W" "kubeadm reset -f >/dev/null 2>&1; systemctl stop kubelet"
@@ -25,4 +25,4 @@ on_node "$W" "
   systemctl restart kubelet >/dev/null 2>&1; true" \
   || echo "  (could not install an older kubelet - $W keeps its current version; joining is still required)"
 echo "Q08 ready: $W is no longer part of the cluster. Control plane runs $CPV."
-echo "Do this question near the end: until $W rejoins, all pods run on $CP."
+echo "Until $W rejoins, new pods only go to $CP (or stay Pending if it is tainted)."

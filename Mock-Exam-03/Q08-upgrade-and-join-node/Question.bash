@@ -7,5 +7,6 @@
 # 2. Add node01 to the cluster using kubeadm
 #
 # ssh node01 works from controlplane.
-# This question is set up on demand (./mock.sh 3 8) because it removes node01 from the cluster:
-# do it near the end of the exam.
+# This question is set up on demand (./mock.sh 3 8) because it removes node01 from the cluster.
+# Do it FIRST, right after ./mock.sh 3 start: removing the node deletes every pod on it that no
+# controller recreates, so pods you created for other questions would be lost.

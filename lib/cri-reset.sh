@@ -1,9 +1,16 @@
 #!/bin/bash
 # Runs ON the worker node. Puts kubelet back on containerd and removes cri-dockerd.
-if [ -f /root/.cka-lab/kubeadm-flags.env.bak ] && ! cmp -s /root/.cka-lab/kubeadm-flags.env.bak /var/lib/kubelet/kubeadm-flags.env; then
+# Restores every kubelet file saved by lib/cri-backup.sh that the answer changed.
+FILES="/var/lib/kubelet/kubeadm-flags.env /var/lib/kubelet/config.yaml /etc/default/kubelet"
+changed=0
+for f in $FILES; do
+  b=/root/.cka-lab/$(basename "$f").bak
+  [ -f "$b" ] && ! cmp -s "$b" "$f" && changed=1
+done
+if [ $changed = 1 ]; then
   systemctl stop kubelet
   command -v docker >/dev/null && docker ps -aq --filter name=k8s_ | xargs -r docker rm -f >/dev/null 2>&1
-  cp /root/.cka-lab/kubeadm-flags.env.bak /var/lib/kubelet/kubeadm-flags.env
+  for f in $FILES; do b=/root/.cka-lab/$(basename "$f").bak; [ -f "$b" ] && cp "$b" "$f"; done
   systemctl daemon-reload; systemctl start kubelet
 fi
 systemctl disable --now cri-docker.service cri-docker.socket >/dev/null 2>&1

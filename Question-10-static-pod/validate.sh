@@ -4,7 +4,7 @@ source "$HERE/../lib/common.sh"
 SP=$(grep staticPodPath /var/lib/kubelet/config.yaml 2>/dev/null | awk '{print $2}'); SP=${SP:-/etc/kubernetes/manifests}
 POD="static-web-$(hostname)"
 banner "Validating Question 10"
-F=$(grep -l "name: static-web" "$SP"/*.yaml 2>/dev/null | head -1)
+F=$(grep -lE "^[[:space:]]*name: static-web[[:space:]]*$" "$SP"/* 2>/dev/null | head -1)
 if [ -n "$F" ]; then
   echo "  (manifest found: $F - checking tasks 1-3)"
   eq "static pod $POD is Running" "$(jp '{.status.phase}' pod $POD)" Running

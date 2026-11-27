@@ -5,7 +5,9 @@ banner "Validating Mock Exam 03 - Question 16"
 B=/root/mock3/16/coredns_backup.yaml
 if grep -q 'kind: ConfigMap' $B 2>/dev/null && grep -q 'name: coredns' $B; then pass "backup is the coredns ConfigMap YAML"; else fail "backup missing or not the coredns ConfigMap"; fi
 if grep -Eq 'kubernetes +cluster.local' $B 2>/dev/null; then pass "backup holds the original Corefile"; else fail "backup does not hold the original Corefile"; fi
-check "backup can be applied (server dry-run)" kubectl apply --dry-run=server -f $B
+# a "get -o yaml" backup holds resourceVersion/uid, which make a later apply fail with a conflict;
+# restoring means applying it without those fields, so check exactly that
+if sed -E '/^  (resourceVersion|uid|creationTimestamp):/d' $B 2>/dev/null | kubectl apply --dry-run=server -f - >/dev/null 2>&1; then pass "backup can be applied (server dry-run)"; else fail "backup can not be applied (server dry-run)"; fi
 if kubectl -n kube-system get cm coredns -o jsonpath='{.data.Corefile}' | grep -Eq '^[[:space:]]*kubernetes .*custom-domain'; then pass "Corefile kubernetes plugin serves custom-domain"; else fail "custom-domain not added to the kubernetes plugin"; fi
 check "CoreDNS rollout healthy" kubectl -n kube-system rollout status deploy/coredns --timeout=90s
 kubectl delete pod mock3-dns-test --ignore-not-found --force --grace-period=0 >/dev/null 2>&1

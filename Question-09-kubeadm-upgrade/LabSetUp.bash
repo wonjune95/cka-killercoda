@@ -7,7 +7,10 @@ MM=$(echo "$CUR" | sed 's/^v//' | cut -d. -f1,2)        # e.g. 1.35
 NEXT="1.$(( ${MM#1.} + 1 ))"
 if curl -fsSL "https://pkgs.k8s.io/core:/stable:/v$NEXT/deb/Release.key" -o /dev/null 2>/dev/null; then T=$NEXT; else T=$MM; fi
 echo "Current version: $CUR  -> preparing apt repository for v$T on $CP and $W ..."
-REPO="mkdir -p /etc/apt/keyrings && curl -fsSL https://pkgs.k8s.io/core:/stable:/v$T/deb/Release.key | gpg --dearmor --yes -o /etc/apt/keyrings/kubernetes-cka-lab.gpg && echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-cka-lab.gpg] https://pkgs.k8s.io/core:/stable:/v$T/deb/ /' > /etc/apt/sources.list.d/kubernetes-cka-lab.list && apt-get update -qq >/dev/null 2>&1"
+# Add the repo only if no apt source already points at it (two entries for the same URL with
+# different signed-by keys make apt fail). Our file is removed again if apt-get update fails.
+L=/etc/apt/sources.list.d/kubernetes-cka-lab.list
+REPO="if grep -rqs 'pkgs.k8s.io/core:/stable:/v$T/deb' /etc/apt/sources.list /etc/apt/sources.list.d/ ; then true; else mkdir -p /etc/apt/keyrings && curl -fsSL https://pkgs.k8s.io/core:/stable:/v$T/deb/Release.key | gpg --dearmor --yes -o /etc/apt/keyrings/kubernetes-cka-lab.gpg && echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-cka-lab.gpg] https://pkgs.k8s.io/core:/stable:/v$T/deb/ /' > $L; fi && apt-get update -qq >/dev/null 2>&1 || { rm -f $L; apt-get update -qq >/dev/null 2>&1; false; }"
 on_node "$CP" "$REPO" || { echo "Could not configure the apt repo on $CP"; exit 1; }
 on_node "$W" "$REPO"  || { echo "Could not configure the apt repo on $W"; exit 1; }
 PKG=$(apt-cache madison kubeadm | awk '{print $3}' | grep "^$T\." | sort -V | tail -1)

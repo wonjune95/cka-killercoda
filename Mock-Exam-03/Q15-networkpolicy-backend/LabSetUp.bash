@@ -18,24 +18,32 @@ data:
       location / { return 200 '$3'; }
     }
 ---
-apiVersion: v1
-kind: Pod
+apiVersion: apps/v1
+kind: StatefulSet            # pod $2-0; a controller recreates it if node01 is removed (Q08)
 metadata:
-  name: $1
+  name: $2
   namespace: $NS
-  labels:
-    app: $2
 spec:
-  containers:
-  - name: nginx
-    image: nginx:1-alpine
-    volumeMounts:
-    - name: conf
-      mountPath: /etc/nginx/conf.d
-  volumes:
-  - name: conf
-    configMap:
-      name: $1-conf
+  serviceName: $2
+  replicas: 1
+  selector:
+    matchLabels:
+      app: $2
+  template:
+    metadata:
+      labels:
+        app: $2
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1-alpine
+        volumeMounts:
+        - name: conf
+          mountPath: /etc/nginx/conf.d
+      volumes:
+      - name: conf
+        configMap:
+          name: $1-conf
 YAML
 }
 pod backend-0 backend "backend" "listen 80;"

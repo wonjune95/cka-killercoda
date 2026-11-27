@@ -1,7 +1,9 @@
 kubectl create pdb app-pdb -n pdb-demo --selector=app=my-app --min-available=8
 #   (equivalent: --max-unavailable=2)
 kubectl get pdb app-pdb -n pdb-demo                 # ALLOWED DISRUPTIONS 2
-kubectl drain node01 --ignore-daemonsets --timeout=60s
+kubectl drain node01 --ignore-daemonsets --pod-selector=app=my-app --timeout=60s
+#   (a plain drain stops at "cannot delete Pods that declare no controller" because pods from other
+#    questions run on node01; --force would delete them)
 #   evicting pod pdb-demo/my-app-...
 #   error when evicting pods/"my-app-..." -n "pdb-demo" (will retry after 5s): Cannot evict pod as it
 #   would violate the pod's disruption budget.

@@ -1,13 +1,14 @@
-# CKA Killercoda Labs (31 questions + 3 mock exams)
+# CKA Killercoda Labs (50 questions + 3 mock exams)
 
 Hands-on labs built from the 31 exercises and the two mock exams in
-[norbutlepcha25/CKA-Certified-Kubernetes-Administrator](https://github.com/norbutlepcha25/CKA-Certified-Kubernetes-Administrator).
+[norbutlepcha25/CKA-Certified-Kubernetes-Administrator](https://github.com/norbutlepcha25/CKA-Certified-Kubernetes-Administrator),
+plus labs 32-50 for the tasks of the Korean exercise book (CKA 실습문제, 35 questions) that had no lab yet.
 Each question has a lab setup, the task text, solution notes and an automatic checker.
 They are written for the Killercoda CKA playground (`controlplane` + `node01`, logged in as root).
 
-- `lab.sh` runs the 31 practice labs (below).
-- `mock.sh` runs the three timed mock exams (see [Mock exams](#mock-exams), `CKA-Mock-Exams.md` and `CKA-Mock-Exam-03.md`).
-- [GUIDE.md](GUIDE.md) has the setup steps and all 81 questions with collapsible solutions in one file.
+- `lab.sh` runs the 50 practice labs (below).
+- `mock.sh` runs the three timed mock exams (see [Mock exams](#mock-exams)).
+- [GUIDE.md](GUIDE.md) has the setup steps and all 100 questions with collapsible solutions in one file.
 
 ## Get the labs into Killercoda
 
@@ -15,8 +16,8 @@ Killercoda has no file upload, so clone this repo in the Killercoda terminal:
 
 ```bash
 # in the Killercoda terminal (https://killercoda.com/playgrounds/scenario/cka)
-git clone https://github.com/norbutlepcha25/CKA-Killercoda-Labs.git
-cd CKA-Killercoda-Labs
+git clone https://github.com/wonjune95/cka-killercoda.git
+cd cka-killercoda
 chmod +x lab.sh mock.sh lib/*.sh Question-*/*.sh Question-*/LabSetUp.bash Mock-Exam-*/*/*.sh Mock-Exam-*/*/LabSetUp.bash
 ./lab.sh list
 ./mock.sh list
@@ -39,9 +40,10 @@ You can also run the files directly, e.g. `bash Question-05-networkpolicy/LabSet
 
 ```
 lab.sh                      runner
-CKA-Labs-Questions.md       all 31 questions with setup/validate commands and hidden solutions
+GUIDE.md                    all questions and solutions in one file
 lib/common.sh               shared helpers (pass/fail, node helpers, ssh to node01)
-lib/cri-reset.sh            puts node01 back on containerd (used by Q18 and Q26)
+lib/cri-backup.sh           saves the kubelet runtime files on node01 (Q26, mock 1 Q07)
+lib/cri-reset.sh            puts node01 back on containerd (used by Q18, Q26, mock 1 Q07)
 Question-NN-topic/
   LabSetUp.bash             resets the lab, installs prerequisites, breaks things for troubleshooting labs
   Question.bash             the task
@@ -69,8 +71,53 @@ Question-NN-topic/
 | 29 | Points kube-apiserver at a wrong etcd endpoint (backup in `/root/.cka-lab/`) | `cleanup` restores the manifest |
 | 30 | Creates an nginx Deployment that only allows TLS 1.3 | - |
 | 31 | Removes any previous Argo CD install | Argo CD needs ~1.5 GB RAM |
+| 33 | Installs Helm if missing and the Argo CD CRDs (v3.1.9); removes the `argo` repo and any Argo CD release | Argo CD needs ~1.5 GB RAM. Shares namespace `argocd` with 31 - each setup removes the other |
+| 35 | Installs cert-manager v1.19.1 if missing | `cleanup` removes it again (only if the lab installed it) |
+| 37 | Installs metrics-server if missing | Stays installed |
+| 39 | Your answer taints node01 (`env_type=production:NoSchedule`) | `cleanup` removes the taint - do it before other labs |
+| 40 | Your answer labels node01 `disktype=ssd` | `cleanup` removes the label |
+| 42 | Installs Envoy Gateway v1.5.4 + GatewayClass `eg` (same as 15) | Stays installed |
+| 44 | Makes `local-path` the default StorageClass (installs local-path-provisioner v0.0.32 if needed) | `cleanup` restores the original default class |
+| 46 | Copies admin.conf to `/root/CKA/admin.kubeconfig` with a wrong port | - |
 
 Tip: run the destructive labs (09, 18, 26, 27) at the end of a session, or each in a fresh one.
+
+## Labs 32-50 (from the Korean exercise book)
+
+These cover the tasks of `CKA_실습문제` that had no lab here yet. The task text is English like the exam;
+the first line of each question has a Korean summary and the solution notes have Korean `참고` notes.
+"original" = a task from the real-exam question sheet in that book.
+
+| Lab | Topic | Book Q | Lab | Topic | Book Q |
+|---|---|---|---|---|---|
+| 32 | CSR + Role for a user | 5 | 42 | Ingress (TLS) -> Gateway API | 23 (original) |
+| 33 | Argo CD: helm template + install without CRDs | 7 (original) | 43 | Service / Pod DNS records | 25 |
+| 34 | Kustomize namespace / prefix / replicas / image | 8 | 44 | New default StorageClass | 26 (original) |
+| 35 | CRD list (default output) + explain | 10 (original) | 45 | Reuse a retained PV | 28 (original) |
+| 36 | Secret as a read-only volume | 13 | 46 | Broken kubeconfig | 30 |
+| 37 | HPA with scale-down stabilization | 14 (original) | 47 | Failing init container | 33 |
+| 38 | Liveness / readiness probes | 15 | 48 | Service selector / targetPort | 35 |
+| 39 | Taint + toleration | 18 | 49 | HA control plane (commands only) | 3 |
+| 40 | Node affinity | 19 | 50 | Pick the least-privilege NetworkPolicy | 24 (original) |
+| 41 | LoadBalancer Service | 21 | | | |
+
+Lab 26 now also asks for the four sysctl settings of the original exam task (book Q1).
+Labs 32-50 and the fixes below have only been syntax-checked and code-reviewed, not run on a cluster yet.
+
+### Fixes to the existing labs and mock exams
+
+- Q26 / mock 1 Q07: setup backs up `kubeadm-flags.env`, `config.yaml` and `/etc/default/kubelet`; cleanup restores
+  whichever one the answer changed (before, an answer in `config.yaml` left node01 NotReady). Q26 validate also reads `config.yaml`.
+- Q09: the apt source is added only if no source for that URL exists (a duplicate with another key broke apt on both
+  nodes); cleanup removes it.
+- Q29: setup only backs up a working manifest; cleanup restores it only while the etcd break is the only difference.
+- Q10: any manifest file that defines `static-web` counts (and is removed by cleanup), not only `static-web.yaml`.
+- Q20: `runAsNonRoot` may be set at pod and container level; `runAsUser: 1000` is now checked.
+- Mock 2 Q02: each revision gets its own change-cause (it was shifted by one revision).
+- Mock 2 Q11: the drain uses `--pod-selector=app=my-app` - a plain drain stopped at pods of other questions, `--force` deleted them.
+- Mock 3 Q08: do it first, right after `start` (removing node01 deletes pods without a controller). The Q15 pods are now
+  StatefulSets with the same names, so they survive it.
+- Mock 3 Q16: the backup check strips `resourceVersion`/`uid` before the dry-run apply; the restore note does the same.
 
 ## Changes from the original exercises
 
@@ -94,8 +141,7 @@ The original text is kept where possible. These changes make every lab runnable 
 ## Mock exams
 
 The two mock exams from the source repo (`mock-exams/MOCK-EXAM-01.md`, `MOCK-EXAM-02.md`) are now labs too:
-15 questions each, 120 minutes, pass mark 66% (10/15). `CKA-Mock-Exams.md` has every question with
-its setup and validate commands and a collapsible solution.
+15 questions each, 120 minutes, pass mark 66% (10/15). GUIDE.md has every question with a collapsible solution.
 
 ```bash
 ./mock.sh list
@@ -137,7 +183,7 @@ questions): kubeconfig contexts, Helm + cert-manager CRDs, StatefulSet scaling, 
 Kustomize + HPA, PV/PVC, `kubectl top`, kubeadm upgrade + join, API access from a Pod, RBAC,
 DaemonSet / one-Pod-per-node scheduling, Gateway API HTTPRoute, certificate expiry, NetworkPolicy,
 CoreDNS, crictl, etcd info, kube-proxy iptables and changing the Service CIDR. The tasks are rewritten
-for Killercoda; `CKA-Mock-Exam-03.md` lists them all with collapsible solutions.
+for Killercoda; GUIDE.md lists them all with collapsible solutions.
 
 ```bash
 ./mock.sh 3 start            # 18 questions set up; Q08 and Q20 are on demand
@@ -150,7 +196,7 @@ Answer files go in `/root/mock3/`.
 |---|---|
 | 3 · Q02 | Installs Helm if missing and adds the jetstack repo; your answer installs cert-manager (`cleanup` removes it and its CRDs) |
 | 3 · Q05, Q07 | Install metrics-server if missing |
-| 3 · Q08 | **Removes node01 from the cluster** (kubeadm reset) and downgrades its kubelet/kubectl one minor version. On demand: `./mock.sh 3 8`. `cleanup` re-joins node01 on the control plane version |
+| 3 · Q08 | **Removes node01 from the cluster** (kubeadm reset) and downgrades its kubelet/kubectl one minor version. On demand: `./mock.sh 3 8` - do it first, right after `start` (removing the node deletes pods without a controller). `cleanup` re-joins node01 on the control plane version |
 | 3 · Q13 | Installs Envoy Gateway v1.5.4 + GatewayClass `eg` (NodePort, same as practice lab 15), adds `r500.gateway` to `/etc/hosts` |
 | 3 · Q15 | Needs a CNI that enforces NetworkPolicy (the Killercoda playground does) |
 | 3 · Q16 | Saves the original Corefile; `cleanup` restores it |
