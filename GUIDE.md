@@ -1,81 +1,81 @@
-# CKA Killercoda Labs – Guide
+# CKA Killercoda 랩 – 가이드
 
-50 practice labs and 3 timed mock exams for the Killercoda CKA playground. Click **Show solution** to open a solution.
+Killercoda CKA 플레이그라운드용 연습 랩 50개와 시간 제한 모의고사 3회분입니다. **풀이 보기**를 누르면 풀이가 열립니다.
 
-## 1. Setup
+## 1. 준비
 
-1. Open https://killercoda.com/playgrounds/scenario/cka, sign in and click **Start**.
-2. In the terminal, clone the repo:
+1. https://killercoda.com/playgrounds/scenario/cka 를 열고 로그인한 뒤 **Start**를 누릅니다.
+2. 터미널에서 저장소를 클론합니다.
 
 ```bash
 git clone https://github.com/wonjune95/cka-killercoda.git
 cd cka-killercoda
 ```
 
-3. If a script says *Permission denied*, run once:
+3. 스크립트 실행 시 *Permission denied*가 나오면 한 번만 실행합니다.
 
 ```bash
 chmod +x lab.sh mock.sh lib/*.sh Question-*/*.sh Question-*/*.bash Mock-Exam-*/*/*.sh Mock-Exam-*/*/*.bash
 ```
 
-## 2. How to use
+## 2. 사용법
 
-**Practice labs**
+**연습 랩**
 
 ```bash
-./lab.sh list            # all 50 labs
-./lab.sh 5               # set up (or reset) lab 5 and print the question
-./lab.sh 5 validate      # check your answer
-./lab.sh 5 solution      # show the solution
-./lab.sh 5 cleanup       # remove the lab
+./lab.sh list            # 랩 50개 전체
+./lab.sh 5               # 랩 5 셋업(또는 초기화) 후 문제 출력
+./lab.sh 5 validate      # 답 채점
+./lab.sh 5 solution      # 풀이 보기
+./lab.sh 5 cleanup       # 랩 정리
 ```
 
-**Mock exams** (use a fresh Killercoda session for each exam)
+**모의고사** (회차마다 Killercoda 새 세션 사용)
 
 ```bash
-./mock.sh 1 start        # set up all 15 questions, start the 120-minute clock
-./mock.sh 1 time         # time left
-./mock.sh 1 4 question   # show question 4 again
-./mock.sh 1 11           # exam 1 Q11 only: set it up when you reach it
-./mock.sh 1 score        # check everything and print your score (pass = 10/15)
-./mock.sh 1 cleanup      # remove everything
+./mock.sh 1 start        # 15문제 전부 셋업, 120분 타이머 시작
+./mock.sh 1 time         # 남은 시간
+./mock.sh 1 4 question   # 4번 문제 다시 보기
+./mock.sh 1 11           # 1회 Q11만: 그 문제에 도달했을 때 셋업
+./mock.sh 1 score        # 전체 채점 후 점수 출력 (합격 = 10/15)
+./mock.sh 1 cleanup      # 전부 정리
 ```
 
-**Mock exam 3** (Killer Shell style, 20 questions, pass = 14/20)
+**모의고사 3회** (Killer Shell 스타일, 20문제, 합격 = 14/20)
 
 ```bash
-./mock.sh 3 start        # sets up 18 questions; Q8 and Q20 are on demand
-./mock.sh 3 8            # set up Q8 when you reach it (removes node01 from the cluster)
-./mock.sh 3 20           # set up Q20 when you reach it (changes the Service CIDR)
+./mock.sh 3 start        # 18문제 셋업; Q8과 Q20은 필요할 때 셋업
+./mock.sh 3 8            # start 직후 맨 먼저 Q8 셋업 (클러스터에서 node01을 제거함)
+./mock.sh 3 20           # Q20에 도달하면 셋업 (Service CIDR을 변경함)
 ./mock.sh 3 score
 ```
 
-Answer files that a mock question asks for go in `/root/mock1/`, `/root/mock2/` or `/root/mock3/`.
+모의고사 문제에서 요구하는 답안 파일은 `/root/mock1/`, `/root/mock2/`, `/root/mock3/`에 둡니다.
 
-**Labs that change the cluster:** 09, 18, 26, 27, 39, 40, 44 – do them last or in a fresh session (27 removes the network plugin). 11 and 29 break the cluster on purpose – `./lab.sh 11 cleanup` / `./lab.sh 29 cleanup` repairs it.
+**클러스터를 변경하는 랩:** 09, 18, 26, 27, 39, 40, 44 – 마지막에 하거나 새 세션에서 하세요 (27은 네트워크 플러그인을 제거합니다). 11과 29는 일부러 클러스터를 망가뜨립니다 – `./lab.sh 11 cleanup` / `./lab.sh 29 cleanup`으로 복구됩니다.
 
-## 3. Practice labs
+## 3. 연습 랩
 
-### Lab 1 – Pod Basics  (Workloads & Scheduling | Easy | 10 min)
+### 랩 1 – Pod 기초  (워크로드와 스케줄링 | 쉬움 | 10분)
 
 ```bash
 ./lab.sh 1
 ```
 
 ```text
-Create a pod with specific resource requests, labels, and verify it's running.
+리소스 requests와 레이블을 지정한 Pod를 만들고 실행 중인지 확인하세요.
 
-Tasks
-1. Create a namespace called exercise-01
-2. Create a pod named web in namespace exercise-01 with:
-   - Image: nginx:1.27
-   - Labels: app=web, tier=frontend
-   - Resource requests: 64Mi memory, 100m CPU
-   - Resource limits: 128Mi memory, 250m CPU
-3. Verify the pod is running and has the correct labels
-4. Get the pod's IP address using -o wide
-5. Add a new label version=v1 to the running pod
-6. Remove the tier label from the pod
+작업
+1. exercise-01 네임스페이스를 만드세요
+2. exercise-01 네임스페이스에 다음 조건으로 web Pod를 만드세요
+   - 이미지: nginx:1.27
+   - 레이블: app=web, tier=frontend
+   - 리소스 requests: 메모리 64Mi, CPU 100m
+   - 리소스 limits: 메모리 128Mi, CPU 250m
+3. Pod가 실행 중이고 레이블이 올바른지 확인하세요
+4. -o wide로 Pod의 IP 주소를 확인하세요
+5. 실행 중인 Pod에 새 레이블 version=v1을 추가하세요
+6. Pod에서 tier 레이블을 제거하세요
 ```
 
 ```bash
@@ -83,12 +83,12 @@ Tasks
 ```
 
 <details>
-<summary><b>Show solution</b></summary>
+<summary><b>풀이 보기</b></summary>
 
 ```bash
 kubectl create ns exercise-01
 kubectl run web -n exercise-01 --image=nginx:1.27 --labels=app=web,tier=frontend --dry-run=client -o yaml > pod.yaml
-# edit pod.yaml and add the resources block - the finished file:
+# pod.yaml을 편집해 resources 블록을 추가한다 - 완성된 파일:
 cat <<'EOF' > pod.yaml
 apiVersion: v1
 kind: Pod
@@ -119,26 +119,26 @@ kubectl label pod web -n exercise-01 tier-
 
 </details>
 
-### Lab 2 – Multi-Container Pod / Native Sidecar  (Workloads & Scheduling | Medium | 15 min)
+### 랩 2 – 멀티 컨테이너 Pod / 네이티브 sidecar  (워크로드와 스케줄링 | 보통 | 15분)
 
 ```bash
 ./lab.sh 2
 ```
 
 ```text
-Tasks
-1. Create a namespace called exercise-02
-2. Create a pod named logger in namespace exercise-02 with:
-   - An init container (sidecar) named log-agent using busybox:1.36
-     - Set restartPolicy: Always on the init container to make it a native sidecar
-     - Command: tail -F /var/log/app/app.log   (capital F waits for file creation)
-     - Mount a shared volume at /var/log/app
-   - A main container named app using busybox:1.36
-     - Command: write a line to /var/log/app/app.log every 3 seconds
-     - Mount the same shared volume at /var/log/app
-   - Use an emptyDir volume named log-volume
-3. Verify both containers are running (READY 2/2)
-4. Check the sidecar's logs to see the streamed output
+작업
+1. exercise-02 네임스페이스를 만드세요
+2. exercise-02 네임스페이스에 다음 조건으로 logger Pod를 만드세요
+   - busybox:1.36을 쓰는 log-agent라는 init 컨테이너(sidecar)
+     - init 컨테이너에 restartPolicy: Always를 설정해 네이티브 sidecar로 만드세요
+     - 명령: tail -F /var/log/app/app.log   (대문자 F는 파일이 생길 때까지 기다림)
+     - 공유 볼륨을 /var/log/app에 마운트하세요
+   - busybox:1.36을 쓰는 app이라는 메인 컨테이너
+     - 명령: 3초마다 /var/log/app/app.log에 한 줄씩 쓰기
+     - 같은 공유 볼륨을 /var/log/app에 마운트하세요
+   - log-volume이라는 emptyDir 볼륨을 사용하세요
+3. 두 컨테이너가 모두 실행 중인지 확인하세요 (READY 2/2)
+4. sidecar의 로그에서 스트리밍되는 출력을 확인하세요
 ```
 
 ```bash
@@ -146,7 +146,7 @@ Tasks
 ```
 
 <details>
-<summary><b>Show solution</b></summary>
+<summary><b>풀이 보기</b></summary>
 
 ```bash
 kubectl create ns exercise-02
@@ -182,28 +182,28 @@ kubectl logs logger -n exercise-02 -c log-agent
 
 </details>
 
-### Lab 3 – ConfigMap & Secret  (Workloads & Scheduling | Easy | 10 min)
+### 랩 3 – ConfigMap과 Secret  (워크로드와 스케줄링 | 쉬움 | 10분)
 
 ```bash
 ./lab.sh 3
 ```
 
 ```text
-Tasks
-1. Create a namespace called exercise-03
-2. Create a ConfigMap named app-config with:
-   - Key APP_MODE = production
-   - Key LOG_LEVEL = debug
-3. Create a Secret named db-creds with:
-   - Key DB_USER = admin
-   - Key DB_PASS = s3cretP@ss
-4. Create a pod named app that:
-   - Uses image busybox:1.36, command sleep 3600
-   - Loads APP_MODE and LOG_LEVEL from the ConfigMap as env vars
-   - Loads DB_USER and DB_PASS from the Secret as env vars
-   - Mounts the entire ConfigMap as files at /etc/config/
-5. Verify the env vars are set inside the pod
-6. Verify the mounted files exist at /etc/config/
+작업
+1. exercise-03 네임스페이스를 만드세요
+2. 다음 내용으로 app-config ConfigMap을 만드세요
+   - 키 APP_MODE = production
+   - 키 LOG_LEVEL = debug
+3. 다음 내용으로 db-creds Secret을 만드세요
+   - 키 DB_USER = admin
+   - 키 DB_PASS = s3cretP@ss
+4. 다음 조건으로 app Pod를 만드세요
+   - 이미지 busybox:1.36, 명령 sleep 3600
+   - ConfigMap에서 APP_MODE와 LOG_LEVEL을 환경 변수로 불러오기
+   - Secret에서 DB_USER와 DB_PASS를 환경 변수로 불러오기
+   - ConfigMap 전체를 /etc/config/에 파일로 마운트하기
+5. Pod 안에 환경 변수가 설정됐는지 확인하세요
+6. /etc/config/에 마운트된 파일이 있는지 확인하세요
 ```
 
 ```bash
@@ -211,7 +211,7 @@ Tasks
 ```
 
 <details>
-<summary><b>Show solution</b></summary>
+<summary><b>풀이 보기</b></summary>
 
 ```bash
 kubectl create ns exercise-03
@@ -247,30 +247,30 @@ kubectl exec app -n exercise-03 -- ls /etc/config/
 
 </details>
 
-### Lab 4 – RBAC  (Cluster Architecture | Medium | 15 min)
+### 랩 4 – RBAC  (클러스터 아키텍처 | 보통 | 15분)
 
 ```bash
 ./lab.sh 4
 ```
 
 ```text
-Tasks
-1. Create a namespace called exercise-04
-2. Create a ServiceAccount named dev-sa in namespace exercise-04
-3. Create a Role named pod-manager in namespace exercise-04 that allows:
-   - get, list, watch, create, delete on pods
-   - get, list on services
-4. Create a RoleBinding named dev-pod-access that binds pod-manager to dev-sa
-5. Verify that dev-sa can list pods in exercise-04
-6. Verify that dev-sa cannot list pods in the default namespace
-7. Create a ClusterRole named node-viewer that allows get, list on nodes
-8. Create a ClusterRoleBinding named dev-node-access binding node-viewer to dev-sa
-9. Verify that dev-sa can now list nodes
+작업
+1. exercise-04 네임스페이스를 만드세요
+2. exercise-04 네임스페이스에 dev-sa ServiceAccount를 만드세요
+3. exercise-04 네임스페이스에 다음을 허용하는 pod-manager Role을 만드세요
+   - pods에 대해 get, list, watch, create, delete
+   - services에 대해 get, list
+4. pod-manager를 dev-sa에 바인딩하는 dev-pod-access RoleBinding을 만드세요
+5. dev-sa가 exercise-04에서 pods를 list할 수 있는지 확인하세요
+6. dev-sa가 default 네임스페이스에서는 pods를 list할 수 없는지 확인하세요
+7. nodes에 대해 get, list를 허용하는 node-viewer ClusterRole을 만드세요
+8. node-viewer를 dev-sa에 바인딩하는 dev-node-access ClusterRoleBinding을 만드세요
+9. 이제 dev-sa가 nodes를 list할 수 있는지 확인하세요
 
-Additional real-exam scenarios
-10. A developer reports they cannot delete a deployment in exercise-04. Use kubectl auth can-i to debug why
-11. Test what dev-sa can do with deployments (should return "no")
-12. List all permissions granted to dev-sa in the exercise-04 namespace
+실제 시험형 추가 시나리오
+10. 한 개발자가 exercise-04에서 deployment를 삭제할 수 없다고 합니다. kubectl auth can-i로 원인을 찾으세요
+11. dev-sa가 deployments에 대해 무엇을 할 수 있는지 확인하세요 ("no"가 나와야 함)
+12. exercise-04 네임스페이스에서 dev-sa에 부여된 권한을 모두 나열하세요
 ```
 
 ```bash
@@ -278,7 +278,7 @@ Additional real-exam scenarios
 ```
 
 <details>
-<summary><b>Show solution</b></summary>
+<summary><b>풀이 보기</b></summary>
 
 ```bash
 kubectl create ns exercise-04
@@ -304,31 +304,31 @@ kubectl auth can-i list pods -n default --as=$AS           # no
 kubectl create clusterrole node-viewer --verb=get,list --resource=nodes
 kubectl create clusterrolebinding dev-node-access --clusterrole=node-viewer --serviceaccount=exercise-04:dev-sa
 kubectl auth can-i list nodes --as=$AS                     # yes
-kubectl auth can-i delete deployments -n exercise-04 --as=$AS   # no - Role has no apps/deployments rule
+kubectl auth can-i delete deployments -n exercise-04 --as=$AS   # no - Role에 apps/deployments 규칙이 없음
 kubectl auth can-i --list -n exercise-04 --as=$AS
 ```
 
 </details>
 
-### Lab 5 – NetworkPolicy  (Services & Networking | Medium | 20 min)
+### 랩 5 – NetworkPolicy  (서비스와 네트워킹 | 보통 | 20분)
 
 ```bash
 ./lab.sh 5
 ```
 
 ```text
-Tasks
-1. Create a namespace called exercise-05
-2. Deploy two pods:
-   - frontend with image nginx:1.27 and label role=frontend
-   - backend  with image nginx:1.27 and label role=backend
-3. Verify that frontend can reach backend on port 80 (should work before any policy)
-4. Create a NetworkPolicy named backend-policy that:
-   - Applies to pods with label role=backend
-   - Allows ingress only from pods with label role=frontend on port 80
-   - Allows egress to DNS (UDP port 53) - if you skip this, DNS breaks
-5. Verify that frontend can still reach backend
-6. Create a third pod attacker (image nginx:1.27, label role=attacker) and verify it cannot reach backend
+작업
+1. exercise-05 네임스페이스를 만드세요
+2. Pod 두 개를 배포하세요
+   - 이미지 nginx:1.27, 레이블 role=frontend인 frontend
+   - 이미지 nginx:1.27, 레이블 role=backend인 backend
+3. frontend가 backend의 80번 포트에 접근할 수 있는지 확인하세요 (정책을 만들기 전에는 접근돼야 함)
+4. 다음 조건으로 backend-policy NetworkPolicy를 만드세요
+   - 레이블 role=backend인 Pod에 적용
+   - 레이블 role=frontend인 Pod에서 80번 포트로 들어오는 ingress만 허용
+   - DNS(UDP 53번 포트)로 나가는 egress 허용 - 빠뜨리면 DNS가 깨짐
+5. frontend가 여전히 backend에 접근할 수 있는지 확인하세요
+6. 세 번째 Pod attacker(이미지 nginx:1.27, 레이블 role=attacker)를 만들고 backend에 접근할 수 없는지 확인하세요
 ```
 
 ```bash
@@ -336,7 +336,7 @@ Tasks
 ```
 
 <details>
-<summary><b>Show solution</b></summary>
+<summary><b>풀이 보기</b></summary>
 
 ```bash
 kubectl create ns exercise-05
@@ -370,32 +370,32 @@ spec:
       port: 53
 EOF
 BACKEND_IP=$(kubectl get pod backend -n exercise-05 -o jsonpath='{.status.podIP}')
-kubectl exec frontend -n exercise-05 -- curl -m2 -s http://$BACKEND_IP     # works
-kubectl exec attacker -n exercise-05 -- curl -m2 -s http://$BACKEND_IP     # times out
+kubectl exec frontend -n exercise-05 -- curl -m2 -s http://$BACKEND_IP     # 성공
+kubectl exec attacker -n exercise-05 -- curl -m2 -s http://$BACKEND_IP     # 타임아웃
 ```
 
 </details>
 
-### Lab 6 – Deployment Rolling Update and Rollback  (Workloads & Scheduling | Easy | 10 min)
+### 랩 6 – Deployment 롤링 업데이트와 롤백  (워크로드와 스케줄링 | 쉬움 | 10분)
 
 ```bash
 ./lab.sh 6
 ```
 
 ```text
-Tasks
-1. Create a namespace called exercise-06
-2. Create a Deployment named webapp with:
-   - 3 replicas
-   - Image: nginx:1.28
-   - Strategy: RollingUpdate with maxSurge=1, maxUnavailable=0
-   - Record the change cause (annotation kubernetes.io/change-cause)
-3. Verify all 3 replicas are running
-4. Update the image to nginx:1.29 and record the change
-5. Watch the rollout status
-6. Check rollout history - you should see 2 revisions
-7. Rollback to the previous version (nginx:1.28)
-8. Verify the rollback worked by checking the image
+작업
+1. exercise-06 네임스페이스를 만드세요
+2. 다음 조건으로 webapp Deployment를 만드세요
+   - 레플리카 3개
+   - 이미지: nginx:1.28
+   - 전략: RollingUpdate, maxSurge=1, maxUnavailable=0
+   - 변경 사유 기록 (어노테이션 kubernetes.io/change-cause)
+3. 레플리카 3개가 모두 실행 중인지 확인하세요
+4. 이미지를 nginx:1.29로 업데이트하고 변경 사유를 기록하세요
+5. 롤아웃 상태를 지켜보세요
+6. 롤아웃 히스토리를 확인하세요 - revision이 2개 보여야 합니다
+7. 이전 버전(nginx:1.28)으로 롤백하세요
+8. 이미지를 확인해 롤백이 됐는지 확인하세요
 ```
 
 ```bash
@@ -403,7 +403,7 @@ Tasks
 ```
 
 <details>
-<summary><b>Show solution</b></summary>
+<summary><b>풀이 보기</b></summary>
 
 ```bash
 kubectl create ns exercise-06
@@ -443,25 +443,25 @@ kubectl get deploy webapp -n exercise-06 -o jsonpath='{.spec.template.spec.conta
 
 </details>
 
-### Lab 7 – StatefulSet  (Workloads & Scheduling | Medium | 15 min)
+### 랩 7 – StatefulSet  (워크로드와 스케줄링 | 보통 | 15분)
 
 ```bash
 ./lab.sh 7
 ```
 
 ```text
-Work in the default namespace.
+default 네임스페이스에서 작업하세요.
 
-Tasks
-1. Create a headless Service named mysql (port 3306, selector app=mysql) for the StatefulSet
-2. Create a StatefulSet named mysql with 3 replicas using the nginx:1.28 image
-   - serviceName: mysql, label app=mysql, containerPort 3306 named mysql
-   - volumeClaimTemplate named data (ReadWriteOnce, 1Gi) mounted at /data
-3. Verify pods start in order (mysql-0 first, then mysql-1, then mysql-2)
-4. Verify each pod has a PersistentVolumeClaim attached
-5. Delete a pod and observe it respawn with the same name and storage
-6. Scale the StatefulSet up and down using kubectl scale
-7. Delete the StatefulSet and verify the PVCs persist (data survives)
+작업
+1. StatefulSet용 headless Service mysql을 만드세요 (포트 3306, 셀렉터 app=mysql)
+2. nginx:1.28 이미지를 쓰는 레플리카 3개짜리 StatefulSet mysql을 만드세요
+   - serviceName: mysql, 레이블 app=mysql, 이름이 mysql인 containerPort 3306
+   - /data에 마운트되는 data라는 volumeClaimTemplate (ReadWriteOnce, 1Gi)
+3. Pod가 순서대로 시작되는지 확인하세요 (mysql-0 먼저, 다음 mysql-1, 그다음 mysql-2)
+4. 각 Pod에 PersistentVolumeClaim이 붙어 있는지 확인하세요
+5. Pod 하나를 삭제하고 같은 이름과 스토리지로 다시 생기는 것을 확인하세요
+6. kubectl scale로 StatefulSet을 늘렸다 줄여 보세요
+7. StatefulSet을 삭제하고 PVC가 남아 있는지 확인하세요 (데이터 유지)
 ```
 
 ```bash
@@ -469,7 +469,7 @@ Tasks
 ```
 
 <details>
-<summary><b>Show solution</b></summary>
+<summary><b>풀이 보기</b></summary>
 
 ```bash
 cat <<'EOF' | kubectl apply -f -
@@ -520,36 +520,36 @@ spec:
         requests:
           storage: 1Gi
 EOF
-kubectl get pods -l app=mysql -w            # mysql-0, mysql-1, mysql-2 in order
+kubectl get pods -l app=mysql -w            # mysql-0, mysql-1, mysql-2 순서대로
 kubectl get pvc                             # data-mysql-0/1/2
 kubectl run debug --image=busybox:1.36 --rm -it --restart=Never -- nslookup mysql-0.mysql.default.svc.cluster.local
-kubectl delete pod mysql-1 && kubectl get pods -l app=mysql   # mysql-1 comes back
+kubectl delete pod mysql-1 && kubectl get pods -l app=mysql   # mysql-1이 다시 생김
 kubectl scale statefulset mysql --replicas=4
 kubectl scale statefulset mysql --replicas=2
 kubectl delete statefulset mysql
-kubectl get pvc                             # PVCs are still there
+kubectl get pvc                             # PVC는 그대로 남음
 ```
 
 </details>
 
-### Lab 8 – Node Drain and Cordon  (Cluster Architecture | Easy | 10 min)
+### 랩 8 – 노드 drain과 cordon  (클러스터 아키텍처 | 쉬움 | 10분)
 
 ```bash
 ./lab.sh 8
 ```
 
 ```text
-Work in the default namespace. The worker node on Killercoda is node01.
+default 네임스페이스에서 작업하세요. Killercoda의 워커 노드는 node01입니다.
 
-Tasks
-1. List all nodes and identify a worker node
-2. Cordon the worker node (mark it unschedulable)
-3. Verify the node shows SchedulingDisabled
-4. Create a Deployment named drain-test (image nginx:1.27, 3 replicas) and observe where pods are scheduled
-5. Drain the worker node - handle DaemonSets and local data
-6. Verify all non-DaemonSet pods have been evicted from the node
-7. Uncordon the node
-8. Scale the deployment to 6 replicas and verify pods get scheduled on the uncordoned node
+작업
+1. 노드를 모두 나열하고 워커 노드를 찾으세요
+2. 워커 노드를 cordon하세요 (스케줄 불가로 표시)
+3. 노드가 SchedulingDisabled로 표시되는지 확인하세요
+4. drain-test Deployment(이미지 nginx:1.27, 레플리카 3개)를 만들고 Pod가 어디에 스케줄되는지 확인하세요
+5. 워커 노드를 drain하세요 - DaemonSet과 로컬 데이터를 처리하세요
+6. DaemonSet이 아닌 Pod가 모두 노드에서 축출됐는지 확인하세요
+7. 노드를 uncordon하세요
+8. Deployment를 레플리카 6개로 늘리고 uncordon한 노드에 Pod가 스케줄되는지 확인하세요
 ```
 
 ```bash
@@ -557,7 +557,7 @@ Tasks
 ```
 
 <details>
-<summary><b>Show solution</b></summary>
+<summary><b>풀이 보기</b></summary>
 
 ```bash
 kubectl get nodes
@@ -566,42 +566,42 @@ kubectl get nodes                                        # node01 SchedulingDisa
 kubectl create deployment drain-test --image=nginx:1.27 --replicas=3
 kubectl get pods -o wide
 kubectl drain node01 --ignore-daemonsets --delete-emptydir-data
-kubectl get pods -A --field-selector spec.nodeName=node01   # only DaemonSet pods left
+kubectl get pods -A --field-selector spec.nodeName=node01   # DaemonSet Pod만 남음
 kubectl uncordon node01
 kubectl scale deployment drain-test --replicas=6
-kubectl get pods -o wide                                 # some pods on node01 again
+kubectl get pods -o wide                                 # 일부 Pod가 다시 node01에 배치됨
 ```
 
 </details>
 
-### Lab 9 – kubeadm Cluster Upgrade  (Cluster Architecture | Hard | 25 min)
+### 랩 9 – kubeadm 클러스터 업그레이드  (클러스터 아키텍처 | 어려움 | 25분)
 
 ```bash
 ./lab.sh 9
 ```
 
 ```text
-The lab setup prepared the apt repository on both nodes.
-Target version:  cat /root/upgrade-target.txt          (e.g. v1.36.0)
-Apt package:     cat /root/upgrade-target-package.txt  (e.g. 1.36.0-1.1)
+랩 셋업에서 두 노드 모두에 apt 저장소를 준비해 두었습니다.
+목표 버전:       cat /root/upgrade-target.txt          (예: v1.36.0)
+apt 패키지:      cat /root/upgrade-target-package.txt  (예: 1.36.0-1.1)
 
-Tasks
-1. Check the current cluster version (kubectl get nodes, kubeadm version)
-2. Upgrade the control plane node (controlplane) to the target version:
-   a. Update the kubeadm package to the target version
-   b. Run kubeadm upgrade plan to see available upgrades
-   c. Run kubeadm upgrade apply <target version>
-   d. Upgrade the kubelet and kubectl packages
-   e. Restart kubelet
-3. Upgrade the worker node (node01):
-   a. Drain the worker node
-   b. Update the kubeadm, kubelet, kubectl packages on the worker
-   c. Run kubeadm upgrade node
-   d. Restart kubelet
-   e. Uncordon the worker
-4. Verify all nodes show the new version
+작업
+1. 현재 클러스터 버전을 확인하세요 (kubectl get nodes, kubeadm version)
+2. 컨트롤 플레인 노드(controlplane)를 목표 버전으로 업그레이드하세요
+   a. kubeadm 패키지를 목표 버전으로 업데이트
+   b. kubeadm upgrade plan으로 가능한 업그레이드 확인
+   c. kubeadm upgrade apply <목표 버전> 실행
+   d. kubelet과 kubectl 패키지 업그레이드
+   e. kubelet 재시작
+3. 워커 노드(node01)를 업그레이드하세요
+   a. 워커 노드 drain
+   b. 워커에서 kubeadm, kubelet, kubectl 패키지 업데이트
+   c. kubeadm upgrade node 실행
+   d. kubelet 재시작
+   e. 워커 uncordon
+4. 모든 노드가 새 버전으로 표시되는지 확인하세요
 
-Note: an upgrade cannot be undone. Start a fresh Killercoda session to practise it again.
+참고: 업그레이드는 되돌릴 수 없습니다. 다시 연습하려면 Killercoda 새 세션을 시작하세요.
 ```
 
 ```bash
@@ -609,13 +609,13 @@ Note: an upgrade cannot be undone. Start a fresh Killercoda session to practise 
 ```
 
 <details>
-<summary><b>Show solution</b></summary>
+<summary><b>풀이 보기</b></summary>
 
 ```bash
 VER=$(cat /root/upgrade-target.txt); PKG=$(cat /root/upgrade-target-package.txt)
 
-# === CONTROL PLANE (controlplane) ===
-kubectl drain controlplane --ignore-daemonsets          # optional but recommended
+# === 컨트롤 플레인 (controlplane) ===
+kubectl drain controlplane --ignore-daemonsets          # 선택이지만 권장
 apt-mark unhold kubeadm
 apt-get update && apt-get install -y kubeadm=$PKG
 apt-mark hold kubeadm
@@ -629,7 +629,7 @@ systemctl daemon-reload && systemctl restart kubelet
 kubectl uncordon controlplane
 kubectl get nodes
 
-# === WORKER (node01) ===
+# === 워커 (node01) ===
 kubectl drain node01 --ignore-daemonsets --delete-emptydir-data
 ssh node01
   PKG=<paste the package version>
@@ -640,33 +640,33 @@ ssh node01
   systemctl daemon-reload && systemctl restart kubelet
   exit
 kubectl uncordon node01
-kubectl get nodes          # both nodes on the new version
+kubectl get nodes          # 두 노드 모두 새 버전
 
-# Remember: control plane = kubeadm upgrade apply, worker = kubeadm upgrade node
+# 기억할 것: 컨트롤 플레인 = kubeadm upgrade apply, 워커 = kubeadm upgrade node
 ```
 
 </details>
 
-### Lab 10 – Static Pod  (Workloads & Scheduling | Easy | 10 min)
+### 랩 10 – static Pod  (워크로드와 스케줄링 | 쉬움 | 10분)
 
 ```bash
 ./lab.sh 10
 ```
 
 ```text
-Work on the control plane node (controlplane).
+컨트롤 플레인 노드(controlplane)에서 작업하세요.
 
-Tasks
-1. Find the static pod manifest directory on the node
-2. Create a static pod manifest file for a pod named static-web with:
-   - Image: nginx:1.27
-   - Port: 80
-3. Verify the static pod appears in kubectl get pods (it will have the node name appended)
-   -> run ./lab.sh 10 validate now to check this part
-4. Try to delete the static pod with kubectl - observe what happens
-5. Delete the static pod by removing the manifest file
-6. Verify the pod is gone
-   -> run ./lab.sh 10 validate again
+작업
+1. 노드에서 static Pod 매니페스트 디렉터리를 찾으세요
+2. 다음 조건으로 static-web이라는 Pod의 static Pod 매니페스트 파일을 만드세요
+   - 이미지: nginx:1.27
+   - 포트: 80
+3. kubectl get pods에 static Pod가 나타나는지 확인하세요 (이름 뒤에 노드 이름이 붙음)
+   -> 이 단계에서 ./lab.sh 10 validate를 실행해 이 부분을 채점하세요
+4. kubectl로 static Pod를 삭제해 보고 어떻게 되는지 확인하세요
+5. 매니페스트 파일을 지워 static Pod를 삭제하세요
+6. Pod가 사라졌는지 확인하세요
+   -> ./lab.sh 10 validate를 다시 실행하세요
 ```
 
 ```bash
@@ -674,7 +674,7 @@ Tasks
 ```
 
 <details>
-<summary><b>Show solution</b></summary>
+<summary><b>풀이 보기</b></summary>
 
 ```bash
 grep staticPodPath /var/lib/kubelet/config.yaml      # /etc/kubernetes/manifests
@@ -693,45 +693,45 @@ spec:
     - containerPort: 80
 EOF
 kubectl get pods | grep static-web                   # static-web-controlplane
-kubectl delete pod static-web-controlplane           # it comes back (mirror pod)
+kubectl delete pod static-web-controlplane           # 다시 생김 (mirror Pod)
 rm /etc/kubernetes/manifests/static-web.yaml
-kubectl get pods | grep static-web                   # gone
+kubectl get pods | grep static-web                   # 사라짐
 ```
 
 </details>
 
-### Lab 11 – Troubleshoot Cluster Components  (Troubleshooting | Hard | 25 min)
+### 랩 11 – 클러스터 구성 요소 트러블슈팅  (트러블슈팅 | 어려움 | 25분)
 
 ```bash
 ./lab.sh 11
 ```
 
 ```text
-The lab setup has broken the cluster. Find and fix every problem.
+랩 셋업이 클러스터를 망가뜨렸습니다. 문제를 모두 찾아 고치세요.
 
-Scenario A: Broken kubelet
-1. A worker node is NotReady. Identify which node and why
-2. SSH to it and check the kubelet service status and logs
-3. Fix it so the node is Ready - and stays fixed after a reboot
+시나리오 A: 고장 난 kubelet
+1. 워커 노드 하나가 NotReady입니다. 어느 노드인지, 왜 그런지 찾으세요
+2. 그 노드에 SSH로 접속해 kubelet 서비스 상태와 로그를 확인하세요
+3. 노드가 Ready가 되도록 고치고, 재부팅 후에도 유지되게 하세요
 
-Scenario B: CoreDNS troubleshooting
-1. Create a pod and try to resolve a service name (kubernetes.default) - it fails
-2. Check the CoreDNS pods in kube-system
-3. Check that the kube-dns service has endpoints
-4. Check the CoreDNS logs for errors
-5. Verify the CoreDNS ConfigMap for misconfigurations
-6. Fix all issues and verify DNS resolution works
+시나리오 B: CoreDNS 트러블슈팅
+1. Pod를 만들어 서비스 이름(kubernetes.default)을 조회해 보세요 - 실패합니다
+2. kube-system의 CoreDNS Pod를 확인하세요
+3. kube-dns 서비스에 엔드포인트가 있는지 확인하세요
+4. CoreDNS 로그에서 오류를 확인하세요
+5. CoreDNS ConfigMap에 잘못된 설정이 있는지 확인하세요
+6. 문제를 모두 고치고 DNS 조회가 되는지 확인하세요
 
-Scenario C: kube-proxy (investigate only)
-1. Check if kube-proxy pods are running on all nodes
-2. Check kube-proxy logs
-3. Verify the kube-proxy ConfigMap
-4. Check iptables rules on a node
+시나리오 C: kube-proxy (조사만)
+1. kube-proxy Pod가 모든 노드에서 실행 중인지 확인하세요
+2. kube-proxy 로그를 확인하세요
+3. kube-proxy ConfigMap을 확인하세요
+4. 노드의 iptables 규칙을 확인하세요
 
-Scenario D: API server audit logs (investigate only)
-1. Check the kube-apiserver manifest for audit flags (--audit-policy-file, --audit-log-path)
-2. Killercoda does not enable audit logging by default - note which flags and volume
-   mounts you would add to enable it, and where the log file would be written
+시나리오 D: API 서버 audit 로그 (조사만)
+1. kube-apiserver 매니페스트에서 audit 플래그(--audit-policy-file, --audit-log-path)를 확인하세요
+2. Killercoda는 기본적으로 audit 로깅을 켜지 않습니다 - 켜려면 어떤 플래그와 볼륨
+   마운트를 추가해야 하는지, 로그 파일이 어디에 쓰이는지 정리하세요
 ```
 
 ```bash
@@ -739,76 +739,76 @@ Scenario D: API server audit logs (investigate only)
 ```
 
 <details>
-<summary><b>Show solution</b></summary>
+<summary><b>풀이 보기</b></summary>
 
 ```bash
-# ---- Scenario A: kubelet ----
+# ---- 시나리오 A: kubelet ----
 kubectl get nodes                              # node01 NotReady
 ssh node01
   systemctl status kubelet                     # inactive (dead), disabled
   journalctl -u kubelet --no-pager | tail -20
-  systemctl enable --now kubelet               # enable = survives reboot
+  systemctl enable --now kubelet               # enable = 재부팅 후에도 유지
   exit
 kubectl get nodes                              # node01 Ready
 
-# ---- Scenario B: CoreDNS ----
-kubectl run test-dns --image=busybox:1.36 --rm -it --restart=Never -- nslookup kubernetes.default   # fails
-kubectl get pods -n kube-system -l k8s-app=kube-dns        # no pods
-kubectl get endpoints kube-dns -n kube-system              # no endpoints
+# ---- 시나리오 B: CoreDNS ----
+kubectl run test-dns --image=busybox:1.36 --rm -it --restart=Never -- nslookup kubernetes.default   # 실패
+kubectl get pods -n kube-system -l k8s-app=kube-dns        # Pod 없음
+kubectl get endpoints kube-dns -n kube-system              # 엔드포인트 없음
 kubectl get deploy coredns -n kube-system                  # 0/0 replicas
 kubectl scale deploy coredns -n kube-system --replicas=2
 kubectl get pods -n kube-system -l k8s-app=kube-dns        # CrashLoopBackOff
 kubectl logs -n kube-system -l k8s-app=kube-dns            # Unknown directive 'kubernetess'
 kubectl edit cm coredns -n kube-system                     # kubernetess -> kubernetes
 kubectl rollout restart deploy coredns -n kube-system
-kubectl get endpoints kube-dns -n kube-system              # IPs listed
-kubectl run test-dns --image=busybox:1.36 --rm -it --restart=Never -- nslookup kubernetes.default   # works
+kubectl get endpoints kube-dns -n kube-system              # IP가 표시됨
+kubectl run test-dns --image=busybox:1.36 --rm -it --restart=Never -- nslookup kubernetes.default   # 성공
 
-# ---- Scenario C: kube-proxy ----
+# ---- 시나리오 C: kube-proxy ----
 kubectl get ds kube-proxy -n kube-system
 kubectl get pods -n kube-system -l k8s-app=kube-proxy -o wide
 kubectl logs -n kube-system -l k8s-app=kube-proxy --tail=20
 kubectl get cm kube-proxy -n kube-system -o yaml
 iptables-save | grep -c KUBE
 
-# ---- Scenario D: audit logs ----
-grep -i audit /etc/kubernetes/manifests/kube-apiserver.yaml   # nothing on Killercoda
-# To enable you would add, for example:
+# ---- 시나리오 D: audit 로그 ----
+grep -i audit /etc/kubernetes/manifests/kube-apiserver.yaml   # Killercoda에서는 아무것도 없음
+# 켜려면 예를 들어 다음을 추가한다:
 #   - --audit-policy-file=/etc/kubernetes/audit-policy.yaml
 #   - --audit-log-path=/var/log/kubernetes/audit/audit.log
 #   - --audit-log-maxage=7
-# plus hostPath volumes + volumeMounts for the policy file and the log directory.
-# Then: tail /var/log/kubernetes/audit/audit.log | jq 'select(.responseStatus.code>=400)'
+# 그리고 정책 파일과 로그 디렉터리용 hostPath 볼륨 + volumeMounts.
+# 그다음: tail /var/log/kubernetes/audit/audit.log | jq 'select(.responseStatus.code>=400)'
 ```
 
 </details>
 
-### Lab 12 – Storage: PV, PVC and Pod  (Storage | Medium | 15 min)
+### 랩 12 – 스토리지: PV, PVC와 Pod  (스토리지 | 보통 | 15분)
 
 ```bash
 ./lab.sh 12
 ```
 
 ```text
-Tasks
-1. Create a namespace called exercise-12
-2. Create a PersistentVolume named my-pv with:
-   - Capacity: 1Gi
-   - AccessMode: ReadWriteOnce
+작업
+1. exercise-12 네임스페이스를 만드세요
+2. 다음 조건으로 my-pv PersistentVolume을 만드세요
+   - 용량: 1Gi
+   - 접근 모드: ReadWriteOnce
    - StorageClass: manual
    - hostPath: /data/exercise-12
-   - Reclaim policy: Retain
-3. Create a PersistentVolumeClaim named my-pvc in namespace exercise-12:
-   - Request: 500Mi
-   - AccessMode: ReadWriteOnce
+   - 회수 정책: Retain
+3. exercise-12 네임스페이스에 다음 조건으로 my-pvc PersistentVolumeClaim을 만드세요
+   - 요청: 500Mi
+   - 접근 모드: ReadWriteOnce
    - StorageClass: manual
-4. Create a pod named storage-consumer (busybox, sleep 3600) that mounts my-pvc at /data
-5. Verify:
-   - The PVC is Bound to the PV
-   - The Pod is Running (not stuck Pending)
-6. Write a test file /data/test.txt inside the mounted volume from the Pod
-7. Delete the pod, create a new pod with the same PVC, and verify the file persists
-8. Delete the pod and the PVC and check the PV status (should be Released, not Available, because the policy is Retain)
+4. my-pvc를 /data에 마운트하는 storage-consumer Pod(busybox, sleep 3600)를 만드세요
+5. 다음을 확인하세요
+   - PVC가 PV에 Bound 상태
+   - Pod가 Running 상태 (Pending에 멈추지 않음)
+6. Pod에서 마운트된 볼륨 안에 테스트 파일 /data/test.txt를 쓰세요
+7. Pod를 삭제하고 같은 PVC로 새 Pod를 만든 뒤 파일이 남아 있는지 확인하세요
+8. Pod와 PVC를 삭제하고 PV 상태를 확인하세요 (정책이 Retain이므로 Available이 아니라 Released여야 함)
 ```
 
 ```bash
@@ -816,7 +816,7 @@ Tasks
 ```
 
 <details>
-<summary><b>Show solution</b></summary>
+<summary><b>풀이 보기</b></summary>
 
 ```bash
 kubectl create ns exercise-12
@@ -855,7 +855,7 @@ metadata:
   name: storage-consumer
   namespace: exercise-12
 spec:
-  nodeName: node01               # keeps the pod on the same node so the hostPath data is there
+  nodeName: node01               # hostPath 데이터가 있는 같은 노드에 Pod를 고정
   containers:
   - name: consumer
     image: busybox:1.36
@@ -877,28 +877,28 @@ kubectl exec storage-consumer -n exercise-12 -- cat /data/test.txt   # data pers
 kubectl delete pod storage-consumer -n exercise-12
 kubectl delete pvc my-pvc -n exercise-12
 kubectl get pv my-pv                            # Released
-# Note: hostPath is node-local. Pinning the pod (nodeName/nodeSelector) keeps both pods on one node.
+# 참고: hostPath는 노드 로컬이다. Pod를 고정(nodeName/nodeSelector)하면 두 Pod가 같은 노드에 뜬다.
 ```
 
 </details>
 
-### Lab 13 – Helm Install, Upgrade and Rollback  (Cluster Architecture | Medium | 15 min)
+### 랩 13 – Helm 설치, 업그레이드와 롤백  (클러스터 아키텍처 | 보통 | 15분)
 
 ```bash
 ./lab.sh 13
 ```
 
 ```text
-Tasks
-1. Add the Bitnami chart repository (name bitnami, https://charts.bitnami.com/bitnami) and update the repo cache
-2. Install NGINX (chart bitnami/nginx) using Helm in a namespace called exercise-13:
-   - Release name: web
-   - Set replicaCount=2
-3. Verify the release is deployed and 2 pods are running
-4. Upgrade the release to replicaCount=3
-5. Check the release history and confirm there are 2 revisions
-6. Roll back to revision 1
-7. Verify the replica count is back to 2
+작업
+1. Bitnami 차트 저장소(이름 bitnami, https://charts.bitnami.com/bitnami)를 추가하고 저장소 캐시를 업데이트하세요
+2. Helm으로 exercise-13 네임스페이스에 NGINX(차트 bitnami/nginx)를 설치하세요
+   - 릴리스 이름: web
+   - replicaCount=2 설정
+3. 릴리스가 deployed 상태이고 Pod 2개가 실행 중인지 확인하세요
+4. 릴리스를 replicaCount=3으로 업그레이드하세요
+5. 릴리스 히스토리를 확인하고 revision이 2개인지 확인하세요
+6. revision 1로 롤백하세요
+7. 레플리카 수가 다시 2인지 확인하세요
 ```
 
 ```bash
@@ -906,7 +906,7 @@ Tasks
 ```
 
 <details>
-<summary><b>Show solution</b></summary>
+<summary><b>풀이 보기</b></summary>
 
 ```bash
 helm repo add bitnami https://charts.bitnami.com/bitnami
@@ -915,28 +915,28 @@ helm install web bitnami/nginx -n exercise-13 --create-namespace --set replicaCo
 helm list -n exercise-13
 kubectl get pods -n exercise-13
 helm upgrade web bitnami/nginx -n exercise-13 --reuse-values --set replicaCount=3
-helm history web -n exercise-13                # 2 revisions
+helm history web -n exercise-13                # revision 2개
 helm rollback web 1 -n exercise-13
 kubectl get deploy -n exercise-13 -o jsonpath='{.items[0].spec.replicas}'   # 2
-helm history web -n exercise-13                # 3 rows, last = "Rollback to 1"
+helm history web -n exercise-13                # 3줄, 마지막 = "Rollback to 1"
 
-# If the pods are stuck in ImagePullBackOff: Bitnami moved most free images to
-# docker.io/bitnamilegacy in 2025. Add these flags to the install/upgrade:
+# Pod가 ImagePullBackOff에 멈춰 있다면: Bitnami가 2025년에 무료 이미지 대부분을
+# docker.io/bitnamilegacy로 옮겼다. install/upgrade에 다음 플래그를 추가한다:
 #   --set image.repository=bitnamilegacy/nginx --set global.security.allowInsecureImages=true
-# The Helm tasks (install/upgrade/history/rollback) are what is being tested.
+# 채점 대상은 Helm 작업(install/upgrade/history/rollback)이다.
 ```
 
 </details>
 
-### Lab 14 – Kustomize: Base and Overlay  (Cluster Architecture | Medium | 15 min)
+### 랩 14 – Kustomize: base와 overlay  (클러스터 아키텍처 | 보통 | 15분)
 
 ```bash
 ./lab.sh 14
 ```
 
 ```text
-Tasks
-1. Create this directory structure under /root:
+작업
+1. /root 아래에 다음 디렉터리 구조를 만드세요
      /root/kustomize-lab/
        base/
          deployment.yaml
@@ -945,17 +945,17 @@ Tasks
        overlays/
          staging/
            kustomization.yaml
-2. In the base:
-   - A Deployment named app with image nginx:1.27 and 1 replica
-   - A ClusterIP Service named app-svc on port 80
-   - A kustomization.yaml listing both resources
-3. In the staging overlay:
-   - Set the namespace to exercise-14
-   - Patch replicas to 3
-   - Add a common label env: staging
-4. Create namespace exercise-14
-5. Apply the staging overlay with kubectl apply -k
-6. Verify 3 pods are running in namespace exercise-14 with label env=staging
+2. base에는
+   - 이미지 nginx:1.27, 레플리카 1개인 app Deployment
+   - 80번 포트의 ClusterIP Service app-svc
+   - 두 리소스를 나열한 kustomization.yaml
+3. staging overlay에서는
+   - 네임스페이스를 exercise-14로 설정
+   - replicas를 3으로 패치
+   - 공통 레이블 env: staging 추가
+4. exercise-14 네임스페이스를 만드세요
+5. kubectl apply -k로 staging overlay를 적용하세요
+6. exercise-14 네임스페이스에 레이블 env=staging인 Pod 3개가 실행 중인지 확인하세요
 ```
 
 ```bash
@@ -963,7 +963,7 @@ Tasks
 ```
 
 <details>
-<summary><b>Show solution</b></summary>
+<summary><b>풀이 보기</b></summary>
 
 ```bash
 mkdir -p /root/kustomize-lab/base /root/kustomize-lab/overlays/staging
@@ -1020,38 +1020,38 @@ replicas:
   count: 3
 EOF
 kubectl create ns exercise-14
-kubectl kustomize overlays/staging          # preview
+kubectl kustomize overlays/staging          # 미리 보기
 kubectl apply -k overlays/staging
 kubectl get pods -n exercise-14 -l env=staging
-# (commonLabels: {env: staging} also works but is deprecated)
+# (commonLabels: {env: staging}도 되지만 deprecated)
 ```
 
 </details>
 
-### Lab 15 – Gateway API: Gateway and HTTPRoute  (Services & Networking | Medium | 20 min)
+### 랩 15 – Gateway API: Gateway와 HTTPRoute  (서비스와 네트워킹 | 보통 | 20분)
 
 ```bash
 ./lab.sh 15
 ```
 
 ```text
-The lab setup installed Envoy Gateway and a GatewayClass named eg.
+랩 셋업에서 Envoy Gateway와 eg라는 GatewayClass를 설치해 두었습니다.
 
-Tasks
-1. Create a namespace called exercise-15
-2. Verify a GatewayClass exists in the cluster
-3. Create a Gateway named web-gateway in namespace exercise-15:
-   - Reference the existing GatewayClass
-   - Listen on port 80, protocol HTTP
-4. Create a Deployment named web with image nginx:1.28 and 2 replicas
-5. Expose it with a ClusterIP Service named web-svc on port 80
-6. Create an HTTPRoute named web-route that:
-   - References web-gateway as the parent
-   - Matches path prefix /
-   - Routes to web-svc on port 80
-7. Verify the Gateway status shows Programmed: True
-8. Verify the HTTPRoute is attached to the Gateway
-Bonus: send a request through the gateway (Envoy is exposed as a NodePort Service in envoy-gateway-system)
+작업
+1. exercise-15 네임스페이스를 만드세요
+2. 클러스터에 GatewayClass가 있는지 확인하세요
+3. exercise-15 네임스페이스에 web-gateway Gateway를 만드세요
+   - 기존 GatewayClass를 참조
+   - 80번 포트, HTTP 프로토콜로 수신
+4. 이미지 nginx:1.28, 레플리카 2개인 web Deployment를 만드세요
+5. 80번 포트의 ClusterIP Service web-svc로 노출하세요
+6. 다음 조건으로 web-route HTTPRoute를 만드세요
+   - web-gateway를 parent로 참조
+   - 경로 접두사 / 매칭
+   - web-svc의 80번 포트로 라우팅
+7. Gateway 상태가 Programmed: True인지 확인하세요
+8. HTTPRoute가 Gateway에 연결됐는지 확인하세요
+보너스: 게이트웨이를 거쳐 요청을 보내 보세요 (Envoy는 envoy-gateway-system에 NodePort Service로 노출됨)
 ```
 
 ```bash
@@ -1059,7 +1059,7 @@ Bonus: send a request through the gateway (Envoy is exposed as a NodePort Servic
 ```
 
 <details>
-<summary><b>Show solution</b></summary>
+<summary><b>풀이 보기</b></summary>
 
 ```bash
 kubectl create ns exercise-15
@@ -1102,7 +1102,7 @@ spec:
 EOF
 kubectl get gateway web-gateway -n exercise-15          # PROGRAMMED True
 kubectl describe httproute web-route -n exercise-15     # Accepted / ResolvedRefs True
-# Bonus test through the gateway:
+# 보너스: 게이트웨이를 거친 테스트
 SVC=$(kubectl get svc -n envoy-gateway-system -l gateway.envoyproxy.io/owning-gateway-name=web-gateway -o jsonpath='{.items[0].metadata.name}')
 NP=$(kubectl get svc $SVC -n envoy-gateway-system -o jsonpath='{.spec.ports[?(@.port==80)].nodePort}')
 curl -s http://node01:$NP | head -4
@@ -1110,31 +1110,31 @@ curl -s http://node01:$NP | head -4
 
 </details>
 
-### Lab 16 – Horizontal Pod Autoscaler  (Workloads & Scheduling | Medium | 15 min)
+### 랩 16 – Horizontal Pod Autoscaler  (워크로드와 스케줄링 | 보통 | 15분)
 
 ```bash
 ./lab.sh 16
 ```
 
 ```text
-The lab setup installed metrics-server.
+랩 셋업에서 metrics-server를 설치해 두었습니다.
 
-Tasks
-1. Create a namespace called exercise-16
-2. Verify the metrics-server is running in the cluster
-3. Create a Deployment named load-app with:
-   - Image: registry.k8s.io/hpa-example (or nginx:1.27)
-   - 1 replica
+작업
+1. exercise-16 네임스페이스를 만드세요
+2. 클러스터에서 metrics-server가 실행 중인지 확인하세요
+3. 다음 조건으로 load-app Deployment를 만드세요
+   - 이미지: registry.k8s.io/hpa-example (또는 nginx:1.27)
+   - 레플리카 1개
    - CPU request: 50m
    - CPU limit: 100m
-4. Expose it with a ClusterIP Service named load-svc on port 80
-5. Create an HPA targeting load-app:
-   - Min replicas: 1
-   - Max replicas: 5
-   - Target CPU utilization: 50% (type: Utilization, averageUtilization: 50)
-6. Verify the HPA YAML has the correct structure (target type is Utilization, not AverageValue)
-7. Generate load against the service and observe the HPA scaling up
-8. Stop the load and observe the HPA scaling back down
+4. 80번 포트의 ClusterIP Service load-svc로 노출하세요
+5. load-app을 대상으로 하는 HPA를 만드세요
+   - 최소 레플리카: 1
+   - 최대 레플리카: 5
+   - 목표 CPU 사용률: 50% (type: Utilization, averageUtilization: 50)
+6. HPA YAML 구조가 올바른지 확인하세요 (target type이 AverageValue가 아니라 Utilization)
+7. 서비스에 부하를 주고 HPA가 스케일 업하는 것을 확인하세요
+8. 부하를 멈추고 HPA가 다시 스케일 다운하는 것을 확인하세요
 ```
 
 ```bash
@@ -1142,7 +1142,7 @@ Tasks
 ```
 
 <details>
-<summary><b>Show solution</b></summary>
+<summary><b>풀이 보기</b></summary>
 
 ```bash
 kubectl create ns exercise-16
@@ -1197,39 +1197,39 @@ spec:
         type: Utilization
         averageUtilization: 50
 EOF
-# (imperative alternative: kubectl autoscale deployment load-app -n exercise-16 --cpu-percent=50 --min=1 --max=5)
+# (명령형 대안: kubectl autoscale deployment load-app -n exercise-16 --cpu-percent=50 --min=1 --max=5)
 kubectl get hpa load-app -n exercise-16 -o yaml | grep -A4 target:
-# terminal 1 - generate load:
+# 터미널 1 - 부하 생성:
 kubectl run load-gen -n exercise-16 --image=busybox:1.36 --rm -it --restart=Never -- sh -c "while true; do wget -q -O- http://load-svc; done"
-# terminal 2 - watch:
+# 터미널 2 - 관찰:
 kubectl get hpa -n exercise-16 -w
-# Ctrl+C the load, wait ~5 min for scale-down
+# Ctrl+C로 부하를 멈추고 스케일 다운까지 약 5분 기다린다
 ```
 
 </details>
 
-### Lab 17 – kubectl debug: Pod and Node  (Troubleshooting | Medium | 15 min)
+### 랩 17 – kubectl debug: Pod와 노드  (트러블슈팅 | 보통 | 15분)
 
 ```bash
 ./lab.sh 17
 ```
 
 ```text
-Part A: Debug a pod
-1. Create a namespace called exercise-17
-2. Create a pod named broken-app with image nginx:1.27
-3. Attach a debug container to the running pod using kubectl debug:
-   - Image: busybox:1.36
-   - Target the broken-app container to share its process namespace
-4. From inside the debug container, list the processes (you should see the nginx process)
-5. Check the filesystem and network from the debug container
-6. Exit the debug session
+파트 A: Pod 디버그
+1. exercise-17 네임스페이스를 만드세요
+2. 이미지 nginx:1.27로 broken-app Pod를 만드세요
+3. kubectl debug로 실행 중인 Pod에 디버그 컨테이너를 붙이세요
+   - 이미지: busybox:1.36
+   - broken-app 컨테이너를 대상으로 지정해 프로세스 네임스페이스를 공유
+4. 디버그 컨테이너 안에서 프로세스 목록을 확인하세요 (nginx 프로세스가 보여야 함)
+5. 디버그 컨테이너에서 파일 시스템과 네트워크를 확인하세요
+6. 디버그 세션을 종료하세요
 
-Part B: Debug a node
-7. Run kubectl debug against a node (e.g. node01) to get a shell with host filesystem access
-8. Use chroot /host to access the real node root
-9. Check kubelet status from the debug session
-10. Exit the debug session (leave the node-debugger pod in place for validation)
+파트 B: 노드 디버그
+7. 노드(예: node01)를 대상으로 kubectl debug를 실행해 호스트 파일 시스템에 접근할 수 있는 셸을 얻으세요
+8. chroot /host로 실제 노드 루트에 접근하세요
+9. 디버그 세션에서 kubelet 상태를 확인하세요
+10. 디버그 세션을 종료하세요 (채점을 위해 node-debugger Pod는 남겨 두세요)
 ```
 
 ```bash
@@ -1237,50 +1237,50 @@ Part B: Debug a node
 ```
 
 <details>
-<summary><b>Show solution</b></summary>
+<summary><b>풀이 보기</b></summary>
 
 ```bash
-# Part A
+# 파트 A
 kubectl create ns exercise-17
 kubectl run broken-app -n exercise-17 --image=nginx:1.27
 kubectl wait --for=condition=Ready pod/broken-app -n exercise-17
 kubectl debug broken-app -n exercise-17 -it --image=busybox:1.36 --target=broken-app
   ps aux                       # nginx master + workers
-  ls /proc/1/root/etc/nginx/   # target container filesystem
-  wget -qO- localhost:80       # network namespace is shared
+  ls /proc/1/root/etc/nginx/   # 대상 컨테이너의 파일 시스템
+  wget -qO- localhost:80       # 네트워크 네임스페이스가 공유됨
   exit
 
-# Part B
+# 파트 B
 kubectl debug node/node01 -it --image=busybox:1.36
   chroot /host
   systemctl status kubelet
   journalctl -u kubelet --no-pager | tail -20
   crictl ps
-  exit   # leave chroot
-  exit   # leave debug pod
+  exit   # chroot 나가기
+  exit   # 디버그 Pod 나가기
 kubectl get pods | grep node-debugger
 ```
 
 </details>
 
-### Lab 18 – CRI-dockerd Installation from the release binary  (Cluster Architecture | Medium | 15 min)
+### 랩 18 – 릴리스 바이너리로 CRI-dockerd 설치  (클러스터 아키텍처 | 보통 | 15분)
 
 ```bash
 ./lab.sh 18
 ```
 
 ```text
-Do this on the worker node:  ssh node01
+워커 노드에서 작업하세요:  ssh node01
 
-Tasks
-1. Load the required kernel modules: overlay and br_netfilter
-2. Configure kernel networking parameters via sysctl (persistently, in /etc/sysctl.d/):
+작업
+1. 필요한 커널 모듈 overlay와 br_netfilter를 로드하세요
+2. sysctl로 커널 네트워크 파라미터를 설정하세요 (/etc/sysctl.d/에 영구 설정)
    net.bridge.bridge-nf-call-iptables = 1, net.ipv4.ip_forward = 1, net.ipv6.conf.all.forwarding = 1
-3. Install Docker (required dependency for CRI-dockerd) - skip if docker is already installed
-4. Download and install the CRI-dockerd binary (v0.3.20 .tgz) from GitHub releases to /usr/local/bin
-5. Create systemd unit files for cri-docker.service and cri-docker.socket
-6. Enable and start the cri-docker services
-7. Verify the CRI-dockerd socket is listening at /run/cri-dockerd.sock
+3. Docker를 설치하세요 (CRI-dockerd에 필요한 의존성) - 이미 설치돼 있으면 건너뛰세요
+4. GitHub 릴리스에서 CRI-dockerd 바이너리(v0.3.20 .tgz)를 내려받아 /usr/local/bin에 설치하세요
+5. cri-docker.service와 cri-docker.socket의 systemd 유닛 파일을 만드세요
+6. cri-docker 서비스를 활성화하고 시작하세요
+7. CRI-dockerd 소켓이 /run/cri-dockerd.sock에서 대기 중인지 확인하세요
 ```
 
 ```bash
@@ -1288,7 +1288,7 @@ Tasks
 ```
 
 <details>
-<summary><b>Show solution</b></summary>
+<summary><b>풀이 보기</b></summary>
 
 ```bash
 ssh node01
@@ -1349,33 +1349,33 @@ systemctl enable --now cri-docker.socket cri-docker.service
 systemctl status cri-docker.service cri-docker.socket --no-pager
 ls -la /run/cri-dockerd.sock
 crictl --runtime-endpoint unix:///run/cri-dockerd.sock version
-# kubeadm join ... --cri-socket unix:///run/cri-dockerd.sock   (how you would use it)
+# kubeadm join ... --cri-socket unix:///run/cri-dockerd.sock   (사용하는 방법)
 ```
 
 </details>
 
-### Lab 19 – Classic Ingress  (Services & Networking | Medium | 15 min)
+### 랩 19 – 클래식 Ingress  (서비스와 네트워킹 | 보통 | 15분)
 
 ```bash
 ./lab.sh 19
 ```
 
 ```text
-The lab setup installed the ingress-nginx controller (IngressClass nginx).
+랩 셋업에서 ingress-nginx 컨트롤러(IngressClass nginx)를 설치했습니다.
 
-Tasks
-1. Create a namespace called exercise-19
-2. Create two Deployments:
-   - web-app with image nginx:1.28 and 2 replicas, serving on port 80
-   - api-app with image nginx:1.28 and 2 replicas
-3. Expose web-app with a ClusterIP service named web-service on port 80 (targetPort 80)
-4. Expose api-app with a ClusterIP service named api-service on port 8080 (targetPort 80)
-5. Create an Ingress named app-ingress (ingressClassName nginx) that routes:
-   - /    traffic to web-service:80
-   - /api traffic to api-service:8080
-   - Default backend (no matching path) points to web-service:80
-6. Verify the Ingress was created and has an address assigned
-7. Test path-based routing by describing the Ingress (check rules) and with curl via the controller NodePort
+작업
+1. exercise-19 네임스페이스를 만드세요
+2. Deployment 두 개를 만드세요:
+   - web-app: 이미지 nginx:1.28, 레플리카 2개, 포트 80으로 서비스
+   - api-app: 이미지 nginx:1.28, 레플리카 2개
+3. web-app을 포트 80(targetPort 80)의 ClusterIP Service web-service로 노출하세요
+4. api-app을 포트 8080(targetPort 80)의 ClusterIP Service api-service로 노출하세요
+5. 다음과 같이 라우팅하는 Ingress app-ingress(ingressClassName nginx)를 만드세요:
+   - /    트래픽은 web-service:80으로
+   - /api 트래픽은 api-service:8080으로
+   - 기본 백엔드(일치하는 경로가 없을 때)는 web-service:80을 가리키도록
+6. Ingress가 만들어졌고 주소가 할당되었는지 확인하세요
+7. Ingress를 describe해서(규칙 확인) 그리고 컨트롤러 NodePort로 curl해서 경로 기반 라우팅을 테스트하세요
 ```
 
 ```bash
@@ -1383,7 +1383,7 @@ Tasks
 ```
 
 <details>
-<summary><b>Show solution</b></summary>
+<summary><b>풀이 보기</b></summary>
 
 ```bash
 kubectl create ns exercise-19
@@ -1423,7 +1423,7 @@ spec:
             port:
               number: 8080
 EOF
-kubectl get ingress -n exercise-19 -w          # ADDRESS gets filled in
+kubectl get ingress -n exercise-19 -w          # ADDRESS가 채워짐
 kubectl describe ingress app-ingress -n exercise-19
 NP=$(kubectl get svc ingress-nginx-controller -n ingress-nginx -o jsonpath='{.spec.ports[?(@.port==80)].nodePort}')
 curl -s -o /dev/null -w "%{http_code}\n" http://node01:$NP/        # 200
@@ -1431,25 +1431,25 @@ curl -s -o /dev/null -w "%{http_code}\n" http://node01:$NP/        # 200
 
 </details>
 
-### Lab 20 – Pod Security Standards  (Cluster Architecture | Medium | 15 min)
+### 랩 20 – Pod Security Standards  (클러스터 아키텍처 | 보통 | 15분)
 
 ```bash
 ./lab.sh 20
 ```
 
 ```text
-Tasks
-1. Create a namespace called exercise-20
-2. Label it with Pod Security Standards at restricted level in enforce mode
-3. Attempt to run a pod with a privileged container in exercise-20 - it should be rejected
-4. Create a second namespace exercise-20-baseline with baseline PSS level (enforce)
-5. Run a pod named safe-pod (busybox:1.36, sleep 3600) with runAsNonRoot: true and runAsUser: 1000
-   in the baseline namespace - it should succeed
-6. Run a pod with privileged: true in the baseline namespace - it should be rejected
-7. Create a third namespace exercise-20-audit with restricted level in audit and warn mode only (no enforce)
-8. Run a privileged pod named audit-pod (nginx:1.28) in exercise-20-audit - it should succeed,
-   but kubectl prints a warning and the violation is recorded in the API audit log
-9. Note the warning returned when the pod was created in audit/warn mode
+작업
+1. exercise-20 네임스페이스를 만드세요
+2. enforce 모드의 restricted 수준 Pod Security Standards 레이블을 붙이세요
+3. exercise-20에서 privileged 컨테이너가 있는 Pod를 실행해 보세요 - 거부되어야 합니다
+4. baseline PSS 수준(enforce)으로 두 번째 네임스페이스 exercise-20-baseline을 만드세요
+5. baseline 네임스페이스에서 runAsNonRoot: true, runAsUser: 1000으로 Pod safe-pod(busybox:1.36, sleep 3600)를
+   실행하세요 - 성공해야 합니다
+6. baseline 네임스페이스에서 privileged: true인 Pod를 실행하세요 - 거부되어야 합니다
+7. restricted 수준을 audit과 warn 모드로만(enforce 없이) 적용한 세 번째 네임스페이스 exercise-20-audit을 만드세요
+8. exercise-20-audit에서 privileged Pod audit-pod(nginx:1.28)를 실행하세요 - 성공해야 하지만,
+   kubectl이 경고를 출력하고 위반 사항이 API audit 로그에 기록됩니다
+9. audit/warn 모드에서 Pod를 만들 때 반환된 경고를 확인하세요
 ```
 
 ```bash
@@ -1457,12 +1457,12 @@ Tasks
 ```
 
 <details>
-<summary><b>Show solution</b></summary>
+<summary><b>풀이 보기</b></summary>
 
 ```bash
 kubectl create ns exercise-20
 kubectl label ns exercise-20 pod-security.kubernetes.io/enforce=restricted
-kubectl run rogue --image=nginx:1.28 --privileged -n exercise-20          # rejected (forbidden)
+kubectl run rogue --image=nginx:1.28 --privileged -n exercise-20          # 거부됨 (forbidden)
 
 kubectl create ns exercise-20-baseline
 kubectl label ns exercise-20-baseline pod-security.kubernetes.io/enforce=baseline
@@ -1481,35 +1481,35 @@ spec:
     image: busybox:1.36
     command: ["sleep", "3600"]
 EOF
-kubectl run priv-pod --image=nginx:1.28 --privileged -n exercise-20-baseline   # rejected
+kubectl run priv-pod --image=nginx:1.28 --privileged -n exercise-20-baseline   # 거부됨
 
 kubectl create ns exercise-20-audit
 kubectl label ns exercise-20-audit pod-security.kubernetes.io/audit=restricted pod-security.kubernetes.io/warn=restricted
-kubectl run audit-pod --image=nginx:1.28 --privileged -n exercise-20-audit    # created, with "Warning: would violate PodSecurity restricted..."
+kubectl run audit-pod --image=nginx:1.28 --privileged -n exercise-20-audit    # 생성됨, "Warning: would violate PodSecurity restricted..." 경고 출력
 kubectl get ns exercise-20 exercise-20-baseline exercise-20-audit --show-labels
 ```
 
 </details>
 
-### Lab 21 – Jobs and CronJobs  (Workloads & Scheduling | Medium | 15 min)
+### 랩 21 – Job과 CronJob  (워크로드와 스케줄링 | 보통 | 15분)
 
 ```bash
 ./lab.sh 21
 ```
 
 ```text
-Work in the default namespace.
+default 네임스페이스에서 작업하세요.
 
-Tasks
-1. Create a Job named cleanup-job that runs the image busybox:1.37 with command
-   echo "Cleanup complete". Run it 3 times (completions=3) serially (parallelism=1)
-2. Verify the Job runs to completion (3/3) and check the pod logs
-3. Create a CronJob named hourly-backup (image busybox:1.37) that runs every hour (0 * * * *)
-   with command: sh -c 'echo "Running backup-script.sh"; date'
-   Keep 3 successful job histories (successfulJobsHistoryLimit=3)
-4. List CronJobs and check the next scheduled time
-5. Manually trigger the CronJob once by creating a Job named manual-backup from it
-6. Verify the manual Job ran and logged output
+작업
+1. 이미지 busybox:1.37로 명령 echo "Cleanup complete"를 실행하는 Job cleanup-job을 만드세요.
+   3번(completions=3) 순차로(parallelism=1) 실행되게 하세요
+2. Job이 완료(3/3)까지 실행되는지 확인하고 Pod 로그를 확인하세요
+3. 매시간(0 * * * *) 실행되는 CronJob hourly-backup(이미지 busybox:1.37)을 만드세요
+   명령: sh -c 'echo "Running backup-script.sh"; date'
+   성공한 Job 기록은 3개 유지하세요(successfulJobsHistoryLimit=3)
+4. CronJob 목록을 조회하고 다음 예약 시각을 확인하세요
+5. CronJob으로부터 Job manual-backup을 만들어 수동으로 한 번 실행하세요
+6. 수동 Job이 실행되어 출력을 남겼는지 확인하세요
 ```
 
 ```bash
@@ -1517,11 +1517,11 @@ Tasks
 ```
 
 <details>
-<summary><b>Show solution</b></summary>
+<summary><b>풀이 보기</b></summary>
 
 ```bash
 kubectl create job cleanup-job --image=busybox:1.37 --dry-run=client -o yaml -- echo "Cleanup complete" > job.yaml
-# add under spec:  completions: 3   parallelism: 1
+# spec 아래에 추가:  completions: 3   parallelism: 1
 cat <<'EOF' | kubectl apply -f -
 apiVersion: batch/v1
 kind: Job
@@ -1559,29 +1559,29 @@ spec:
             image: busybox:1.37
             command: ["sh", "-c", "echo \"Running backup-script.sh\"; date"]
 EOF
-kubectl get cronjob hourly-backup                 # LAST SCHEDULE / next run
+kubectl get cronjob hourly-backup                 # LAST SCHEDULE / 다음 실행
 kubectl create job manual-backup --from=cronjob/hourly-backup
 kubectl logs job/manual-backup
 ```
 
 </details>
 
-### Lab 22 – PriorityClass  (Workloads & Scheduling | Medium | 15 min)
+### 랩 22 – PriorityClass  (워크로드와 스케줄링 | 보통 | 15분)
 
 ```bash
 ./lab.sh 22
 ```
 
 ```text
-Work in the default namespace.
+default 네임스페이스에서 작업하세요.
 
-Tasks
-1. Create a PriorityClass named high-priority with value 1000 and preemptionPolicy PreemptLowerPriority
-2. Create a PriorityClass named low-priority with value 10 and preemptionPolicy Never
-3. Create a Pod named critical-app using nginx:1.28 and assign it to the high-priority class
-4. Create a Pod named background-job using busybox:1.37 running sleep 3600 and assign it to the low-priority class
-5. Verify both pods are running. Check their priority values (priority and priorityClassName)
-6. Optional: drain a node to trigger preemption and observe which pod gets evicted
+작업
+1. value 1000, preemptionPolicy PreemptLowerPriority인 PriorityClass high-priority를 만드세요
+2. value 10, preemptionPolicy Never인 PriorityClass low-priority를 만드세요
+3. nginx:1.28을 쓰는 Pod critical-app을 만들고 high-priority 클래스를 지정하세요
+4. busybox:1.37로 sleep 3600을 실행하는 Pod background-job을 만들고 low-priority 클래스를 지정하세요
+5. 두 Pod가 모두 실행 중인지 확인하세요. 우선순위 값(priority와 priorityClassName)을 확인하세요
+6. 선택: 노드를 drain해서 선점을 일으키고 어느 Pod가 축출되는지 관찰하세요
 ```
 
 ```bash
@@ -1589,7 +1589,7 @@ Tasks
 ```
 
 <details>
-<summary><b>Show solution</b></summary>
+<summary><b>풀이 보기</b></summary>
 
 ```bash
 cat <<'EOF' | kubectl apply -f -
@@ -1636,24 +1636,24 @@ kubectl get pod -o custom-columns=NAME:.metadata.name,CLASS:.spec.priorityClassN
 
 </details>
 
-### Lab 23 – Resource Requests Tuning (Pods Won't Schedule)  (Workloads & Scheduling | Hard | 20 min)
+### 랩 23 – 리소스 requests 조정 (Pod가 스케줄되지 않음)  (워크로드와 스케줄링 | 어려움 | 20분)
 
 ```bash
 ./lab.sh 23
 ```
 
 ```text
-The lab setup created namespace exercise-23 and a Deployment named web (3 replicas, nginx:1.27)
-whose resource requests are intentionally too high for the cluster.
+랩 셋업에서 exercise-23 네임스페이스와 Deployment web(레플리카 3개, nginx:1.27)을 만들었습니다.
+이 Deployment의 리소스 requests는 일부러 클러스터에 비해 너무 높게 잡혀 있습니다.
 
-Tasks
-1. Observe pods Pending - they won't all schedule
-2. Find out why (describe a Pending pod)
-3. Check node capacity and available resources (allocatable minus what is already requested)
-4. Calculate correct resource requests so 3 replicas fit, leaving headroom
-5. Update the Deployment with the new (lower) requests - keep both cpu and memory requests set
-6. Verify all 3 pods schedule and run
-7. Document the calculation in /root/exercise-23-calculation.txt
+작업
+1. Pending 상태인 Pod를 관찰하세요 - 모두 스케줄되지는 않습니다
+2. 원인을 찾으세요(Pending Pod를 describe)
+3. 노드 용량과 사용 가능한 리소스(allocatable에서 이미 요청된 양을 뺀 값)를 확인하세요
+4. 여유를 남기면서 레플리카 3개가 들어가도록 알맞은 리소스 requests를 계산하세요
+5. 새(더 낮은) requests로 Deployment를 수정하세요 - cpu와 memory requests를 둘 다 설정한 상태로 유지하세요
+6. Pod 3개가 모두 스케줄되어 실행되는지 확인하세요
+7. 계산 과정을 /root/exercise-23-calculation.txt에 기록하세요
 ```
 
 ```bash
@@ -1661,14 +1661,14 @@ Tasks
 ```
 
 <details>
-<summary><b>Show solution</b></summary>
+<summary><b>풀이 보기</b></summary>
 
 ```bash
-kubectl get pods -n exercise-23                         # some Pending
+kubectl get pods -n exercise-23                         # 일부 Pending
 kubectl describe pod -n exercise-23 <pending-pod>       # 0/2 nodes available: Insufficient cpu
 kubectl describe nodes | grep -A8 -E "Allocatable|Allocated resources"
-# Example: node01 allocatable cpu 1000m, already requested 250m -> 750m free
-#          3 pods across the nodes with ~20% headroom -> about 150m-200m CPU and 128Mi memory each
+# 예: node01 allocatable cpu 1000m, 이미 요청된 양 250m -> 여유 750m
+#     노드 전체에 Pod 3개, 약 20% 여유 -> Pod당 CPU 150m-200m, memory 128Mi 정도
 kubectl set resources deployment web -n exercise-23 --requests=cpu=150m,memory=128Mi
 kubectl rollout status deployment web -n exercise-23
 kubectl get pods -n exercise-23 -o wide                 # 3/3 Running
@@ -1680,26 +1680,26 @@ EOF
 
 </details>
 
-### Lab 24 – PriorityClass and Patch Operations  (Workloads & Scheduling | Medium | 15 min)
+### 랩 24 – PriorityClass와 patch 작업  (워크로드와 스케줄링 | 보통 | 15분)
 
 ```bash
 ./lab.sh 24
 ```
 
 ```text
-Tasks
-1. Create a namespace called exercise-24
-2. Create a PriorityClass with:
-   - Name: high-priority
-   - Value: 999999
-   - Description: "Critical workload"
-3. Create a Deployment named critical-app in exercise-24:
-   - 1 replica, image busybox:1.36, command sleep 3600
-   - Do NOT specify priorityClassName yet
-4. Use kubectl patch to add priorityClassName: high-priority to the Deployment
-5. Verify the pod has the priority class assigned
-6. Create a second, lower-priority Deployment named normal-app (busybox:1.36, sleep 3600, no priority class)
-7. Compare the .spec.priority of both pods
+작업
+1. exercise-24 네임스페이스를 만드세요
+2. 다음 조건으로 PriorityClass를 만드세요:
+   - 이름: high-priority
+   - 값: 999999
+   - 설명: "Critical workload"
+3. exercise-24에 Deployment critical-app을 만드세요:
+   - 레플리카 1개, 이미지 busybox:1.36, 명령 sleep 3600
+   - 아직 priorityClassName은 지정하지 마세요
+4. kubectl patch로 Deployment에 priorityClassName: high-priority를 추가하세요
+5. Pod에 우선순위 클래스가 지정되었는지 확인하세요
+6. 우선순위가 더 낮은 두 번째 Deployment normal-app(busybox:1.36, sleep 3600, 우선순위 클래스 없음)을 만드세요
+7. 두 Pod의 .spec.priority를 비교하세요
 ```
 
 ```bash
@@ -1707,14 +1707,14 @@ Tasks
 ```
 
 <details>
-<summary><b>Show solution</b></summary>
+<summary><b>풀이 보기</b></summary>
 
 ```bash
 kubectl create ns exercise-24
 kubectl create priorityclass high-priority --value=999999 --description="Critical workload"
 kubectl create deployment critical-app -n exercise-24 --image=busybox:1.36 --replicas=1 -- sleep 3600
 kubectl patch deployment critical-app -n exercise-24 -p '{"spec":{"template":{"spec":{"priorityClassName":"high-priority"}}}}'
-# JSON-patch alternative:
+# JSON patch로 하는 방법:
 # kubectl patch deployment critical-app -n exercise-24 --type=json -p='[{"op":"add","path":"/spec/template/spec/priorityClassName","value":"high-priority"}]'
 kubectl rollout status deployment critical-app -n exercise-24
 kubectl get pod -n exercise-24 -l app=critical-app -o jsonpath='{.items[0].spec.priorityClassName}'
@@ -1724,28 +1724,28 @@ kubectl get pod -n exercise-24 -o custom-columns=NAME:.metadata.name,CLASS:.spec
 
 </details>
 
-### Lab 25 – Storage with WaitForFirstConsumer Binding  (Storage | Hard | 20 min)
+### 랩 25 – WaitForFirstConsumer 바인딩 스토리지  (스토리지 | 어려움 | 20분)
 
 ```bash
 ./lab.sh 25
 ```
 
 ```text
-The lab setup created the directory /tmp/k8s-pv on every node.
+랩 셋업에서 모든 노드에 /tmp/k8s-pv 디렉터리를 만들었습니다.
 
-Tasks
-1. Create a namespace called exercise-25
-2. Create a StorageClass named local-storage with:
-   - Provisioner: kubernetes.io/no-provisioner (local volumes)
-   - Binding mode: WaitForFirstConsumer
-3. Create a PersistentVolume named local-pv-1 with:
-   - Size: 1Gi, AccessMode: ReadWriteOnce, StorageClassName: local-storage
-   - Local path: /tmp/k8s-pv, with nodeAffinity to node01
-4. Create a PersistentVolumeClaim named local-pvc (1Gi, storageClassName local-storage) in exercise-25
-5. Observe: the PVC stays Pending (not Bound) - why?
-6. Create a Pod named app-pod (busybox:1.36, sleep 3600) that mounts the PVC at /data
-7. Observe: the PVC becomes Bound and the pod schedules on the node where the PV exists
-8. Verify persistence by writing /data/test.txt from the pod
+작업
+1. exercise-25 네임스페이스를 만드세요
+2. 다음 조건으로 StorageClass local-storage를 만드세요:
+   - 프로비저너: kubernetes.io/no-provisioner (로컬 볼륨)
+   - 바인딩 모드: WaitForFirstConsumer
+3. 다음 조건으로 PersistentVolume local-pv-1을 만드세요:
+   - 크기: 1Gi, AccessMode: ReadWriteOnce, StorageClassName: local-storage
+   - 로컬 경로: /tmp/k8s-pv, node01로 nodeAffinity 지정
+4. exercise-25에 PersistentVolumeClaim local-pvc(1Gi, storageClassName local-storage)를 만드세요
+5. 관찰: PVC가 Pending 상태로 남습니다(Bound 아님) - 왜일까요?
+6. PVC를 /data에 마운트하는 Pod app-pod(busybox:1.36, sleep 3600)를 만드세요
+7. 관찰: PVC가 Bound가 되고 Pod가 PV가 있는 노드에 스케줄됩니다
+8. Pod에서 /data/test.txt를 써서 데이터가 유지되는지 확인하세요
 ```
 
 ```bash
@@ -1753,7 +1753,7 @@ Tasks
 ```
 
 <details>
-<summary><b>Show solution</b></summary>
+<summary><b>풀이 보기</b></summary>
 
 ```bash
 kubectl create ns exercise-25
@@ -1796,7 +1796,7 @@ spec:
     requests:
       storage: 1Gi
 EOF
-kubectl get pvc -n exercise-25      # Pending - WaitForFirstConsumer delays binding until a pod uses it
+kubectl get pvc -n exercise-25      # Pending - WaitForFirstConsumer는 Pod가 사용할 때까지 바인딩을 미룸
 cat <<'EOF' | kubectl apply -f -
 apiVersion: v1
 kind: Pod
@@ -1818,40 +1818,40 @@ spec:
 EOF
 kubectl get pvc -n exercise-25 -w   # Bound
 kubectl wait --for=condition=Ready pod/app-pod -n exercise-25
-kubectl get pod app-pod -n exercise-25 -o wide    # on node01
+kubectl get pod app-pod -n exercise-25 -o wide    # node01에 배치됨
 kubectl exec app-pod -n exercise-25 -- sh -c 'echo "test data" > /data/test.txt'
 kubectl exec app-pod -n exercise-25 -- cat /data/test.txt
 ```
 
 </details>
 
-### Lab 26 – CRI-dockerd from the .deb package + switch the kubelet  (Cluster Architecture | Hard | 30 min)
+### 랩 26 – .deb 패키지로 CRI-dockerd 설치 + kubelet 전환  (클러스터 아키텍처 | 어려움 | 30분)
 
 ```bash
 ./lab.sh 26
 ```
 
 ```text
-Do this on the worker node:  ssh node01
-The lab setup downloaded the package to /root/cri-dockerd.deb on node01.
+워커 노드에서 진행하세요:  ssh node01
+랩 셋업에서 node01의 /root/cri-dockerd.deb에 패키지를 내려받아 두었습니다.
 
-Tasks
-1. SSH into node01
-2. Install cri-dockerd from /root/cri-dockerd.deb using dpkg
-3. Configure the system for cri-dockerd (as in the real exam task):
-   - Load the kernel modules overlay, br_netfilter and nf_conntrack
-   - Set these parameters persistently (in /etc/sysctl.d/) and apply them:
+작업
+1. node01에 SSH로 접속하세요
+2. dpkg로 /root/cri-dockerd.deb에서 cri-dockerd를 설치하세요
+3. cri-dockerd를 위해 시스템을 설정하세요(실제 시험 작업과 같음):
+   - 커널 모듈 overlay, br_netfilter, nf_conntrack을 로드하세요
+   - 다음 파라미터를 영구적으로(/etc/sysctl.d/에) 설정하고 적용하세요:
        net.bridge.bridge-nf-call-iptables = 1
        net.ipv6.conf.all.forwarding       = 1
        net.ipv4.ip_forward                = 1
        net.netfilter.nf_conntrack_max     = 131072
-4. Enable and start the cri-docker service and socket
-   (the systemd units are called cri-docker.service / cri-docker.socket)
-5. Verify the cri-dockerd socket /run/cri-dockerd.sock is available
-6. Configure the kubelet on node01 to use cri-dockerd (unix:///run/cri-dockerd.sock)
-7. Restart the kubelet and verify node01 is Ready and now reports a docker:// container runtime
+4. cri-docker 서비스와 소켓을 활성화하고 시작하세요
+   (systemd 유닛 이름은 cri-docker.service / cri-docker.socket)
+5. cri-dockerd 소켓 /run/cri-dockerd.sock을 사용할 수 있는지 확인하세요
+6. node01의 kubelet이 cri-dockerd(unix:///run/cri-dockerd.sock)를 쓰도록 설정하세요
+7. kubelet을 재시작하고 node01이 Ready이며 컨테이너 런타임이 docker://로 표시되는지 확인하세요
 
-./lab.sh 26 cleanup switches node01 back to containerd.
+./lab.sh 26 cleanup 은 node01을 다시 containerd로 되돌립니다.
 ```
 
 ```bash
@@ -1859,11 +1859,11 @@ Tasks
 ```
 
 <details>
-<summary><b>Show solution</b></summary>
+<summary><b>풀이 보기</b></summary>
 
 ```bash
 ssh node01
-dpkg -i /root/cri-dockerd.deb             # needs docker: apt-get install -y docker.io if it complains
+dpkg -i /root/cri-dockerd.deb             # docker 필요: 오류가 나면 apt-get install -y docker.io
 modprobe overlay && modprobe br_netfilter && modprobe nf_conntrack
 printf "overlay\nbr_netfilter\nnf_conntrack\n" > /etc/modules-load.d/k8s.conf
 cat <<'EOF' > /etc/sysctl.d/kube.conf
@@ -1878,43 +1878,43 @@ systemctl enable --now cri-docker.socket cri-docker.service
 systemctl status cri-docker --no-pager
 ls -la /run/cri-dockerd.sock
 
-# switch the kubelet (kubeadm stores the runtime flag here):
+# kubelet 전환 (kubeadm은 런타임 플래그를 여기에 저장한다):
 cat /var/lib/kubelet/kubeadm-flags.env
 systemctl stop kubelet
-crictl --runtime-endpoint unix:///run/containerd/containerd.sock rmp -fa   # stop old containerd pods (avoid port clashes)
+crictl --runtime-endpoint unix:///run/containerd/containerd.sock rmp -fa   # 기존 containerd Pod 중지 (포트 충돌 방지)
 sed -i 's#--container-runtime-endpoint=[^ "]*#--container-runtime-endpoint=unix:///run/cri-dockerd.sock#' /var/lib/kubelet/kubeadm-flags.env
 cat /var/lib/kubelet/kubeadm-flags.env
 systemctl daemon-reload && systemctl restart kubelet
 exit
 kubectl get nodes -o wide                  # node01 Ready, CONTAINER-RUNTIME docker://...
-# If pods on node01 get no IP: add --network-plugin=cni to ExecStart in
-# /lib/systemd/system/cri-docker.service, then daemon-reload + restart cri-docker.
+# node01의 Pod가 IP를 받지 못하면: /lib/systemd/system/cri-docker.service의 ExecStart에
+# --network-plugin=cni를 추가한 뒤 daemon-reload + cri-docker 재시작.
 ```
 
 </details>
 
-### Lab 27 – CNI Installation (Calico via the Tigera Operator)  (Services & Networking | Hard | 30 min)
+### 랩 27 – CNI 설치 (Tigera Operator로 Calico 설치)  (서비스와 네트워킹 | 어려움 | 30분)
 
 ```bash
 ./lab.sh 27
 ```
 
 ```text
-The lab setup removed the cluster's CNI. Install Calico v3.30.3 using the Tigera operator.
-Manifests:
+랩 셋업에서 클러스터의 CNI를 제거했습니다. Tigera operator로 Calico v3.30.3을 설치하세요.
+매니페스트:
   https://raw.githubusercontent.com/projectcalico/calico/v3.30.3/manifests/tigera-operator.yaml
   https://raw.githubusercontent.com/projectcalico/calico/v3.30.3/manifests/custom-resources.yaml
 
-Tasks
-1. Find the cluster pod CIDR (kube-controller-manager --cluster-cidr)
-2. Install the Tigera operator from its manifest and wait for the operator deployment
-3. Create the Calico Installation custom resource:
-   - Set the IP pool CIDR to match the cluster CIDR
-   - Use VXLAN (or VXLANCrossSubnet) encapsulation
-4. Wait for the calico-system pods to be Ready and the nodes to become Ready
-5. Restart pods that were created before the CNI change (e.g. CoreDNS) so they get new IPs
-6. Verify pods on different nodes can communicate
-7. Test that NetworkPolicy blocking works
+작업
+1. 클러스터 Pod CIDR(kube-controller-manager --cluster-cidr)을 찾으세요
+2. 매니페스트로 Tigera operator를 설치하고 operator Deployment가 준비될 때까지 기다리세요
+3. Calico Installation 커스텀 리소스를 만드세요:
+   - IP 풀 CIDR을 클러스터 CIDR과 같게 설정하세요
+   - VXLAN(또는 VXLANCrossSubnet) 캡슐화를 쓰세요
+4. calico-system Pod가 Ready가 되고 노드가 Ready가 될 때까지 기다리세요
+5. CNI 변경 전에 만들어진 Pod(예: CoreDNS)를 재시작해서 새 IP를 받게 하세요
+6. 서로 다른 노드의 Pod끼리 통신되는지 확인하세요
+7. NetworkPolicy 차단이 동작하는지 테스트하세요
 ```
 
 ```bash
@@ -1922,11 +1922,11 @@ Tasks
 ```
 
 <details>
-<summary><b>Show solution</b></summary>
+<summary><b>풀이 보기</b></summary>
 
 ```bash
 kubectl -n kube-system get pod -l component=kube-controller-manager -o yaml | grep cluster-cidr
-# or: kubectl get cm kubeadm-config -n kube-system -o yaml | grep -i podSubnet
+# 또는: kubectl get cm kubeadm-config -n kube-system -o yaml | grep -i podSubnet
 CIDR=<the value above, e.g. 192.168.0.0/16>
 kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.30.3/manifests/tigera-operator.yaml
 kubectl wait --for=condition=Available deploy/tigera-operator -n tigera-operator --timeout=300s
@@ -1955,11 +1955,11 @@ watch kubectl get tigerastatus                # calico Available True
 kubectl get pods -n calico-system
 kubectl get nodes                             # Ready
 kubectl -n kube-system rollout restart deploy coredns
-# test cross-node pod traffic
+# 노드 간 Pod 트래픽 테스트
 kubectl run a --image=busybox:1.36 --overrides='{"spec":{"nodeName":"controlplane","tolerations":[{"operator":"Exists"}]}}' -- sleep 3600
 kubectl run b --image=busybox:1.36 --overrides='{"spec":{"nodeName":"node01"}}' -- sleep 3600
 kubectl exec a -- ping -c2 $(kubectl get pod b -o jsonpath='{.status.podIP}')
-# NetworkPolicy test: deny all ingress to b, ping again -> fails
+# NetworkPolicy 테스트: b로 들어오는 ingress를 모두 막고 다시 ping -> 실패
 cat <<'EOF' | kubectl apply -f -
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
@@ -1971,38 +1971,38 @@ spec:
       run: b
   policyTypes: [Ingress]
 EOF
-kubectl exec a -- ping -c2 -W2 $(kubectl get pod b -o jsonpath='{.status.podIP}')   # fails
+kubectl exec a -- ping -c2 -W2 $(kubectl get pod b -o jsonpath='{.status.podIP}')   # 실패
 kubectl delete netpol deny-b; kubectl delete pod a b --now
 ```
 
 </details>
 
-### Lab 28 – Complex NetworkPolicy (Multi-Namespace)  (Services & Networking | Hard | 25 min)
+### 랩 28 – 복잡한 NetworkPolicy (다중 네임스페이스)  (서비스와 네트워킹 | 어려움 | 25분)
 
 ```bash
 ./lab.sh 28
 ```
 
 ```text
-The lab setup created 3 namespaces with one app each (steps 1-2 are done):
-  frontend : Deployment/Service frontend (nginx, port 80),   pod label tier=frontend
-  backend  : Deployment/Service backend  (HTTP on 8080),     pod label tier=backend
-  database : Deployment/Service database (redis, port 6379), pod label tier=database
+랩 셋업에서 앱이 하나씩 있는 네임스페이스 3개를 만들었습니다(1~2단계는 완료됨):
+  frontend : Deployment/Service frontend (nginx, 포트 80),   Pod 레이블 tier=frontend
+  backend  : Deployment/Service backend  (8080에서 HTTP),    Pod 레이블 tier=backend
+  database : Deployment/Service database (redis, 포트 6379), Pod 레이블 tier=database
 
-Tasks
-3. Create NetworkPolicies so that:
-   - Everything is denied by default in all three namespaces (ingress AND egress)
-   - frontend -> backend is allowed, only on TCP 8080
-   - backend -> database is allowed, only on TCP 6379
-   - DNS (UDP/TCP 53 to kube-dns in kube-system) is allowed for all pods
-4. Explicitly test connectivity to confirm the policies are enforced:
-   - frontend CAN reach backend on 8080
-   - frontend CANNOT reach database
-   - backend CAN reach database on 6379
-   - backend CANNOT reach frontend
-   - a pod in the default namespace CANNOT reach backend
-5. Verify DNS still works from all namespaces
-6. If policies don't enforce, verify the CNI supports NetworkPolicy
+작업
+3. 다음 조건을 만족하는 NetworkPolicy를 만드세요:
+   - 세 네임스페이스 모두 기본적으로 전부 거부(ingress와 egress 모두)
+   - frontend -> backend는 TCP 8080으로만 허용
+   - backend -> database는 TCP 6379로만 허용
+   - DNS(kube-system의 kube-dns로 가는 UDP/TCP 53)는 모든 Pod에 허용
+4. 정책이 적용되는지 연결을 직접 테스트하세요:
+   - frontend는 backend 8080에 접근할 수 있어야 함
+   - frontend는 database에 접근할 수 없어야 함
+   - backend는 database 6379에 접근할 수 있어야 함
+   - backend는 frontend에 접근할 수 없어야 함
+   - default 네임스페이스의 Pod는 backend에 접근할 수 없어야 함
+5. 모든 네임스페이스에서 DNS가 여전히 동작하는지 확인하세요
+6. 정책이 적용되지 않으면 CNI가 NetworkPolicy를 지원하는지 확인하세요
 ```
 
 ```bash
@@ -2010,10 +2010,10 @@ Tasks
 ```
 
 <details>
-<summary><b>Show solution</b></summary>
+<summary><b>풀이 보기</b></summary>
 
 ```bash
-# default deny + DNS in every namespace
+# 모든 네임스페이스에 기본 거부 + DNS 허용
 for ns in frontend backend database; do
 cat <<EOF | kubectl apply -f -
 apiVersion: networking.k8s.io/v1
@@ -2048,7 +2048,7 @@ EOF
 done
 
 cat <<'EOF' | kubectl apply -f -
-# frontend may send to backend:8080
+# frontend는 backend:8080으로 보낼 수 있음
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
@@ -2066,7 +2066,7 @@ spec:
         matchLabels: {tier: backend}
     ports: [{protocol: TCP, port: 8080}]
 ---
-# backend accepts from frontend on 8080
+# backend는 frontend에서 오는 8080을 받음
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
@@ -2084,7 +2084,7 @@ spec:
         matchLabels: {tier: frontend}
     ports: [{protocol: TCP, port: 8080}]
 ---
-# backend may send to database:6379
+# backend는 database:6379로 보낼 수 있음
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
@@ -2102,7 +2102,7 @@ spec:
         matchLabels: {tier: database}
     ports: [{protocol: TCP, port: 6379}]
 ---
-# database accepts from backend on 6379
+# database는 backend에서 오는 6379를 받음
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
@@ -2121,37 +2121,37 @@ spec:
     ports: [{protocol: TCP, port: 6379}]
 EOF
 
-# tests
+# 테스트
 kubectl exec -n frontend deploy/frontend -- curl -s -m3 http://backend.backend.svc.cluster.local:8080          # backend-ok
 kubectl exec -n frontend deploy/frontend -- timeout 3 bash -c '</dev/tcp/database.database.svc.cluster.local/6379' || echo blocked
 kubectl exec -n backend deploy/backend -- sh -c 'echo PING | nc -w 3 database.database.svc.cluster.local 6379'   # +PONG
 kubectl exec -n backend deploy/backend -- wget -q -T 3 -O- http://frontend.frontend.svc.cluster.local || echo blocked
-kubectl run outsider --image=busybox:1.36 --rm -it --restart=Never -- wget -q -T 3 -O- http://backend.backend.svc.cluster.local:8080   # blocked
-kubectl exec -n backend deploy/backend -- nslookup kubernetes.default.svc.cluster.local                         # DNS works
+kubectl run outsider --image=busybox:1.36 --rm -it --restart=Never -- wget -q -T 3 -O- http://backend.backend.svc.cluster.local:8080   # 차단됨
+kubectl exec -n backend deploy/backend -- nslookup kubernetes.default.svc.cluster.local                         # DNS 동작
 ```
 
 </details>
 
-### Lab 29 – Troubleshoot Broken Cluster (Incorrect etcd Endpoint)  (Troubleshooting | Hard | 20 min)
+### 랩 29 – 고장 난 클러스터 트러블슈팅 (잘못된 etcd 엔드포인트)  (트러블슈팅 | 어려움 | 20분)
 
 ```bash
 ./lab.sh 29
 ```
 
 ```text
-The cluster is broken: the API server won't start (kubectl does not work).
+클러스터가 고장 났습니다: API 서버가 시작되지 않습니다(kubectl이 동작하지 않음).
 
-Tasks
-1. Confirm the API server is down
-2. Check the kube-apiserver container logs (kubectl can't help - use crictl or /var/log/pods)
-3. Find the error: incorrect etcd endpoint IP or port
-4. On the control plane node, edit /etc/kubernetes/manifests/kube-apiserver.yaml
-5. Correct the etcd endpoint in the --etcd-servers= flag
-6. Verify the IP/port matches the client URLs in /etc/kubernetes/manifests/etcd.yaml
-7. Save and wait for the API server to restart
-8. Verify the cluster is healthy: kubectl get nodes, kubectl get pods -A, API server Running
+작업
+1. API 서버가 내려가 있는지 확인하세요
+2. kube-apiserver 컨테이너 로그를 확인하세요(kubectl은 쓸 수 없으니 crictl이나 /var/log/pods를 사용)
+3. 오류를 찾으세요: 잘못된 etcd 엔드포인트 IP 또는 포트
+4. 컨트롤 플레인 노드에서 /etc/kubernetes/manifests/kube-apiserver.yaml을 편집하세요
+5. --etcd-servers= 플래그의 etcd 엔드포인트를 바로잡으세요
+6. IP/포트가 /etc/kubernetes/manifests/etcd.yaml의 client URL과 일치하는지 확인하세요
+7. 저장하고 API 서버가 재시작될 때까지 기다리세요
+8. 클러스터가 정상인지 확인하세요: kubectl get nodes, kubectl get pods -A, API 서버 Running
 
-Do NOT keep backup copies inside /etc/kubernetes/manifests - kubelet runs every file there.
+/etc/kubernetes/manifests 안에 백업 사본을 두지 마세요 - kubelet은 그 안의 모든 파일을 실행합니다.
 ```
 
 ```bash
@@ -2159,44 +2159,44 @@ Do NOT keep backup copies inside /etc/kubernetes/manifests - kubelet runs every 
 ```
 
 <details>
-<summary><b>Show solution</b></summary>
+<summary><b>풀이 보기</b></summary>
 
 ```bash
 kubectl get nodes                                           # connection refused
-crictl ps -a | grep kube-apiserver                          # Exited / restarting
+crictl ps -a | grep kube-apiserver                          # Exited / 재시작 반복
 crictl logs $(crictl ps -a --name kube-apiserver -q | head -1) 2>&1 | tail -20
 #   ... dial tcp 10.0.0.5:2379: connect: connection refused / i/o timeout
-ls /var/log/pods/ | grep apiserver                          # alternative log location
+ls /var/log/pods/ | grep apiserver                          # 다른 로그 위치
 grep etcd-servers /etc/kubernetes/manifests/kube-apiserver.yaml
 grep -E "listen-client-urls|advertise-client-urls" /etc/kubernetes/manifests/etcd.yaml
 #   --listen-client-urls=https://127.0.0.1:2379,https://<node-ip>:2379
 sed -i 's#--etcd-servers=.*#--etcd-servers=https://127.0.0.1:2379#' /etc/kubernetes/manifests/kube-apiserver.yaml
-watch crictl ps --name kube-apiserver                       # Running after ~30-60s
+watch crictl ps --name kube-apiserver                       # 약 30-60초 후 Running
 kubectl get nodes
 kubectl get pods -A
 ```
 
 </details>
 
-### Lab 30 – TLS Configuration Update  (Security | Hard | 20 min)
+### 랩 30 – TLS 설정 변경  (보안 | 어려움 | 20분)
 
 ```bash
 ./lab.sh 30
 ```
 
 ```text
-The lab setup created, in namespace exercise-30:
-  Deployment tls-web (nginx) - Service tls-web (port 443) - ConfigMap tls-config (nginx.conf) - Secret tls-web-cert
-The service currently supports only TLS 1.3.
+랩 셋업에서 exercise-30 네임스페이스에 다음을 만들었습니다:
+  Deployment tls-web (nginx) - Service tls-web (포트 443) - ConfigMap tls-config (nginx.conf) - Secret tls-web-cert
+현재 서비스는 TLS 1.3만 지원합니다.
 
-Tasks
-1. Find the TLS setting in the ConfigMap that is mounted into the Deployment
-2. Add support for TLS 1.2 (both TLSv1.2 and TLSv1.3 must be enabled)
-3. Restart the Deployment so the new configuration is used
-4. Verify the service accepts TLS 1.2 connections:
+작업
+1. Deployment에 마운트된 ConfigMap에서 TLS 설정을 찾으세요
+2. TLS 1.2 지원을 추가하세요(TLSv1.2와 TLSv1.3이 모두 활성화되어야 함)
+3. 새 설정이 쓰이도록 Deployment를 재시작하세요
+4. 서비스가 TLS 1.2 연결을 받는지 확인하세요:
      curl -vk --tlsv1.2 --tls-max 1.2 https://<service-ip>
-     or: echo | openssl s_client -connect <service-ip>:443 -tls1_2
-5. Verify TLS 1.3 still works:  curl -vk --tlsv1.3 https://<service-ip>
+     또는: echo | openssl s_client -connect <service-ip>:443 -tls1_2
+5. TLS 1.3도 여전히 동작하는지 확인하세요:  curl -vk --tlsv1.3 https://<service-ip>
 ```
 
 ```bash
@@ -2204,15 +2204,15 @@ Tasks
 ```
 
 <details>
-<summary><b>Show solution</b></summary>
+<summary><b>풀이 보기</b></summary>
 
 ```bash
 kubectl get deploy,svc,cm -n exercise-30
-kubectl get cm tls-config -n exercise-30 -o yaml | grep ssl_protocols     # TLSv1.3 only
+kubectl get cm tls-config -n exercise-30 -o yaml | grep ssl_protocols     # TLSv1.3만
 kubectl edit cm tls-config -n exercise-30        # ssl_protocols TLSv1.2 TLSv1.3;
-# or in one line:
+# 또는 한 줄로:
 kubectl get cm tls-config -n exercise-30 -o yaml | sed 's/ssl_protocols TLSv1.3;/ssl_protocols TLSv1.2 TLSv1.3;/' | kubectl replace -f -
-kubectl rollout restart deploy tls-web -n exercise-30      # subPath mounts never auto-update
+kubectl rollout restart deploy tls-web -n exercise-30      # subPath 마운트는 자동 갱신되지 않음
 kubectl rollout status deploy tls-web -n exercise-30
 IP=$(kubectl get svc tls-web -n exercise-30 -o jsonpath='{.spec.clusterIP}')
 curl -sk --tlsv1.2 --tls-max 1.2 https://$IP          # Hello TLS
@@ -2222,27 +2222,27 @@ curl -sk --tlsv1.3 https://$IP                        # Hello TLS
 
 </details>
 
-### Lab 31 – Argo CD Setup (GitOps Deployment)  (Cluster Architecture | Hard | 25 min)
+### 랩 31 – Argo CD 셋업 (GitOps 배포)  (클러스터 아키텍처 | 어려움 | 25분)
 
 ```bash
 ./lab.sh 31
 ```
 
 ```text
-Tasks
-1. Install Argo CD v3.1.9 in the cluster:
-   - Create the argocd namespace
-   - Apply the official manifest (it includes the CRDs - install them once, with server-side apply):
+작업
+1. 클러스터에 Argo CD v3.1.9를 설치하세요:
+   - argocd 네임스페이스를 만드세요
+   - 공식 매니페스트를 적용하세요 (CRD가 포함되어 있으니 server-side apply로 한 번만 설치하세요):
      https://raw.githubusercontent.com/argoproj/argo-cd/v3.1.9/manifests/install.yaml
-2. Write an Application manifest and save it to /root/argocd-app.yaml:
-   - name my-app, namespace argocd, project default
+2. Application 매니페스트를 작성해 /root/argocd-app.yaml 에 저장하세요:
+   - 이름 my-app, 네임스페이스 argocd, 프로젝트 default
    - source: https://github.com/argoproj/argocd-example-apps.git, revision HEAD, path guestbook
-   - destination: https://kubernetes.default.svc, namespace default
-   - automated sync (prune + selfHeal)
-3. Verify the Argo CD server is Running
-4. Apply the Application manifest
-5. Verify the application syncs (status Synced) and the guestbook-ui Deployment appears in default
-6. Optional: port-forward to the Argo CD UI and log in as admin
+   - destination: https://kubernetes.default.svc, 네임스페이스 default
+   - 자동 동기화 (prune + selfHeal)
+3. Argo CD 서버가 Running인지 확인하세요
+4. Application 매니페스트를 적용하세요
+5. 애플리케이션이 동기화되고(상태 Synced) default에 guestbook-ui Deployment가 생기는지 확인하세요
+6. 선택: Argo CD UI로 port-forward 해서 admin으로 로그인하세요
 ```
 
 ```bash
@@ -2250,7 +2250,7 @@ Tasks
 ```
 
 <details>
-<summary><b>Show solution</b></summary>
+<summary><b>풀이 보기</b></summary>
 
 ```bash
 kubectl create namespace argocd
@@ -2280,33 +2280,31 @@ EOF
 kubectl apply -f /root/argocd-app.yaml
 kubectl get application -n argocd -w          # SYNC STATUS Synced, HEALTH Healthy
 kubectl get deploy,svc guestbook-ui
-# UI (optional)
+# UI (선택)
 kubectl get secret argocd-initial-admin-secret -n argocd -o jsonpath='{.data.password}' | base64 -d; echo
 kubectl port-forward -n argocd svc/argocd-server 8080:443 --address 0.0.0.0
-# Exam variant (other labs): helm template ... --set crds.install=false when the CRDs are pre-installed
+# 시험 변형 (다른 랩): CRD가 미리 설치되어 있으면 helm template ... --set crds.install=false
 ```
 
 </details>
 
-### Lab 32 – User certificate (CSR) + Role  (Cluster Architecture | Medium | 15 min)
+### 랩 32 – 사용자 인증서(CSR) + Role  (클러스터 아키텍처 | 보통 | 15분)
 
 ```bash
 ./lab.sh 32
 ```
 
 ```text
-한글: 사용자 john의 CSR을 제출·승인하고 Role/RoleBinding으로 Pod 권한을 준다. (문서 5번)
-
-The lab setup created a private key and a certificate signing request for the user john:
+랩 셋업에서 사용자 john의 개인 키와 인증서 서명 요청을 만들어 두었습니다:
   /root/exercise-32/john.key   /root/exercise-32/john.csr
 
-Tasks
-1. Create a CertificateSigningRequest named john-developer from /root/exercise-32/john.csr
-   (signer kubernetes.io/kube-apiserver-client, usage client auth) and approve it
-2. In namespace exercise-32 create a Role named developer that allows
-   create, list, get, update and delete on pods
-3. Create a RoleBinding named developer-role-binding that grants the Role to the user john
-4. Verify with kubectl auth can-i ... --as=john
+작업
+1. /root/exercise-32/john.csr 로 john-developer 라는 CertificateSigningRequest를 만들고
+   (signer kubernetes.io/kube-apiserver-client, usage client auth) 승인하세요
+2. exercise-32 네임스페이스에 pods에 대해 create, list, get, update, delete를 허용하는
+   developer 라는 Role을 만드세요
+3. 사용자 john에게 이 Role을 부여하는 developer-role-binding 이라는 RoleBinding을 만드세요
+4. kubectl auth can-i ... --as=john 으로 확인하세요
 ```
 
 ```bash
@@ -2314,7 +2312,7 @@ Tasks
 ```
 
 <details>
-<summary><b>Show solution</b></summary>
+<summary><b>풀이 보기</b></summary>
 
 ```bash
 cat <<EOF2 | kubectl apply -f -
@@ -2341,27 +2339,27 @@ kubectl auth can-i create pods -n default --as=john       # no
 
 </details>
 
-### Lab 33 – Argo CD with Helm (template + install, no CRDs)  (Cluster Architecture | Medium | 15 min)
+### 랩 33 – Helm으로 Argo CD 설치 (template + install, CRD 제외)  (클러스터 아키텍처 | 보통 | 15분)
 
 ```bash
 ./lab.sh 33
 ```
 
 ```text
-한글: 원본 시험 16번. Argo CD 차트 8.6.4의 helm template 저장 후 같은 설정으로 설치, CRD는 설치하지 않는다.
+(원본 시험 문제 · 한글 문제집 7번)
 
-The Argo CD CRDs are already installed in the cluster.
+Argo CD CRD는 이미 클러스터에 설치되어 있습니다.
 
-Tasks
-1. Add the official Argo CD Helm repository with the name argo:
+작업
+1. 공식 Argo CD Helm 저장소를 argo 라는 이름으로 추가하세요:
      https://argoproj.github.io/argo-helm
-2. Generate a helm template of the Argo CD chart (argo/argo-cd) version 8.6.4 for the namespace
-   argocd and save it to /root/argo-helm.yaml. Configure the chart NOT to install CRDs.
-3. Install Argo CD with Helm: release name argocd, same chart version and configuration as the
-   template, namespace argocd, CRDs NOT installed by the chart
-4. You do not need to configure access to the Argo CD server UI
+2. Argo CD 차트(argo/argo-cd) 버전 8.6.4의 helm template을 네임스페이스 argocd 용으로 생성해
+   /root/argo-helm.yaml 에 저장하세요. 차트가 CRD를 설치하지 않도록 설정하세요.
+3. Helm으로 Argo CD를 설치하세요: 릴리스 이름 argocd, template과 같은 차트 버전과 설정,
+   네임스페이스 argocd, 차트가 CRD를 설치하지 않도록
+4. Argo CD 서버 UI 접근은 설정하지 않아도 됩니다
 
-Argo CD needs about 1.5 GB RAM. Lab 31 also uses namespace argocd - their setups clean each other.
+Argo CD는 RAM이 약 1.5 GB 필요합니다. 랩 31도 argocd 네임스페이스를 쓰므로 두 랩의 셋업은 서로를 정리합니다.
 ```
 
 ```bash
@@ -2369,13 +2367,13 @@ Argo CD needs about 1.5 GB RAM. Lab 31 also uses namespace argocd - their setups
 ```
 
 <details>
-<summary><b>Show solution</b></summary>
+<summary><b>풀이 보기</b></summary>
 
 ```bash
 helm repo add argo https://argoproj.github.io/argo-helm
 helm repo update
 helm search repo argo/argo-cd --versions | grep 8.6.4
-helm show values argo/argo-cd --version 8.6.4 | grep -A3 '^crds:'     # crds.install: true by default
+helm show values argo/argo-cd --version 8.6.4 | grep -A3 '^crds:'     # 기본값 crds.install: true
 helm template argocd argo/argo-cd --version 8.6.4 --namespace argocd \
   --set crds.install=false > /root/argo-helm.yaml
 grep -c 'kind: CustomResourceDefinition' /root/argo-helm.yaml          # 0
@@ -2388,22 +2386,20 @@ kubectl get pods -n argocd
 
 </details>
 
-### Lab 34 – Kustomize overlay: namespace, prefix, replicas, image  (Cluster Architecture | Medium | 15 min)
+### 랩 34 – Kustomize 오버레이: 네임스페이스, 접두사, 레플리카, 이미지  (클러스터 아키텍처 | 보통 | 15분)
 
 ```bash
 ./lab.sh 34
 ```
 
 ```text
-한글: base는 그대로 두고 prod 오버레이로 네임스페이스·접두사·레플리카·이미지 태그를 바꿔 배포한다. (문서 8번)
-
-/root/kustomize/base defines a Deployment web (nginx:1.26, 1 replica) and a Service web.
-Do NOT change the base. Create the overlay /root/kustomize/overlays/prod that:
-  - deploys everything to namespace exercise-34
-  - adds the name prefix prod- to every resource
-  - runs 3 replicas of the Deployment
-  - uses the nginx image tag 1.27
-Then deploy the overlay to the cluster.
+/root/kustomize/base 에는 Deployment web (nginx:1.26, 레플리카 1개)과 Service web이 정의되어 있습니다.
+base는 바꾸지 마세요. 다음을 하는 오버레이 /root/kustomize/overlays/prod 를 만드세요:
+  - 모든 리소스를 네임스페이스 exercise-34 에 배포
+  - 모든 리소스 이름에 접두사 prod- 추가
+  - Deployment 레플리카 3개로 실행
+  - nginx 이미지 태그 1.27 사용
+그다음 오버레이를 클러스터에 배포하세요.
 ```
 
 ```bash
@@ -2411,7 +2407,7 @@ Then deploy the overlay to the cluster.
 ```
 
 <details>
-<summary><b>Show solution</b></summary>
+<summary><b>풀이 보기</b></summary>
 
 ```bash
 mkdir -p /root/kustomize/overlays/prod
@@ -2423,14 +2419,14 @@ resources:
 namespace: exercise-34
 namePrefix: prod-
 replicas:
-- name: web          # the name BEFORE the prefix
+- name: web          # 접두사가 붙기 전 이름
   count: 3
 images:
 - name: nginx
   newTag: "1.27"
 EOF2
-kubectl kustomize /root/kustomize/overlays/prod        # preview
-kubectl create namespace exercise-34                   # "namespace:" does not create the namespace
+kubectl kustomize /root/kustomize/overlays/prod        # 미리 보기
+kubectl create namespace exercise-34                   # "namespace:"는 네임스페이스를 만들지 않음
 kubectl apply -k /root/kustomize/overlays/prod
 kubectl -n exercise-34 get deploy,svc,pods
 # 참고: 위 항목으로 못 바꾸는 필드는 patches 로 (target: kind/name + JSON patch 또는 strategic merge).
@@ -2438,24 +2434,24 @@ kubectl -n exercise-34 get deploy,svc,pods
 
 </details>
 
-### Lab 35 – CRDs: list and explain  (Cluster Architecture | Easy | 10 min)
+### 랩 35 – CRD: 목록과 explain  (클러스터 아키텍처 | 쉬움 | 10분)
 
 ```bash
 ./lab.sh 35
 ```
 
 ```text
-한글: 원본 시험 14번. cert-manager CRD 목록과 Certificate spec.subject 필드 문서를 파일로 저장한다.
+(원본 시험 문제 · 한글 문제집 10번)
 
-cert-manager is deployed in the cluster (namespace cert-manager).
+클러스터에 cert-manager가 배포되어 있습니다 (네임스페이스 cert-manager).
 
-Tasks
-1. Check the cert-manager application
-2. Create a list of all cert-manager Custom Resource Definitions (CRDs) and save it to
-   /root/resources.yaml. Use kubectl's DEFAULT output format - do NOT set an output format (-o).
-3. Using kubectl, extract the documentation for the subject specification field of the
-   Certificate custom resource and save it to /root/subject.yaml
-   (any output format kubectl supports is fine here)
+작업
+1. cert-manager 애플리케이션을 확인하세요
+2. cert-manager의 모든 Custom Resource Definition(CRD) 목록을 만들어
+   /root/resources.yaml 에 저장하세요. kubectl의 기본 출력 형식을 쓰고, 출력 형식(-o)은 지정하지 마세요.
+3. kubectl로 Certificate 커스텀 리소스의 subject spec 필드 문서를 추출해
+   /root/subject.yaml 에 저장하세요
+   (여기서는 kubectl이 지원하는 어떤 출력 형식이든 괜찮습니다)
 ```
 
 ```bash
@@ -2463,11 +2459,11 @@ Tasks
 ```
 
 <details>
-<summary><b>Show solution</b></summary>
+<summary><b>풀이 보기</b></summary>
 
 ```bash
 kubectl get pods -n cert-manager
-kubectl get crd | grep cert-manager > /root/resources.yaml       # no -o !
+kubectl get crd | grep cert-manager > /root/resources.yaml       # -o 쓰지 않기!
 cat /root/resources.yaml
 kubectl explain certificate.spec.subject > /root/subject.yaml
 cat /root/subject.yaml
@@ -2477,20 +2473,18 @@ cat /root/subject.yaml
 
 </details>
 
-### Lab 36 – Secret mounted as a volume  (Workloads & Scheduling | Easy | 10 min)
+### 랩 36 – 볼륨으로 마운트한 Secret  (워크로드와 스케줄링 | 쉬움 | 10분)
 
 ```bash
 ./lab.sh 36
 ```
 
 ```text
-한글: 기존 Secret을 읽기 전용 볼륨으로 마운트하는 Pod를 만든다. (문서 13번)
-
-Namespace exercise-36 contains the Secret dotfile-secret.
-Create a Pod named secret-1401 in namespace exercise-36:
-  - image busybox, command: sleep 4800
-  - the container is named secret-admin (not the Pod name!)
-  - mount the Secret dotfile-secret as a volume named secret-volume, read-only, at /etc/secret-volume
+네임스페이스 exercise-36 에 Secret dotfile-secret 이 있습니다.
+네임스페이스 exercise-36 에 secret-1401 이라는 Pod를 만드세요:
+  - 이미지 busybox, 명령: sleep 4800
+  - 컨테이너 이름은 secret-admin (Pod 이름이 아님!)
+  - Secret dotfile-secret 을 secret-volume 이라는 볼륨으로 /etc/secret-volume 에 읽기 전용으로 마운트
 ```
 
 ```bash
@@ -2498,12 +2492,12 @@ Create a Pod named secret-1401 in namespace exercise-36:
 ```
 
 <details>
-<summary><b>Show solution</b></summary>
+<summary><b>풀이 보기</b></summary>
 
 ```bash
 kubectl -n exercise-36 get secret dotfile-secret
 kubectl run secret-1401 -n exercise-36 --image=busybox --dry-run=client -o yaml --command -- sleep 4800 > secret-1401.yaml
-# edit: container name secret-admin, add the volume and the mount. The finished file:
+# 수정: 컨테이너 이름 secret-admin, 볼륨과 마운트 추가. 완성된 파일:
 cat <<'EOF2' > secret-1401.yaml
 apiVersion: v1
 kind: Pod
@@ -2531,22 +2525,22 @@ kubectl -n exercise-36 exec secret-1401 -c secret-admin -- ls -a /etc/secret-vol
 
 </details>
 
-### Lab 37 – HPA with a scale-down stabilization window  (Workloads & Scheduling | Medium | 10 min)
+### 랩 37 – 스케일 다운 안정화 윈도우가 있는 HPA  (워크로드와 스케줄링 | 보통 | 10분)
 
 ```bash
 ./lab.sh 37
 ```
 
 ```text
-한글: 원본 시험 2번. CPU 50%, 1~4개, 스케일 다운 안정화 윈도우 30초인 HPA를 만든다.
+(원본 시험 문제 · 한글 문제집 14번)
 
-The lab setup installed metrics-server and created Deployment apache-server in namespace exercise-37.
+랩 셋업에서 metrics-server를 설치하고 네임스페이스 exercise-37 에 Deployment apache-server 를 만들어 두었습니다.
 
-Create a new HorizontalPodAutoscaler named apache-server in namespace exercise-37 that targets
-the existing Deployment apache-server:
-  - target 50% CPU usage per Pod
-  - at least 1 and at most 4 Pods
-  - set the downscale stabilization window to 30 seconds
+기존 Deployment apache-server 를 대상으로 하는 새 HorizontalPodAutoscaler apache-server 를
+네임스페이스 exercise-37 에 만드세요:
+  - Pod당 CPU 사용률 목표 50%
+  - Pod 최소 1개, 최대 4개
+  - 스케일 다운 안정화 윈도우 30초
 ```
 
 ```bash
@@ -2554,7 +2548,7 @@ the existing Deployment apache-server:
 ```
 
 <details>
-<summary><b>Show solution</b></summary>
+<summary><b>풀이 보기</b></summary>
 
 ```bash
 cat <<'EOF2' | kubectl apply -f -
@@ -2583,26 +2577,24 @@ spec:
 EOF2
 kubectl -n exercise-37 get hpa apache-server
 kubectl -n exercise-37 get hpa apache-server -o yaml | grep -A2 scaleDown
-# alternative: kubectl -n exercise-37 autoscale deployment apache-server --name=apache-server --cpu-percent=50 --min=1 --max=4
-#              then kubectl -n exercise-37 edit hpa apache-server and add the behavior block
+# 다른 방법: kubectl -n exercise-37 autoscale deployment apache-server --name=apache-server --cpu-percent=50 --min=1 --max=4
+#            후 kubectl -n exercise-37 edit hpa apache-server 로 behavior 블록 추가
 # 참고: 최신 kubectl 은 --cpu-percent 대신 --cpu=50% 를 쓸 수 있다 (kubectl autoscale -h 로 확인).
 ```
 
 </details>
 
-### Lab 38 – Liveness and readiness probes  (Workloads & Scheduling | Easy | 10 min)
+### 랩 38 – liveness·readiness 프로브  (워크로드와 스케줄링 | 쉬움 | 10분)
 
 ```bash
 ./lab.sh 38
 ```
 
 ```text
-한글: readiness·liveness 프로브가 있는 Deployment를 만들고 자가 복구를 확인한다. (문서 15번)
-
-In namespace exercise-38 create Deployment probe-web (image nginx, 2 replicas) whose container has:
-  - readinessProbe: HTTP GET / on port 80, initialDelaySeconds 5, periodSeconds 5
-  - livenessProbe:  HTTP GET / on port 80, initialDelaySeconds 10, periodSeconds 10, failureThreshold 3
-Delete one Pod and check that the Deployment brings the replica count back to 2 by itself.
+네임스페이스 exercise-38 에 Deployment probe-web (이미지 nginx, 레플리카 2개)을 만들고 컨테이너에 다음을 넣으세요:
+  - readinessProbe: 포트 80에 HTTP GET /, initialDelaySeconds 5, periodSeconds 5
+  - livenessProbe:  포트 80에 HTTP GET /, initialDelaySeconds 10, periodSeconds 10, failureThreshold 3
+Pod 하나를 지우고 Deployment가 스스로 레플리카 수를 2로 되돌리는지 확인하세요.
 ```
 
 ```bash
@@ -2610,11 +2602,11 @@ Delete one Pod and check that the Deployment brings the replica count back to 2 
 ```
 
 <details>
-<summary><b>Show solution</b></summary>
+<summary><b>풀이 보기</b></summary>
 
 ```bash
 kubectl create deployment probe-web -n exercise-38 --image=nginx --replicas=2 --port=80 --dry-run=client -o yaml > probe-web.yaml
-# add the probes under the container. The finished container section:
+# 컨테이너 아래에 프로브 추가. 완성된 containers 부분:
 #      containers:
 #      - image: nginx
 #        name: nginx
@@ -2633,25 +2625,23 @@ kubectl apply -f probe-web.yaml
 kubectl -n exercise-38 rollout status deploy probe-web
 kubectl -n exercise-38 describe deploy probe-web | grep -E 'Liveness|Readiness'
 kubectl -n exercise-38 delete pod $(kubectl -n exercise-38 get pod -l app=probe-web -o jsonpath='{.items[0].metadata.name}')
-kubectl -n exercise-38 get pods -l app=probe-web          # a new pod replaces it
+kubectl -n exercise-38 get pods -l app=probe-web          # 새 Pod가 대신 생성됨
 # 참고: 시작이 느린 앱은 startupProbe 로 liveness 를 늦춘다.
 ```
 
 </details>
 
-### Lab 39 – Taints and tolerations  (Workloads & Scheduling | Easy | 10 min)
+### 랩 39 – taint와 toleration  (워크로드와 스케줄링 | 쉬움 | 10분)
 
 ```bash
 ./lab.sh 39
 ```
 
 ```text
-한글: 워커에 taint를 걸고, 그 taint를 허용하는 Pod를 만든다. (문서 18번)
+1. node01에 taint를 추가하세요: 키 env_type, 값 production, effect NoSchedule
+2. 네임스페이스 exercise-39 에 이 taint를 허용하는 Pod prod-redis (이미지 redis:alpine)를 만드세요
 
-1. Add a taint to node01: key env_type, value production, effect NoSchedule
-2. In namespace exercise-39 create a Pod prod-redis (image redis:alpine) that tolerates this taint
-
-./lab.sh 39 cleanup removes the taint again - other labs need node01 schedulable.
+./lab.sh 39 cleanup 이 taint를 다시 제거합니다. 다른 랩에서는 node01에 스케줄링이 가능해야 합니다.
 ```
 
 ```bash
@@ -2659,13 +2649,13 @@ kubectl -n exercise-38 get pods -l app=probe-web          # a new pod replaces i
 ```
 
 <details>
-<summary><b>Show solution</b></summary>
+<summary><b>풀이 보기</b></summary>
 
 ```bash
 kubectl taint nodes node01 env_type=production:NoSchedule
 kubectl describe node node01 | grep -i taint
 kubectl run prod-redis -n exercise-39 --image=redis:alpine --dry-run=client -o yaml > prod-redis.yaml
-# add under spec:
+# spec 아래에 추가:
 #   tolerations:
 #   - key: "env_type"
 #     operator: "Equal"
@@ -2679,21 +2669,19 @@ kubectl get pod prod-redis -n exercise-39 -o wide
 
 </details>
 
-### Lab 40 – Node affinity (required + preferred)  (Workloads & Scheduling | Medium | 10 min)
+### 랩 40 – node affinity (required + preferred)  (워크로드와 스케줄링 | 보통 | 10분)
 
 ```bash
 ./lab.sh 40
 ```
 
 ```text
-한글: 노드 레이블을 붙이고 required·preferred node affinity를 가진 Pod를 만든다. (문서 19번)
+1. node01에 레이블 disktype=ssd 를 추가하세요
+2. 네임스페이스 exercise-40 에 다음 조건의 Pod affinity-pod (이미지 nginx)를 만드세요
+   - 레이블 disktype=ssd 가 있는 노드에만 스케줄링 (required node affinity)
+   - 레이블 zone=a 가 있는 노드를 선호 (preferred node affinity, weight 50)
 
-1. Add the label disktype=ssd to node01
-2. In namespace exercise-40 create a Pod affinity-pod (image nginx) that
-   - may only be scheduled on nodes with the label disktype=ssd (required node affinity)
-   - prefers nodes with the label zone=a (preferred node affinity, weight 50)
-
-./lab.sh 40 cleanup removes the label again.
+./lab.sh 40 cleanup 이 레이블을 다시 제거합니다.
 ```
 
 ```bash
@@ -2701,7 +2689,7 @@ kubectl get pod prod-redis -n exercise-39 -o wide
 ```
 
 <details>
-<summary><b>Show solution</b></summary>
+<summary><b>풀이 보기</b></summary>
 
 ```bash
 kubectl label node node01 disktype=ssd
@@ -2732,28 +2720,26 @@ spec:
   - name: nginx
     image: nginx
 EOF2
-kubectl get pod affinity-pod -n exercise-40 -o wide        # on node01
+kubectl get pod affinity-pod -n exercise-40 -o wide        # node01에 배치됨
 # 참고: nodeSelectorTerms 항목 여러 개 = OR, 한 항목 안의 matchExpressions 여러 개 = AND.
 #       Pending 이면 describe 의 Events 에서 "didn't match Pod's node affinity" 확인.
 ```
 
 </details>
 
-### Lab 41 – Service of type LoadBalancer  (Services & Networking | Easy | 10 min)
+### 랩 41 – LoadBalancer 유형 Service  (서비스와 네트워킹 | 쉬움 | 10분)
 
 ```bash
 ./lab.sh 41
 ```
 
 ```text
-한글: LoadBalancer Service로 Deployment를 노출하고 엔드포인트를 확인한다. (문서 21번)
+네임스페이스 exercise-41 에서:
+1. Deployment lb-web (이미지 nginx, 레플리카 2개)을 만드세요
+2. LoadBalancer 유형의 Service lb-web-svc 로 포트 80에 노출하세요
+3. Service의 엔드포인트에 두 Pod가 모두 있고 NodePort로 응답하는지 확인하세요
 
-In namespace exercise-41:
-1. Create Deployment lb-web (image nginx, 2 replicas)
-2. Expose it on port 80 with a Service lb-web-svc of type LoadBalancer
-3. Verify the Service has both Pods as endpoints and answers on its NodePort
-
-Killercoda has no cloud load balancer, so EXTERNAL-IP stays <pending> - that is expected.
+Killercoda에는 클라우드 로드 밸런서가 없으므로 EXTERNAL-IP는 <pending> 으로 남습니다. 정상입니다.
 ```
 
 ```bash
@@ -2761,7 +2747,7 @@ Killercoda has no cloud load balancer, so EXTERNAL-IP stays <pending> - that is 
 ```
 
 <details>
-<summary><b>Show solution</b></summary>
+<summary><b>풀이 보기</b></summary>
 
 ```bash
 kubectl create deployment lb-web -n exercise-41 --image=nginx --replicas=2 --port=80
@@ -2776,27 +2762,27 @@ curl -s http://node01:$NP | grep title
 
 </details>
 
-### Lab 42 – Migrate an Ingress (with TLS) to the Gateway API  (Services & Networking | Hard | 20 min)
+### 랩 42 – Ingress(TLS 포함)를 Gateway API로 이전  (서비스와 네트워킹 | 어려움 | 20분)
 
 ```bash
 ./lab.sh 42
 ```
 
 ```text
-한글: 원본 시험 5번. TLS가 있는 Ingress를 Gateway + HTTPRoute로 옮기고 Ingress를 지운다 (GatewayClass는 eg).
-      시험에서는 GatewayClass 이름이 nginx 였지만, 이 랩은 Envoy Gateway 의 eg 를 쓴다.
+(원본 시험 문제 · 한글 문제집 23번)
+실제 시험의 GatewayClass 이름은 nginx였지만, 이 랩은 Envoy Gateway의 eg를 씁니다.
 
-Namespace exercise-42 runs a web application exposed by the Ingress web (TLS, host web.k8s.local).
-The GatewayClass eg is installed. Migrate the application from the Ingress to the Gateway API;
-HTTPS access must keep working.
+네임스페이스 exercise-42 에서 Ingress web (TLS, 호스트 web.k8s.local)으로 노출된 웹 애플리케이션이 실행 중입니다.
+GatewayClass eg 가 설치되어 있습니다. 애플리케이션을 Ingress에서 Gateway API로 옮기세요.
+HTTPS 접속은 계속 동작해야 합니다.
 
-1. Create a Gateway named web-gateway with the hostname gateway.web.k8s.local that keeps the
-   TLS and listener configuration of the existing Ingress web
-2. Create an HTTPRoute named web-route with the hostname gateway.web.k8s.local that keeps the
-   routing rules of the existing Ingress web
-3. Test it (the Envoy proxy is a NodePort Service in envoy-gateway-system), e.g.:
+1. 호스트 이름 gateway.web.k8s.local 을 쓰고, 기존 Ingress web 의 TLS와 리스너 설정을 유지하는
+   Gateway web-gateway 를 만드세요
+2. 호스트 이름 gateway.web.k8s.local 을 쓰고, 기존 Ingress web 의 라우팅 규칙을 유지하는
+   HTTPRoute web-route 를 만드세요
+3. 테스트하세요 (Envoy 프록시는 envoy-gateway-system 의 NodePort Service입니다). 예:
      curl -k --resolve gateway.web.k8s.local:<nodeport>:<node-ip> https://gateway.web.k8s.local:<nodeport>
-4. Finally delete the Ingress web
+4. 마지막으로 Ingress web 을 삭제하세요
 ```
 
 ```bash
@@ -2804,7 +2790,7 @@ HTTPS access must keep working.
 ```
 
 <details>
-<summary><b>Show solution</b></summary>
+<summary><b>풀이 보기</b></summary>
 
 ```bash
 kubectl -n exercise-42 get ingress web -o yaml       # tls.secretName web-tls, rule / -> web:80
@@ -2858,20 +2844,18 @@ kubectl -n exercise-42 delete ingress web
 
 </details>
 
-### Lab 43 – DNS records of a Service and a Pod  (Services & Networking | Easy | 10 min)
+### 랩 43 – Service와 Pod의 DNS 레코드  (서비스와 네트워킹 | 쉬움 | 10분)
 
 ```bash
 ./lab.sh 43
 ```
 
 ```text
-한글: Service와 Pod의 DNS 이름을 nslookup으로 조회해 파일로 저장한다. (문서 25번)
-
-In namespace exercise-43:
-1. Create a Pod nginx-resolver (image nginx) and expose it with a ClusterIP Service
-   nginx-resolver-service on port 80
-2. From a temporary Pod with image busybox:1.28, look up the Service and the Pod with nslookup
-   and save the output to /root/CKA/nginx.svc and /root/CKA/nginx.pod
+네임스페이스 exercise-43 에서:
+1. Pod nginx-resolver (이미지 nginx)를 만들고 포트 80의 ClusterIP Service
+   nginx-resolver-service 로 노출하세요
+2. 이미지 busybox:1.28 의 임시 Pod에서 nslookup으로 Service와 Pod를 조회하고
+   출력을 /root/CKA/nginx.svc 와 /root/CKA/nginx.pod 에 저장하세요
 ```
 
 ```bash
@@ -2879,7 +2863,7 @@ In namespace exercise-43:
 ```
 
 <details>
-<summary><b>Show solution</b></summary>
+<summary><b>풀이 보기</b></summary>
 
 ```bash
 kubectl run nginx-resolver -n exercise-43 --image=nginx
@@ -2896,23 +2880,23 @@ cat /root/CKA/nginx.svc /root/CKA/nginx.pod
 
 </details>
 
-### Lab 44 – New default StorageClass  (Storage | Medium | 10 min)
+### 랩 44 – 새 기본 StorageClass  (스토리지 | 보통 | 10분)
 
 ```bash
 ./lab.sh 44
 ```
 
 ```text
-한글: 원본 시험 4번. 새 StorageClass를 만들어 클러스터 기본으로 지정한다. 기존 Deployment·PVC는 건드리지 않는다.
+(원본 시험 문제 · 한글 문제집 26번)
 
-1. Create a new StorageClass named low-latency that uses the existing provisioner
-   rancher.io/local-path
-2. Set its VolumeBindingMode to WaitForFirstConsumer (mandatory)
-3. Make low-latency the default StorageClass of the cluster
-4. Do NOT modify any existing Deployment or PersistentVolumeClaim
-   (namespace exercise-44 has some that use the current default class)
+1. 기존 프로비저너 rancher.io/local-path 를 쓰는 새 StorageClass low-latency 를
+   만드세요
+2. VolumeBindingMode를 WaitForFirstConsumer 로 설정하세요 (필수)
+3. low-latency 를 클러스터의 기본 StorageClass로 만드세요
+4. 기존 Deployment나 PersistentVolumeClaim은 수정하지 마세요
+   (네임스페이스 exercise-44 에 현재 기본 클래스를 쓰는 것들이 있습니다)
 
-./lab.sh 44 cleanup removes low-latency and restores the original default class.
+./lab.sh 44 cleanup 이 low-latency 를 제거하고 원래 기본 클래스를 되돌립니다.
 ```
 
 ```bash
@@ -2920,7 +2904,7 @@ cat /root/CKA/nginx.svc /root/CKA/nginx.pod
 ```
 
 <details>
-<summary><b>Show solution</b></summary>
+<summary><b>풀이 보기</b></summary>
 
 ```bash
 kubectl get storageclass                               # local-path (default)
@@ -2936,30 +2920,30 @@ reclaimPolicy: Delete
 volumeBindingMode: WaitForFirstConsumer
 EOF2
 kubectl patch storageclass local-path -p '{"metadata":{"annotations":{"storageclass.kubernetes.io/is-default-class":"false"}}}'
-kubectl get storageclass                               # only low-latency (default)
+kubectl get storageclass                               # low-latency (default) 하나만
 # 참고: 기본 SC 가 둘이면 새 PVC 는 가장 최근 것을 쓰지만, 시험에서는 하나만 남기는 게 정답.
 ```
 
 </details>
 
-### Lab 45 – Reuse a retained PersistentVolume  (Storage | Medium | 15 min)
+### 랩 45 – Retain된 PersistentVolume 재사용  (스토리지 | 보통 | 15분)
 
 ```bash
 ./lab.sh 45
 ```
 
 ```text
-한글: 원본 시험 3번. 삭제된 MariaDB Deployment를 Retain된 PV를 재사용해 복구한다.
+(원본 시험 문제 · 한글 문제집 28번)
 
-A user accidentally deleted the MariaDB Deployment in namespace exercise-45. It used persistent
-storage. Restore it and reuse the existing PersistentVolume so the data is kept.
-The PersistentVolume exists and was retained for reuse (there is only one PV).
+사용자가 실수로 네임스페이스 exercise-45 의 MariaDB Deployment를 삭제했습니다. 이 Deployment는
+영구 스토리지를 쓰고 있었습니다. 기존 PersistentVolume을 재사용해 데이터를 유지한 채로 복구하세요.
+PersistentVolume은 남아 있고 재사용을 위해 Retain되어 있습니다 (PV는 하나뿐입니다).
 
-1. Create a PersistentVolumeClaim named mariadb in namespace exercise-45:
-     access mode ReadWriteOnce, storage 250Mi
-2. Edit the MariaDB Deployment file /root/mariadb-deploy.yaml to use the PVC
-3. Apply the edited Deployment file to the cluster
-4. Make sure the MariaDB Deployment is running and stable
+1. 네임스페이스 exercise-45 에 PersistentVolumeClaim mariadb 를 만드세요:
+     접근 모드 ReadWriteOnce, 스토리지 250Mi
+2. MariaDB Deployment 파일 /root/mariadb-deploy.yaml 이 이 PVC를 쓰도록 수정하세요
+3. 수정한 Deployment 파일을 클러스터에 적용하세요
+4. MariaDB Deployment가 실행 중이고 안정적인지 확인하세요
 ```
 
 ```bash
@@ -2967,7 +2951,7 @@ The PersistentVolume exists and was retained for reuse (there is only one PV).
 ```
 
 <details>
-<summary><b>Show solution</b></summary>
+<summary><b>풀이 보기</b></summary>
 
 ```bash
 kubectl get pv                                        # mariadb-pv  250Mi RWO Retain Released
@@ -2981,13 +2965,13 @@ metadata:
   namespace: exercise-45
 spec:
   accessModes: ["ReadWriteOnce"]
-  storageClassName: ""          # same as the PV (it has no class); "" stops the default class being added
+  storageClassName: ""          # PV와 같게 (PV에 클래스가 없음); ""로 두면 기본 클래스가 붙지 않음
   resources:
     requests:
       storage: 250Mi
 EOF2
-kubectl -n exercise-45 get pvc mariadb                # Bound to mariadb-pv
-vi /root/mariadb-deploy.yaml                           # replace the emptyDir with:
+kubectl -n exercise-45 get pvc mariadb                # mariadb-pv에 Bound
+vi /root/mariadb-deploy.yaml                           # emptyDir를 다음으로 교체:
 #      volumes:
 #      - name: mariadb-storage
 #        persistentVolumeClaim:
@@ -3000,19 +2984,17 @@ kubectl -n exercise-45 get pods,pvc
 
 </details>
 
-### Lab 46 – Fix a broken kubeconfig  (Troubleshooting | Easy | 10 min)
+### 랩 46 – 깨진 kubeconfig 고치기  (트러블슈팅 | 쉬움 | 10분)
 
 ```bash
 ./lab.sh 46
 ```
 
 ```text
-한글: kubeconfig 파일로 클러스터에 접속되지 않는다. 원인을 찾아 파일을 고친다. (문서 30번)
-
-The kubeconfig file /root/CKA/admin.kubeconfig does not work against this cluster.
-Find the problem and fix the file so that
+kubeconfig 파일 /root/CKA/admin.kubeconfig 로 이 클러스터에 접속되지 않습니다.
+원인을 찾아 파일을 고쳐서
   kubectl --kubeconfig /root/CKA/admin.kubeconfig get nodes
-works. Do not touch /etc/kubernetes/admin.conf.
+가 동작하게 하세요. /etc/kubernetes/admin.conf 는 건드리지 마세요.
 ```
 
 ```bash
@@ -3020,31 +3002,29 @@ works. Do not touch /etc/kubernetes/admin.conf.
 ```
 
 <details>
-<summary><b>Show solution</b></summary>
+<summary><b>풀이 보기</b></summary>
 
 ```bash
 kubectl cluster-info --kubeconfig /root/CKA/admin.kubeconfig     # connection refused / timeout
 grep server: /root/CKA/admin.kubeconfig
-grep server: /etc/kubernetes/admin.conf                           # compare
-ss -ltnp | grep 6443                                              # the API server listens on 6443
-vi /root/CKA/admin.kubeconfig                                     # fix the port to 6443
+grep server: /etc/kubernetes/admin.conf                           # 비교
+ss -ltnp | grep 6443                                              # API 서버는 6443에서 대기
+vi /root/CKA/admin.kubeconfig                                     # 포트를 6443으로 수정
 kubectl get nodes --kubeconfig /root/CKA/admin.kubeconfig
 # 참고: 문제마다 지정된 컨텍스트가 있으면 먼저 kubectl config use-context <name>.
 ```
 
 </details>
 
-### Lab 47 – Pod with a failing init container  (Troubleshooting | Easy | 10 min)
+### 랩 47 – init 컨테이너가 실패하는 Pod  (트러블슈팅 | 쉬움 | 10분)
 
 ```bash
 ./lab.sh 47
 ```
 
 ```text
-한글: Pod orange가 시작되지 않는다. 원인을 찾아 고친다. (문서 33번)
-
-The Pod orange in namespace exercise-47 does not start. Find the cause and fix it.
-The Pod must keep its name and its main container must stay as it is.
+네임스페이스 exercise-47 의 Pod orange 가 시작되지 않습니다. 원인을 찾아 고치세요.
+Pod 이름은 그대로 유지하고, 메인 컨테이너는 바꾸지 마세요.
 ```
 
 ```bash
@@ -3052,7 +3032,7 @@ The Pod must keep its name and its main container must stay as it is.
 ```
 
 <details>
-<summary><b>Show solution</b></summary>
+<summary><b>풀이 보기</b></summary>
 
 ```bash
 kubectl -n exercise-47 get pod orange                    # Init:CrashLoopBackOff / Init:Error
@@ -3060,26 +3040,24 @@ kubectl -n exercise-47 describe pod orange
 kubectl -n exercise-47 logs orange -c init-myservice     # sh: sleeeep: not found
 kubectl -n exercise-47 get pod orange -o yaml > orange.yaml
 vi orange.yaml                                           # initContainers command: sleeeep 2 -> sleep 2
-kubectl replace --force -f orange.yaml                   # delete + create in one step
+kubectl replace --force -f orange.yaml                   # 삭제 + 생성을 한 번에
 kubectl -n exercise-47 get pod orange                    # Running
 # 참고: init 컨테이너가 성공(exit 0)해야 본 컨테이너가 시작된다. 여러 개면 순서대로 하나씩.
 ```
 
 </details>
 
-### Lab 48 – Service not reachable  (Troubleshooting | Medium | 15 min)
+### 랩 48 – 접속되지 않는 Service  (트러블슈팅 | 보통 | 15분)
 
 ```bash
 ./lab.sh 48
 ```
 
 ```text
-한글: Service web-svc로 접속되지 않는다. Deployment는 그대로 두고 원인을 찾아 고친다. (문서 35번)
-
-The Service web-svc in namespace exercise-48 does not answer. The Pods of Deployment web
-(nginx, container port 80) are running fine.
-Find the cause, fix the Service, and verify that web-svc answers from inside the cluster.
-Do NOT modify the Deployment.
+네임스페이스 exercise-48 의 Service web-svc 가 응답하지 않습니다. Deployment web 의 Pod
+(nginx, 컨테이너 포트 80)는 정상 실행 중입니다.
+원인을 찾아 Service를 고치고, 클러스터 안에서 web-svc 가 응답하는지 확인하세요.
+Deployment는 수정하지 마세요.
 ```
 
 ```bash
@@ -3087,42 +3065,40 @@ Do NOT modify the Deployment.
 ```
 
 <details>
-<summary><b>Show solution</b></summary>
+<summary><b>풀이 보기</b></summary>
 
 ```bash
-kubectl -n exercise-48 run tmp --rm -it --image=busybox:1.28 --restart=Never -- wget -qO- -T 3 web-svc   # times out
+kubectl -n exercise-48 run tmp --rm -it --image=busybox:1.28 --restart=Never -- wget -qO- -T 3 web-svc   # 타임아웃
 kubectl -n exercise-48 get svc web-svc -o wide                                       # SELECTOR app=webapp
-kubectl -n exercise-48 get endpointslices -l kubernetes.io/service-name=web-svc      # no endpoints
-kubectl -n exercise-48 get pods --show-labels -o wide                                # pods have app=web
+kubectl -n exercise-48 get endpointslices -l kubernetes.io/service-name=web-svc      # 엔드포인트 없음
+kubectl -n exercise-48 get pods --show-labels -o wide                                # Pod 레이블은 app=web
 kubectl -n exercise-48 edit svc web-svc
 #   selector:   app: webapp  ->  app: web
 #   targetPort: 8080         ->  80
-kubectl -n exercise-48 get endpointslices -l kubernetes.io/service-name=web-svc      # 2 pods, port 80
-kubectl -n exercise-48 run tmp --rm -it --image=busybox:1.28 --restart=Never -- wget -qO- -T 3 web-svc   # nginx page
+kubectl -n exercise-48 get endpointslices -l kubernetes.io/service-name=web-svc      # Pod 2개, 포트 80
+kubectl -n exercise-48 run tmp --rm -it --image=busybox:1.28 --restart=Never -- wget -qO- -T 3 web-svc   # nginx 페이지
 # 참고: 그다음 점검 - Pod Ready 여부, NetworkPolicy, kube-proxy·CoreDNS Pod 상태.
 ```
 
 </details>
 
-### Lab 49 – HA control plane with kubeadm (commands only)  (Cluster Architecture | Medium | 10 min)
+### 랩 49 – kubeadm HA 컨트롤 플레인 (명령만 작성)  (클러스터 아키텍처 | 보통 | 10분)
 
 ```bash
 ./lab.sh 49
 ```
 
 ```text
-한글: 2노드 환경에서는 HA를 만들 수 없어서, 실행할 명령을 파일로 써서 채점한다. (문서 3번)
+stacked etcd를 쓰는 고가용성 kubeadm 클러스터를 구성해야 합니다. API 서버용 로드 밸런서는
+lb.example.com:6443 에 준비되어 있습니다. 2노드 실습 환경에서는 만들 수 없으므로,
+실행할 명령을 /root/exercise-49/ha-commands.sh 에 작성하세요:
 
-You must build a highly available kubeadm cluster with stacked etcd. A load balancer for the
-API server is ready at lb.example.com:6443. This cannot be built on the 2-node playground, so
-write the commands you would run into /root/exercise-49/ha-commands.sh:
-
-1. On the first control plane node cp1: initialise the cluster with the load balancer as the
-   control plane endpoint, and upload the certificates so other control plane nodes can get them
-2. If the uploaded certificates have expired (after 2 hours): upload them again and print a new
-   join command
-3. On the second control plane node cp2: join it as a control plane node
-4. Check that the etcd members of both nodes are listed
+1. 첫 번째 컨트롤 플레인 노드 cp1: 로드 밸런서를 컨트롤 플레인 엔드포인트로 클러스터를 초기화하고,
+   다른 컨트롤 플레인 노드가 받아 갈 수 있도록 인증서를 업로드하세요
+2. 업로드한 인증서가 만료되었으면 (2시간 후): 다시 업로드하고 새 join 명령을
+   출력하세요
+3. 두 번째 컨트롤 플레인 노드 cp2: 컨트롤 플레인 노드로 join 하세요
+4. 두 노드의 etcd 멤버가 모두 보이는지 확인하세요
 ```
 
 ```bash
@@ -3130,19 +3106,19 @@ write the commands you would run into /root/exercise-49/ha-commands.sh:
 ```
 
 <details>
-<summary><b>Show solution</b></summary>
+<summary><b>풀이 보기</b></summary>
 
 ```bash
 cat <<'EOF2' > /root/exercise-49/ha-commands.sh
 # 1. cp1
 kubeadm init --control-plane-endpoint "lb.example.com:6443" --upload-certs --pod-network-cidr=192.168.0.0/16
-# 2. certificates expire after 2h (Secret kubeadm-certs): upload again + new join command
-kubeadm init phase upload-certs --upload-certs        # prints a new certificate key
+# 2. 인증서는 2시간 후 만료 (Secret kubeadm-certs): 다시 업로드 + 새 join 명령
+kubeadm init phase upload-certs --upload-certs        # 새 certificate key 출력
 kubeadm token create --print-join-command
 # 3. cp2
 kubeadm join lb.example.com:6443 --token <token> --discovery-token-ca-cert-hash sha256:<hash> \
   --control-plane --certificate-key <certificate-key>
-# 4. etcd members
+# 4. etcd 멤버
 kubectl -n kube-system exec etcd-cp1 -- etcdctl --endpoints=https://127.0.0.1:2379 \
   --cacert=/etc/kubernetes/pki/etcd/ca.crt --cert=/etc/kubernetes/pki/etcd/server.crt \
   --key=/etc/kubernetes/pki/etcd/server.key member list -w table
@@ -3154,23 +3130,23 @@ EOF2
 
 </details>
 
-### Lab 50 – Pick the least-privilege NetworkPolicy  (Services & Networking | Medium | 15 min)
+### 랩 50 – 최소 권한 NetworkPolicy 고르기  (서비스와 네트워킹 | 보통 | 15분)
 
 ```bash
 ./lab.sh 50
 ```
 
 ```text
-한글: 원본 시험 7번. 주어진 파일 중 frontend→backend 통신을 허용하는 가장 제한적인 정책 하나만 적용한다.
+(원본 시험 문제 · 한글 문제집 24번)
 
-Deployment frontend runs in namespace exercise-50-frontend, Deployment backend in namespace
-exercise-50-backend. They must be able to talk to each other (frontend -> backend).
+Deployment frontend 는 네임스페이스 exercise-50-frontend 에서, Deployment backend 는 네임스페이스
+exercise-50-backend 에서 실행 중입니다. 둘은 서로 통신할 수 있어야 합니다 (frontend -> backend).
 
-1. Analyse the frontend and backend Deployments and find out what the communication needs
-2. Choose ONE of the NetworkPolicy files in /root/netpol and apply it. It must
-   - allow the communication from frontend to backend
-   - be as restrictive as possible (least privilege)
-3. Do NOT delete or change the existing deny-all NetworkPolicy
+1. frontend와 backend Deployment를 분석해 어떤 통신이 필요한지 알아내세요
+2. /root/netpol 의 NetworkPolicy 파일 중 하나만 골라 적용하세요. 그 정책은
+   - frontend에서 backend로의 통신을 허용해야 하고
+   - 가능한 한 제한적이어야 합니다 (최소 권한)
+3. 기존 deny-all NetworkPolicy는 삭제하거나 바꾸지 마세요
 ```
 
 ```bash
@@ -3178,7 +3154,7 @@ exercise-50-backend. They must be able to talk to each other (frontend -> backen
 ```
 
 <details>
-<summary><b>Show solution</b></summary>
+<summary><b>풀이 보기</b></summary>
 
 ```bash
 kubectl get ns --show-labels | grep exercise-50
@@ -3187,39 +3163,38 @@ kubectl -n exercise-50-backend get deploy,pods --show-labels
 kubectl -n exercise-50-backend get deploy backend -o yaml | grep -A3 ports:     # containerPort 80
 kubectl get netpol -A | grep exercise-50                                         # deny-all
 cat /root/netpol/*.yaml
-#  netpol-1: from every namespace (namespaceSelector: {})            -> too wide
-#  netpol-2: namespaceSelector and podSelector as TWO list items = OR -> too wide
-#  netpol-3: ipBlock 0.0.0.0/0                                        -> too wide
-#  netpol-4: frontend ns AND app=frontend, but every port             -> wider than needed
-#  netpol-5: frontend ns AND app=frontend, TCP 80 only                -> the answer
+#  netpol-1: 모든 네임스페이스에서 허용 (namespaceSelector: {})             -> 너무 넓음
+#  netpol-2: namespaceSelector와 podSelector가 별도 목록 항목 두 개 = OR    -> 너무 넓음
+#  netpol-3: ipBlock 0.0.0.0/0                                              -> 너무 넓음
+#  netpol-4: frontend ns AND app=frontend, 하지만 모든 포트                 -> 필요 이상으로 넓음
+#  netpol-5: frontend ns AND app=frontend, TCP 80만                         -> 정답
 kubectl apply -f /root/netpol/netpol-5.yaml
 kubectl -n exercise-50-frontend exec deploy/frontend -- curl -s -m3 backend.exercise-50-backend | grep title
 # 참고: from 아래 한 항목에 namespaceSelector 와 podSelector 를 함께 = AND, "-" 로 나누면 = OR.
 ```
 
 </details>
+## 4. 모의고사 1회
 
-## 4. Mock Exam 1
+시험 전체는 `./mock.sh 1 start`로 시작하고 `./mock.sh 1 score`로 채점합니다.
 
-Start the whole exam with `./mock.sh 1 start`, check it with `./mock.sh 1 score`.
-
-### Exam 1 · Q1 – Pod Deployment Troubleshooting  (Troubleshooting | 8 min)
+### 1회 · Q1 – Pod 배포 트러블슈팅  (트러블슈팅 | 8분)
 
 ```bash
 ./mock.sh 1 1
 ```
 
 ```text
-Pod app-frontend in namespace production is in CrashLoopBackOff. Its container expects a
-config file at /etc/app/config.yaml, which the image does not contain.
-The pod manifest is at /root/mock1/app-frontend.yaml.
+production 네임스페이스의 Pod app-frontend가 CrashLoopBackOff 상태입니다. 이 컨테이너는
+/etc/app/config.yaml 설정 파일이 있어야 하는데, 이미지에는 이 파일이 없습니다.
+Pod 매니페스트는 /root/mock1/app-frontend.yaml에 있습니다.
 
-Tasks
-1. Create a ConfigMap named app-config in namespace production with a key config.yaml
-   whose content is:   database_host: postgres.production.svc.cluster.local
-2. Mount the ConfigMap so the file appears at /etc/app/config.yaml in the container
-   (update the manifest and recreate the pod)
-3. Verify the pod starts and stays Running
+작업
+1. production 네임스페이스에 app-config ConfigMap을 만드세요. 키는 config.yaml이고
+   내용은 다음과 같습니다:   database_host: postgres.production.svc.cluster.local
+2. 컨테이너 안에서 /etc/app/config.yaml 파일이 보이도록 ConfigMap을 마운트하세요
+   (매니페스트를 수정하고 Pod를 다시 만드세요)
+3. Pod가 시작되어 계속 Running 상태인지 확인하세요
 ```
 
 ```bash
@@ -3227,14 +3202,14 @@ Tasks
 ```
 
 <details>
-<summary><b>Show solution</b></summary>
+<summary><b>풀이 보기</b></summary>
 
 ```bash
 kubectl -n production logs app-frontend                 # ERROR: /etc/app/config.yaml not found
 kubectl create configmap app-config -n production \
   --from-literal=config.yaml='database_host: postgres.production.svc.cluster.local'
 
-# Add the volume + mount to the manifest. The finished file:
+# 매니페스트에 볼륨과 마운트를 추가한다. 완성된 파일:
 cat <<'EOF' > /root/mock1/app-frontend.yaml
 apiVersion: v1
 kind: Pod
@@ -3250,7 +3225,7 @@ spec:
     command: ["sh", "-c", "if [ ! -f /etc/app/config.yaml ]; then echo 'ERROR: /etc/app/config.yaml not found'; exit 1; fi; echo 'config loaded:'; cat /etc/app/config.yaml; exec sleep 3600"]
     volumeMounts:
     - name: config
-      mountPath: /etc/app            # the key config.yaml becomes /etc/app/config.yaml
+      mountPath: /etc/app            # 키 config.yaml이 /etc/app/config.yaml이 됨
   volumes:
   - name: config
     configMap:
@@ -3259,30 +3234,30 @@ spec:
       - key: config.yaml
         path: config.yaml
 EOF
-# A running pod can't get new volumes - recreate it
+# 실행 중인 Pod에는 볼륨을 새로 붙일 수 없으므로 다시 만든다
 kubectl replace --force -f /root/mock1/app-frontend.yaml
 kubectl get pod app-frontend -n production
 kubectl exec app-frontend -n production -- cat /etc/app/config.yaml
-# Alternative: mountPath /etc/app/config.yaml + subPath config.yaml mounts only that one file
-# (but subPath mounts do not receive ConfigMap updates).
+# 다른 방법: mountPath /etc/app/config.yaml + subPath config.yaml로 그 파일 하나만 마운트
+# (단, subPath 마운트는 ConfigMap 변경이 반영되지 않는다).
 ```
 
 </details>
 
-### Exam 1 · Q2 – RBAC  (Cluster Architecture | 7 min)
+### 1회 · Q2 – RBAC  (클러스터 아키텍처 | 7분)
 
 ```bash
 ./mock.sh 1 2
 ```
 
 ```text
-The user dev-user must be able to list Pods and Deployments in namespace staging,
-and nothing in other namespaces.
+사용자 dev-user는 staging 네임스페이스에서 Pod와 Deployment를 list할 수 있어야 하고,
+다른 네임스페이스에서는 아무것도 할 수 없어야 합니다.
 
-Tasks
-1. Create a Role named staging-reader in namespace staging that allows listing Pods and Deployments
-2. Create a RoleBinding named staging-reader-dev-user that grants this Role to the user dev-user
-3. Verify with kubectl auth can-i (also check that dev-user can't list pods in namespace default)
+작업
+1. staging 네임스페이스에 Pod와 Deployment의 list를 허용하는 Role staging-reader를 만드세요
+2. 이 Role을 사용자 dev-user에게 부여하는 RoleBinding staging-reader-dev-user를 만드세요
+3. kubectl auth can-i로 확인하세요 (dev-user가 default 네임스페이스에서는 pods를 list할 수 없는지도 확인하세요)
 ```
 
 ```bash
@@ -3290,7 +3265,7 @@ Tasks
 ```
 
 <details>
-<summary><b>Show solution</b></summary>
+<summary><b>풀이 보기</b></summary>
 
 ```bash
 kubectl create role staging-reader -n staging --verb=list --resource=pods,deployments
@@ -3298,29 +3273,29 @@ kubectl create rolebinding staging-reader-dev-user -n staging --role=staging-rea
 kubectl auth can-i list pods --as=dev-user -n staging              # yes
 kubectl auth can-i list deployments --as=dev-user -n staging       # yes
 kubectl auth can-i list pods --as=dev-user -n default              # no
-# --resource=deployments resolves to the apps API group, so the rule is correct for Deployments.
+# --resource=deployments는 apps API 그룹으로 해석되므로 Deployment에 맞는 규칙이 된다.
 ```
 
 </details>
 
-### Exam 1 · Q3 – Node Maintenance  (Cluster Architecture | 6 min)
+### 1회 · Q3 – 노드 유지보수  (클러스터 아키텍처 | 6분)
 
 ```bash
 ./mock.sh 1 3
 ```
 
 ```text
-Node node01 needs maintenance. In namespace maintenance it runs:
-  - Deployment web (3 replicas)
-  - a standalone pod database that keeps its data on node-local storage (emptyDir)
+노드 node01을 유지보수해야 합니다. maintenance 네임스페이스에서 node01에 다음이 실행 중입니다:
+  - Deployment web (레플리카 3개)
+  - 노드 로컬 스토리지(emptyDir)에 데이터를 두는 단독 Pod database
 
-Tasks
-1. Make sure no new pods are scheduled to node01
-2. Move the web pods off node01
-3. The database pod must NOT be evicted or deleted: it must still be the same pod, Running on node01
-4. Leave node01 in that state (the maintenance itself has not started yet)
+작업
+1. node01에 새 Pod가 스케줄되지 않게 하세요
+2. web Pod들을 node01에서 옮기세요
+3. database Pod는 축출되거나 삭제되면 안 됩니다. 같은 Pod 그대로 node01에서 Running이어야 합니다
+4. node01을 그 상태로 두세요 (유지보수 자체는 아직 시작하지 않았습니다)
 
-Note: while node01 is unschedulable, new pods from other questions only go to the control plane.
+참고: node01이 스케줄 불가 상태인 동안 다른 문제의 새 Pod는 컨트롤 플레인에만 배치됩니다.
 ```
 
 ```bash
@@ -3328,43 +3303,43 @@ Note: while node01 is unschedulable, new pods from other questions only go to th
 ```
 
 <details>
-<summary><b>Show solution</b></summary>
+<summary><b>풀이 보기</b></summary>
 
 ```bash
 kubectl get pods -n maintenance -o wide
 kubectl cordon node01
-# A plain drain refuses: database is not managed by a controller and uses emptyDir.
+# 그냥 drain하면 거부된다: database는 컨트롤러가 관리하지 않고 emptyDir을 쓴다.
 #   kubectl drain node01 --ignore-daemonsets
 #   error: cannot delete Pods that declare no controller (use --force to override): maintenance/database
-# --force --delete-emptydir-data would DELETE the database pod and its data - not allowed here.
-# Move only the web pods: with node01 cordoned, the Deployment recreates them elsewhere.
+# --force --delete-emptydir-data를 쓰면 database Pod와 데이터가 삭제됨 - 여기서는 허용 안 됨.
+# web Pod만 옮긴다: node01이 cordon된 상태라 Deployment가 다른 곳에 다시 만든다.
 kubectl delete pod -n maintenance -l app=web --field-selector spec.nodeName=node01
-# Alternative: kubectl drain node01 --ignore-daemonsets --pod-selector=app=web
-#   but --pod-selector matches pods in ALL namespaces - any other unmanaged app=web pod makes it fail.
-kubectl get pods -n maintenance -o wide      # database still on node01, web pods elsewhere (or Pending)
+# 다른 방법: kubectl drain node01 --ignore-daemonsets --pod-selector=app=web
+#   단, --pod-selector는 모든 네임스페이스의 Pod에 매칭되므로 관리되지 않는 다른 app=web Pod가 있으면 실패한다.
+kubectl get pods -n maintenance -o wide      # database는 node01에 그대로, web Pod는 다른 곳(또는 Pending)
 kubectl get node node01                      # Ready,SchedulingDisabled
-# After the maintenance:  kubectl uncordon node01
+# 유지보수가 끝나면:  kubectl uncordon node01
 ```
 
 </details>
 
-### Exam 1 · Q4 – Persistent Volume Configuration  (Storage | 10 min)
+### 1회 · Q4 – PersistentVolume 구성  (스토리지 | 10분)
 
 ```bash
 ./mock.sh 1 4
 ```
 
 ```text
-Deployment db-app in namespace databases needs persistent storage that several pods can use
-at the same time. This cluster has no dynamic SSD provisioner, so you provision it statically.
+databases 네임스페이스의 Deployment db-app에 여러 Pod가 동시에 쓸 수 있는 영구 스토리지가
+필요합니다. 이 클러스터에는 동적 SSD 프로비저너가 없으므로 정적으로 프로비저닝합니다.
 
-Tasks
-1. Create StorageClass fast-ssd with provisioner kubernetes.io/no-provisioner
-2. Create PersistentVolume db-pv: 5Gi, access mode ReadWriteMany, storageClassName fast-ssd,
+작업
+1. 프로비저너 kubernetes.io/no-provisioner로 StorageClass fast-ssd를 만드세요
+2. PersistentVolume db-pv를 만드세요: 5Gi, 접근 모드 ReadWriteMany, storageClassName fast-ssd,
    hostPath /mnt/fast-ssd
-3. Create PersistentVolumeClaim db-storage in namespace databases: 5Gi, ReadWriteMany,
-   storageClassName fast-ssd - it must be Bound to db-pv
-4. Mount the claim at /data in the db-app containers and make sure the rollout completes
+3. databases 네임스페이스에 PersistentVolumeClaim db-storage를 만드세요: 5Gi, ReadWriteMany,
+   storageClassName fast-ssd - db-pv에 Bound되어야 합니다
+4. db-app 컨테이너의 /data에 이 클레임을 마운트하고 롤아웃이 완료되는지 확인하세요
 ```
 
 ```bash
@@ -3372,7 +3347,7 @@ Tasks
 ```
 
 <details>
-<summary><b>Show solution</b></summary>
+<summary><b>풀이 보기</b></summary>
 
 ```bash
 cat <<'EOF' | kubectl apply -f -
@@ -3408,34 +3383,34 @@ spec:
       storage: 5Gi
 EOF
 kubectl get pvc db-storage -n databases            # Bound to db-pv
-# (kubectl has no "set volume" - that is an OpenShift oc command). Patch or kubectl edit:
+# (kubectl에는 "set volume"이 없다 - 그건 OpenShift의 oc 명령). patch나 kubectl edit을 쓴다:
 kubectl patch deployment db-app -n databases --type=json -p='[
   {"op":"add","path":"/spec/template/spec/volumes","value":[{"name":"data","persistentVolumeClaim":{"claimName":"db-storage"}}]},
   {"op":"add","path":"/spec/template/spec/containers/0/volumeMounts","value":[{"name":"data","mountPath":"/data"}]}]'
 kubectl rollout status deployment/db-app -n databases
 kubectl exec deploy/db-app -n databases -- df -h /data
-# Note: hostPath is node-local. It satisfies ReadWriteMany for this lab, but real shared storage
-# (NFS, CephFS, EFS, Filestore ...) is what makes RWX useful across nodes.
+# 참고: hostPath는 노드 로컬이다. 이 랩에서는 ReadWriteMany 조건을 만족하지만, 노드 간에 RWX가
+# 의미 있으려면 실제 공유 스토리지(NFS, CephFS, EFS, Filestore ...)가 필요하다.
 ```
 
 </details>
 
-### Exam 1 · Q5 – Network Policies  (Services & Networking | 10 min)
+### 1회 · Q5 – NetworkPolicy  (서비스와 네트워킹 | 10분)
 
 ```bash
 ./mock.sh 1 5
 ```
 
 ```text
-In namespace shop all pods can currently talk to each other. Pods:
-  frontend (tier=frontend, port 80)   backend (tier=backend, port 3000)
-  database (tier=database, port 5432) outsider (no tier label - use it for testing)
+shop 네임스페이스에서는 현재 모든 Pod가 서로 통신할 수 있습니다. Pod 목록:
+  frontend (tier=frontend, 포트 80)   backend (tier=backend, 포트 3000)
+  database (tier=database, 포트 5432) outsider (tier 레이블 없음 - 테스트용)
 
-Create NetworkPolicies in namespace shop so that:
-1. Pods with tier=frontend accept incoming traffic on TCP port 80 only (from anywhere)
-2. Pods with tier=backend accept incoming traffic only from tier=frontend pods, on TCP port 3000
-3. Pods with tier=database accept incoming traffic only from tier=backend pods, on TCP port 5432
-Outgoing traffic must not be restricted.
+shop 네임스페이스에 NetworkPolicy를 만들어 다음을 만족하게 하세요:
+1. tier=frontend Pod는 TCP 포트 80으로 들어오는 트래픽만 받습니다 (출발지 제한 없음)
+2. tier=backend Pod는 tier=frontend Pod에서 TCP 포트 3000으로 들어오는 트래픽만 받습니다
+3. tier=database Pod는 tier=backend Pod에서 TCP 포트 5432로 들어오는 트래픽만 받습니다
+나가는 트래픽은 제한하면 안 됩니다.
 ```
 
 ```bash
@@ -3443,7 +3418,7 @@ Outgoing traffic must not be restricted.
 ```
 
 <details>
-<summary><b>Show solution</b></summary>
+<summary><b>풀이 보기</b></summary>
 
 ```bash
 cat <<'EOF' | kubectl apply -f -
@@ -3458,7 +3433,7 @@ spec:
       tier: frontend
   policyTypes: ["Ingress"]
   ingress:
-  - ports:                       # no "from" = any source
+  - ports:                       # "from"이 없으면 모든 출발지
     - protocol: TCP
       port: 80
 ---
@@ -3503,28 +3478,28 @@ EOF
 B=$(kubectl get pod backend -n shop -o jsonpath='{.status.podIP}')
 kubectl exec frontend -n shop -- curl -s -m3 -o /dev/null -w '%{http_code}\n' http://$B:3000   # 200
 kubectl exec outsider -n shop -- curl -s -m3 http://$B:3000 || echo blocked                     # blocked
-# policyTypes only lists Ingress, so egress stays open (DNS etc. keep working).
-# Note: "protocol" belongs inside each "ports" entry - an ingress rule has only "from" and "ports".
+# policyTypes에 Ingress만 있으므로 egress는 열려 있다 (DNS 등은 계속 동작).
+# 참고: "protocol"은 각 "ports" 항목 안에 들어간다 - ingress 규칙에는 "from"과 "ports"만 있다.
 ```
 
 </details>
 
-### Exam 1 · Q6 – Helm Chart Deployment  (Cluster Architecture | 8 min)
+### 1회 · Q6 – Helm 차트 배포  (클러스터 아키텍처 | 8분)
 
 ```bash
 ./mock.sh 1 6
 ```
 
 ```text
-A local Helm chart named monitoring is in /root/helm-charts/monitoring.
+로컬 Helm 차트 monitoring이 /root/helm-charts/monitoring에 있습니다.
 
-Tasks
-1. Install the chart as release monitoring-stack in namespace monitoring (create the namespace
-   if it doesn't exist), overriding these chart values:
+작업
+1. 이 차트를 monitoring 네임스페이스에 릴리스 monitoring-stack으로 설치하세요 (네임스페이스가
+   없으면 만드세요). 차트 값은 다음으로 덮어쓰세요:
      replica_count = 3
      storage_size  = 50Gi
-     persistence   = true   (a boolean)
-2. Verify the release is deployed and the Deployment has 3 ready replicas
+     persistence   = true   (불리언)
+2. 릴리스가 deployed 상태이고 Deployment의 ready 레플리카가 3개인지 확인하세요
 ```
 
 ```bash
@@ -3532,10 +3507,10 @@ Tasks
 ```
 
 <details>
-<summary><b>Show solution</b></summary>
+<summary><b>풀이 보기</b></summary>
 
 ```bash
-cat /root/helm-charts/monitoring/values.yaml          # see the value names
+cat /root/helm-charts/monitoring/values.yaml          # 값 이름 확인
 helm install monitoring-stack /root/helm-charts/monitoring \
   -n monitoring --create-namespace \
   --set replica_count=3 \
@@ -3544,29 +3519,29 @@ helm install monitoring-stack /root/helm-charts/monitoring \
 helm list -n monitoring
 helm get values monitoring-stack -n monitoring
 kubectl get deploy,pvc -n monitoring
-# Same thing with a values file:  helm install ... -f my-values.yaml
-# --set turns "true" into a boolean; use --set-string if you ever need the string "true".
+# values 파일로 해도 같다:  helm install ... -f my-values.yaml
+# --set은 "true"를 불리언으로 바꾼다. 문자열 "true"가 필요하면 --set-string을 쓴다.
 ```
 
 </details>
 
-### Exam 1 · Q7 – Container Runtime Configuration  (Cluster Architecture | 8 min)
+### 1회 · Q7 – 컨테이너 런타임 설정  (클러스터 아키텍처 | 8분)
 
 ```bash
 ./mock.sh 1 7
 ```
 
 ```text
-The worker node node01 must use cri-dockerd instead of containerd.
-Docker and cri-dockerd are already installed and running on node01
-(cri-docker.socket / cri-docker.service, socket unix:///run/cri-dockerd.sock).
+워커 노드 node01이 containerd 대신 cri-dockerd를 쓰도록 해야 합니다.
+Docker와 cri-dockerd는 node01에 이미 설치되어 실행 중입니다
+(cri-docker.socket / cri-docker.service, 소켓 unix:///run/cri-dockerd.sock).
 
-Tasks
-1. Configure the kubelet on node01 to use the cri-dockerd socket and restart it
-2. Verify node01 is Ready and reports a docker:// container runtime
-3. Verify that a pod scheduled to node01 starts
+작업
+1. node01의 kubelet이 cri-dockerd 소켓을 쓰도록 설정하고 재시작하세요
+2. node01이 Ready이고 컨테이너 런타임이 docker://로 표시되는지 확인하세요
+3. node01에 스케줄된 Pod가 시작되는지 확인하세요
 
-This changes node01 for the rest of the session. ./mock.sh 1 7 cleanup switches it back.
+이 작업은 세션이 끝날 때까지 node01을 바꿔 둡니다. ./mock.sh 1 7 cleanup으로 되돌립니다.
 ```
 
 ```bash
@@ -3574,17 +3549,17 @@ This changes node01 for the rest of the session. ./mock.sh 1 7 cleanup switches 
 ```
 
 <details>
-<summary><b>Show solution</b></summary>
+<summary><b>풀이 보기</b></summary>
 
 ```bash
 ssh node01
 systemctl status cri-docker.socket cri-docker.service --no-pager
 ls -la /run/cri-dockerd.sock
-# kubeadm keeps the runtime flag in /var/lib/kubelet/kubeadm-flags.env
-# (/etc/kubernetes/kubelet.conf is only the kubelet's kubeconfig - not the place for this)
+# kubeadm은 런타임 플래그를 /var/lib/kubelet/kubeadm-flags.env에 둔다
+# (/etc/kubernetes/kubelet.conf는 kubelet의 kubeconfig일 뿐 - 여기서 바꿀 곳이 아님)
 cat /var/lib/kubelet/kubeadm-flags.env
 systemctl stop kubelet
-crictl --runtime-endpoint unix:///run/containerd/containerd.sock rmp -fa   # stop the old containerd pods
+crictl --runtime-endpoint unix:///run/containerd/containerd.sock rmp -fa   # 기존 containerd Pod 정리
 sed -i 's#--container-runtime-endpoint=[^ "]*#--container-runtime-endpoint=unix:///run/cri-dockerd.sock#' /var/lib/kubelet/kubeadm-flags.env
 cat /var/lib/kubelet/kubeadm-flags.env
 systemctl daemon-reload && systemctl restart kubelet
@@ -3593,33 +3568,33 @@ kubectl get nodes -o wide                 # node01 Ready, CONTAINER-RUNTIME dock
 kubectl run rt-test --image=busybox:1.37 --overrides='{"spec":{"nodeName":"node01"}}' -- sleep 300
 kubectl get pod rt-test -o wide           # Running
 kubectl delete pod rt-test --force
-# If the endpoint is not in kubeadm-flags.env, set containerRuntimeEndpoint in /var/lib/kubelet/config.yaml.
+# kubeadm-flags.env에 엔드포인트가 없으면 /var/lib/kubelet/config.yaml의 containerRuntimeEndpoint를 설정한다.
 ```
 
 </details>
 
-### Exam 1 · Q8 – API Server Audit Logs  (Troubleshooting | 10 min)
+### 1회 · Q8 – API 서버 audit 로그  (트러블슈팅 | 10분)
 
 ```bash
 ./mock.sh 1 8
 ```
 
 ```text
-Somebody keeps reading ConfigMaps in namespace default. Use audit logging to find out who.
+누군가 default 네임스페이스의 ConfigMap을 계속 읽고 있습니다. audit 로그로 누구인지 찾으세요.
 
-Tasks
-1. Enable audit logging on the kube-apiserver (control plane node):
-   - audit policy file /etc/kubernetes/audit/policy.yaml that logs ConfigMap requests at level
-     Metadata (or higher). Everything else may be logged at level None.
-   - audit log file /var/log/kubernetes/audit/audit.log
-   - --audit-log-maxbackup=2 and --audit-log-maxsize=10
-2. Wait for new requests. Find the ServiceAccount that keeps listing ConfigMaps in namespace
-   default and write its audit username to /root/mock1/q08-user.txt
-   (kubelets also watch ConfigMaps - ignore system:node:* users)
-3. Write the HTTP response code those requests get to /root/mock1/q08-code.txt
-4. Write the requestReceivedTimestamp of one of those requests to /root/mock1/q08-time.txt
+작업
+1. kube-apiserver(컨트롤 플레인 노드)에서 audit 로그를 켜세요:
+   - audit 정책 파일 /etc/kubernetes/audit/policy.yaml: ConfigMap 요청을 Metadata 레벨
+     (또는 그 이상)로 기록합니다. 나머지는 None 레벨이어도 됩니다.
+   - audit 로그 파일 /var/log/kubernetes/audit/audit.log
+   - --audit-log-maxbackup=2, --audit-log-maxsize=10
+2. 새 요청이 들어올 때까지 기다리세요. default 네임스페이스의 ConfigMap을 계속 list하는
+   ServiceAccount를 찾아 audit 사용자 이름을 /root/mock1/q08-user.txt에 쓰세요
+   (kubelet도 ConfigMap을 watch하므로 system:node:* 사용자는 무시하세요)
+3. 그 요청들이 받는 HTTP 응답 코드를 /root/mock1/q08-code.txt에 쓰세요
+4. 그 요청 중 하나의 requestReceivedTimestamp를 /root/mock1/q08-time.txt에 쓰세요
 
-Do NOT keep backup copies inside /etc/kubernetes/manifests - kubelet runs every file there.
+/etc/kubernetes/manifests 안에 백업 사본을 두지 마세요 - kubelet은 그 안의 파일을 모두 실행합니다.
 ```
 
 ```bash
@@ -3627,7 +3602,7 @@ Do NOT keep backup copies inside /etc/kubernetes/manifests - kubelet runs every 
 ```
 
 <details>
-<summary><b>Show solution</b></summary>
+<summary><b>풀이 보기</b></summary>
 
 ```bash
 mkdir -p /etc/kubernetes/audit /var/log/kubernetes/audit
@@ -3642,7 +3617,7 @@ rules:
     resources: ["configmaps"]
 - level: None
 EOF
-# Edit /etc/kubernetes/manifests/kube-apiserver.yaml (keep any backup OUTSIDE the manifests dir):
+# /etc/kubernetes/manifests/kube-apiserver.yaml을 수정한다 (백업은 manifests 디렉터리 밖에 둔다):
 #   command:
 #   - --audit-policy-file=/etc/kubernetes/audit/policy.yaml
 #   - --audit-log-path=/var/log/kubernetes/audit/audit.log
@@ -3659,40 +3634,40 @@ EOF
 #     hostPath: {path: /etc/kubernetes/audit, type: DirectoryOrCreate}
 #   - name: audit-log
 #     hostPath: {path: /var/log/kubernetes/audit, type: DirectoryOrCreate}
-# The same edit with sed:
+# 같은 수정을 sed로:
 M=/etc/kubernetes/manifests/kube-apiserver.yaml
 cp $M /root/kube-apiserver.yaml.bak
 sed -i '/- kube-apiserver$/a\    - --audit-policy-file=/etc/kubernetes/audit/policy.yaml\n    - --audit-log-path=/var/log/kubernetes/audit/audit.log\n    - --audit-log-maxbackup=2\n    - --audit-log-maxsize=10' $M
 sed -i '0,/^    volumeMounts:$/s##    volumeMounts:\n    - mountPath: /etc/kubernetes/audit\n      name: audit-policy\n      readOnly: true\n    - mountPath: /var/log/kubernetes/audit\n      name: audit-log#' $M
 sed -i '0,/^  volumes:$/s##  volumes:\n  - hostPath:\n      path: /etc/kubernetes/audit\n      type: DirectoryOrCreate\n    name: audit-policy\n  - hostPath:\n      path: /var/log/kubernetes/audit\n      type: DirectoryOrCreate\n    name: audit-log#' $M
-# wait until the API server is back (30-90s)
+# API 서버가 다시 뜰 때까지 기다린다 (30-90초)
 until kubectl get --raw=/readyz >/dev/null 2>&1; do sleep 5; done
 until grep -q 'serviceaccount:ops' /var/log/kubernetes/audit/audit.log 2>/dev/null; do sleep 5; done
-# Each line of the audit log is one JSON event (JSON lines, not one big array):
+# audit 로그는 한 줄이 JSON 이벤트 하나다 (하나의 큰 배열이 아니라 JSON lines):
 grep '"resource":"configmaps"' /var/log/kubernetes/audit/audit.log | grep '"namespace":"default"' | tail -3
 grep '"resource":"configmaps"' /var/log/kubernetes/audit/audit.log | grep '"namespace":"default"' | grep -v system:node: \
   | jq -r '[.user.username, .verb, .responseStatus.code, .requestReceivedTimestamp] | @tsv' | sort | uniq -c | tail
 L=$(grep '"resource":"configmaps"' /var/log/kubernetes/audit/audit.log | grep 'system:serviceaccount:ops:config-sync' | tail -1)
 echo "$L" | jq -r .user.username > /root/mock1/q08-user.txt          # system:serviceaccount:ops:config-sync
-echo "$L" | jq -r .responseStatus.code > /root/mock1/q08-code.txt     # 403 - it has no RBAC permission
+echo "$L" | jq -r .responseStatus.code > /root/mock1/q08-code.txt     # 403 - RBAC 권한이 없음
 echo "$L" | jq -r .requestReceivedTimestamp > /root/mock1/q08-time.txt
 ```
 
 </details>
 
-### Exam 1 · Q9 – HPA and Application Scaling  (Workloads & Scheduling | 7 min)
+### 1회 · Q9 – HPA와 애플리케이션 스케일링  (워크로드와 스케줄링 | 7분)
 
 ```bash
 ./mock.sh 1 9
 ```
 
 ```text
-Deployment web-app in namespace production runs 2 replicas. metrics-server is installed.
+production 네임스페이스의 Deployment web-app이 레플리카 2개로 실행 중입니다. metrics-server는 설치되어 있습니다.
 
-Tasks
-1. Create a HorizontalPodAutoscaler named web-app for Deployment web-app that keeps the average
-   CPU utilization at 70%, with at least 2 and at most 10 replicas
-2. Verify the HPA reads CPU metrics (TARGETS shows a percentage, not <unknown>)
+작업
+1. Deployment web-app에 대해 HorizontalPodAutoscaler web-app을 만드세요. 평균 CPU 사용률을
+   70%로 유지하고, 레플리카는 최소 2개, 최대 10개입니다
+2. HPA가 CPU 메트릭을 읽는지 확인하세요 (TARGETS에 <unknown>이 아니라 백분율이 표시되어야 합니다)
 ```
 
 ```bash
@@ -3700,14 +3675,14 @@ Tasks
 ```
 
 <details>
-<summary><b>Show solution</b></summary>
+<summary><b>풀이 보기</b></summary>
 
 ```bash
 kubectl autoscale deployment web-app -n production --min=2 --max=10 --cpu-percent=70
-# (kubectl 1.35 may print a deprecation note for --cpu-percent; the result is the same autoscaling/v2 object)
+# (kubectl 1.35는 --cpu-percent에 대해 deprecation 안내를 출력할 수 있지만, 결과는 같은 autoscaling/v2 객체)
 kubectl get hpa web-app -n production          # TARGETS cpu: 0%/70% after ~30-60s
 kubectl describe hpa web-app -n production
-# YAML version:
+# YAML 버전:
 # apiVersion: autoscaling/v2
 # kind: HorizontalPodAutoscaler
 # metadata: {name: web-app, namespace: production}
@@ -3718,30 +3693,30 @@ kubectl describe hpa web-app -n production
 #   metrics:
 #   - type: Resource
 #     resource: {name: cpu, target: {type: Utilization, averageUtilization: 70}}
-# Utilization is measured against the pods' CPU *requests* - without requests the HPA shows <unknown>.
+# 사용률은 Pod의 CPU *requests* 대비로 계산된다 - requests가 없으면 HPA에 <unknown>이 표시된다.
 ```
 
 </details>
 
-### Exam 1 · Q10 – Ingress with TLS  (Services & Networking | 8 min)
+### 1회 · Q10 – TLS를 쓰는 Ingress  (서비스와 네트워킹 | 8분)
 
 ```bash
 ./mock.sh 1 10
 ```
 
 ```text
-Service api (namespace default, port 80) must be published through ingress-nginx
-(IngressClass nginx, already installed). The TLS secret api-tls-cert already exists in default.
+Service api(default 네임스페이스, 포트 80)를 ingress-nginx(IngressClass nginx, 이미 설치됨)로
+외부에 공개해야 합니다. TLS Secret api-tls-cert는 default에 이미 있습니다.
 
-Tasks
-1. Create Ingress api-ingress for host api.example.com:
-   - TLS using secret api-tls-cert
-   - path /api (pathType Prefix) -> service api port 80
-2. Also route /health on host api.example.com to service api port 80. Load balancer health
-   checks call it over plain HTTP, so HTTP requests to /health must be answered directly
-   (not redirected to HTTPS), while HTTP requests to /api are still redirected.
-   Hint: ingress-nginx annotations apply to a whole Ingress object.
-3. Test with curl against the ingress-nginx NodePorts (use --resolve or a Host header)
+작업
+1. 호스트 api.example.com에 대한 Ingress api-ingress를 만드세요:
+   - Secret api-tls-cert로 TLS 적용
+   - 경로 /api (pathType Prefix) -> Service api 포트 80
+2. 호스트 api.example.com의 /health도 Service api 포트 80으로 라우팅하세요. 로드 밸런서 헬스
+   체크가 평문 HTTP로 호출하므로 /health로 오는 HTTP 요청은 (HTTPS로 리다이렉트하지 말고)
+   바로 응답해야 하며, /api로 오는 HTTP 요청은 계속 리다이렉트되어야 합니다.
+   힌트: ingress-nginx 어노테이션은 Ingress 객체 전체에 적용됩니다.
+3. ingress-nginx NodePort로 curl 테스트를 하세요 (--resolve 또는 Host 헤더 사용)
 ```
 
 ```bash
@@ -3749,7 +3724,7 @@ Tasks
 ```
 
 <details>
-<summary><b>Show solution</b></summary>
+<summary><b>풀이 보기</b></summary>
 
 ```bash
 cat <<'EOF' | kubectl apply -f -
@@ -3781,7 +3756,7 @@ metadata:
   name: api-health
   namespace: default
   annotations:
-    nginx.ingress.kubernetes.io/ssl-redirect: "false"     # only for the paths of THIS Ingress
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"     # 이 Ingress의 경로에만 적용
 spec:
   ingressClassName: nginx
   rules:
@@ -3802,29 +3777,29 @@ SP=$(kubectl get svc ingress-nginx-controller -n ingress-nginx -o jsonpath='{.sp
 curl -sk --resolve api.example.com:$SP:$IP https://api.example.com:$SP/api/                          # api says hello
 curl -s -o /dev/null -w '%{http_code}\n' --resolve api.example.com:$HP:$IP http://api.example.com:$HP/api/    # 308
 curl -s --resolve api.example.com:$HP:$IP http://api.example.com:$HP/health                          # api says hello
-# Why two Ingresses: once a host has TLS, ingress-nginx redirects HTTP -> HTTPS (308).
-# The ssl-redirect annotation is per Ingress, so /health lives in its own Ingress with redirect off.
+# Ingress를 둘로 나누는 이유: 호스트에 TLS가 있으면 ingress-nginx는 HTTP를 HTTPS로 리다이렉트한다 (308).
+# ssl-redirect 어노테이션은 Ingress 단위이므로 /health는 리다이렉트를 끈 별도 Ingress에 둔다.
 ```
 
 </details>
 
-### Exam 1 · Q11 – Cluster Troubleshooting  (Troubleshooting | 12 min)
+### 1회 · Q11 – 클러스터 트러블슈팅  (트러블슈팅 | 12분)
 
 ```bash
 ./mock.sh 1 11
 ```
 
 ```text
-The kube-scheduler has stopped running. Pod sched-test in namespace default stays Pending.
+kube-scheduler가 멈췄습니다. default 네임스페이스의 Pod sched-test가 계속 Pending입니다.
 
-Tasks
-1. Check the status of the control plane components
-2. Find out why the kube-scheduler is not running (static pod - kubelet / container logs)
-3. Fix it so the scheduler runs again and sched-test gets scheduled
-4. Document the root cause in one line in /root/mock1/q11-cause.txt
+작업
+1. 컨트롤 플레인 구성 요소의 상태를 확인하세요
+2. kube-scheduler가 실행되지 않는 원인을 찾으세요 (static Pod - kubelet / 컨테이너 로그)
+3. 스케줄러가 다시 실행되고 sched-test가 스케줄되도록 고치세요
+4. 근본 원인을 /root/mock1/q11-cause.txt에 한 줄로 적으세요
 
-Do NOT keep backup copies inside /etc/kubernetes/manifests - kubelet runs every file there.
-(./mock.sh 1 start does not break the scheduler - run ./mock.sh 1 11 when you reach this question.)
+/etc/kubernetes/manifests 안에 백업 사본을 두지 마세요 - kubelet은 그 안의 파일을 모두 실행합니다.
+(./mock.sh 1 start는 스케줄러를 망가뜨리지 않습니다 - 이 문제에 오면 ./mock.sh 1 11을 실행하세요.)
 ```
 
 ```bash
@@ -3832,42 +3807,42 @@ Do NOT keep backup copies inside /etc/kubernetes/manifests - kubelet runs every 
 ```
 
 <details>
-<summary><b>Show solution</b></summary>
+<summary><b>풀이 보기</b></summary>
 
 ```bash
-kubectl get pods -n kube-system | grep scheduler           # CrashLoopBackOff (or missing)
-kubectl get pod sched-test                                 # Pending, no node assigned
+kubectl get pods -n kube-system | grep scheduler           # CrashLoopBackOff (또는 없음)
+kubectl get pod sched-test                                 # Pending, 노드 미배정
 crictl ps -a --name kube-scheduler                         # Exited
 crictl logs $(crictl ps -a --name kube-scheduler -q | head -1) 2>&1 | tail -5
 #   ... stat /etc/kubernetes/scheduler.config: no such file or directory
 journalctl -u kubelet --no-pager | grep -i scheduler | tail -5
-ls /etc/kubernetes/*.conf                                  # the real file is scheduler.conf
+ls /etc/kubernetes/*.conf                                  # 실제 파일은 scheduler.conf
 grep kubeconfig /etc/kubernetes/manifests/kube-scheduler.yaml
 sed -i 's#/etc/kubernetes/scheduler.config#/etc/kubernetes/scheduler.conf#g' /etc/kubernetes/manifests/kube-scheduler.yaml
 sleep 30; crictl ps --name kube-scheduler                  # Running
-kubectl get pod sched-test -o wide                         # scheduled, Running
+kubectl get pod sched-test -o wide                         # 스케줄됨, Running
 echo "kube-scheduler manifest pointed --kubeconfig/--authentication-kubeconfig/--authorization-kubeconfig at /etc/kubernetes/scheduler.config (does not exist); fixed to scheduler.conf" > /root/mock1/q11-cause.txt
-# Restarting kubelet is not needed: it notices manifest changes by itself.
+# kubelet을 재시작할 필요는 없다: 매니페스트 변경을 스스로 감지한다.
 ```
 
 </details>
 
-### Exam 1 · Q12 – StatefulSet with Persistent Storage  (Workloads & Storage | 10 min)
+### 1회 · Q12 – 영구 스토리지를 쓰는 StatefulSet  (워크로드와 스토리지 | 10분)
 
 ```bash
 ./mock.sh 1 12
 ```
 
 ```text
-Tasks (namespace default)
-1. Create a headless Service database-cluster exposing port 5432, selecting app=database-cluster
-2. Create a StatefulSet database-cluster:
-   - 3 replicas, serviceName database-cluster, pod label app=database-cluster
-   - container postgres, image postgres:17-alpine, port 5432, env POSTGRES_PASSWORD=mockexam
-   - a volumeClaimTemplate named data: 10Gi, ReadWriteOnce, storageClassName local-path,
-     mounted at /var/lib/postgresql/data
-3. Verify all 3 pods are Ready, each has its own Bound PVC, and that the stable DNS name
-   database-cluster-0.database-cluster resolves from another pod
+작업 (default 네임스페이스)
+1. 포트 5432를 노출하고 app=database-cluster를 선택하는 headless Service database-cluster를 만드세요
+2. StatefulSet database-cluster를 만드세요:
+   - 레플리카 3개, serviceName database-cluster, Pod 레이블 app=database-cluster
+   - 컨테이너 postgres, 이미지 postgres:17-alpine, 포트 5432, env POSTGRES_PASSWORD=mockexam
+   - volumeClaimTemplate data: 10Gi, ReadWriteOnce, storageClassName local-path,
+     /var/lib/postgresql/data에 마운트
+3. Pod 3개가 모두 Ready이고 각자 Bound된 PVC를 가지며, 다른 Pod에서 고정 DNS 이름
+   database-cluster-0.database-cluster가 해석되는지 확인하세요
 ```
 
 ```bash
@@ -3875,7 +3850,7 @@ Tasks (namespace default)
 ```
 
 <details>
-<summary><b>Show solution</b></summary>
+<summary><b>풀이 보기</b></summary>
 
 ```bash
 cat <<'EOF' | kubectl apply -f -
@@ -3931,29 +3906,29 @@ spec:
 EOF
 kubectl rollout status sts database-cluster
 kubectl get pods -l app=database-cluster -o wide
-kubectl get pvc                         # data-database-cluster-0/1/2, all Bound
+kubectl get pvc                         # data-database-cluster-0/1/2, 모두 Bound
 kubectl exec database-cluster-1 -- nslookup database-cluster-0.database-cluster
-# PVC names are <template name>-<pod name>. postgres needs POSTGRES_PASSWORD or it exits.
+# PVC 이름은 <템플릿 이름>-<Pod 이름>이다. postgres는 POSTGRES_PASSWORD가 없으면 종료된다.
 ```
 
 </details>
 
-### Exam 1 · Q13 – Resource Quotas and Limits  (Workloads & Scheduling | 8 min)
+### 1회 · Q13 – ResourceQuota와 LimitRange  (워크로드와 스케줄링 | 8분)
 
 ```bash
 ./mock.sh 1 13
 ```
 
 ```text
-Namespace test uses too many resources.
+test 네임스페이스가 리소스를 너무 많이 씁니다.
 
-Tasks
-1. Create ResourceQuota test-quota in namespace test: total CPU requests 4 cores and total
-   memory requests 8Gi (you may also cap limits at the same values)
-2. Create LimitRange test-limits in namespace test so every container must request at least
-   100m CPU and 128Mi memory
-3. Verify that a pod requesting 6 CPUs / 4Gi (limits equal) is rejected, and so is a pod
-   requesting 50m CPU / 64Mi. Save the error for the 6-CPU pod to /root/mock1/q13-rejected.txt
+작업
+1. test 네임스페이스에 ResourceQuota test-quota를 만드세요: CPU requests 합계 4코어, 메모리
+   requests 합계 8Gi (limits도 같은 값으로 제한해도 됩니다)
+2. test 네임스페이스에 LimitRange test-limits를 만들어 모든 컨테이너가 최소 CPU 100m,
+   메모리 128Mi를 request하도록 하세요
+3. CPU 6개 / 4Gi를 request하는 Pod(limits도 같음)가 거부되고, CPU 50m / 64Mi를 request하는
+   Pod도 거부되는지 확인하세요. CPU 6개 Pod의 에러를 /root/mock1/q13-rejected.txt에 저장하세요
 ```
 
 ```bash
@@ -3961,7 +3936,7 @@ Tasks
 ```
 
 <details>
-<summary><b>Show solution</b></summary>
+<summary><b>풀이 보기</b></summary>
 
 ```bash
 cat <<'EOF' | kubectl apply -f -
@@ -3991,31 +3966,31 @@ spec:
 EOF
 kubectl describe quota test-quota -n test
 kubectl describe limitrange test-limits -n test
-# kubectl run has no --requests flag any more (removed in 1.24) - use --overrides or YAML:
+# kubectl run에는 이제 --requests 플래그가 없다 (1.24에서 제거) - --overrides나 YAML을 쓴다:
 kubectl run big -n test --image=nginx:1.27 --restart=Never --overrides='{"spec":{"containers":[{"name":"big","image":"nginx:1.27","resources":{"requests":{"cpu":"6","memory":"4Gi"},"limits":{"cpu":"6","memory":"4Gi"}}}]}}' 2> /root/mock1/q13-rejected.txt
 cat /root/mock1/q13-rejected.txt     # forbidden: exceeded quota: test-quota, requested: ... cpu=6 ...
 kubectl run tiny -n test --image=nginx:1.27 --restart=Never --overrides='{"spec":{"containers":[{"name":"tiny","image":"nginx:1.27","resources":{"requests":{"cpu":"50m","memory":"64Mi"},"limits":{"cpu":"50m","memory":"64Mi"}}}]}}'
 #   forbidden: minimum cpu usage per Container is 100m, but request is 50m
-# Note: a 2 CPU / 2Gi pod (the original wording) FITS a 4 CPU / 8Gi quota - it would be admitted.
-# With limits.* in the quota, every pod must also set limits (or get them from a LimitRange default).
+# 참고: CPU 2개 / 2Gi Pod(원래 문제 문구)는 4 CPU / 8Gi 쿼터 안에 들어가므로 승인된다.
+# 쿼터에 limits.*가 있으면 모든 Pod가 limits도 설정해야 한다 (또는 LimitRange 기본값으로 받아야 한다).
 ```
 
 </details>
 
-### Exam 1 · Q14 – Pod Security Standards  (Cluster Architecture | 8 min)
+### 1회 · Q14 – Pod Security Standards  (클러스터 아키텍처 | 8분)
 
 ```bash
 ./mock.sh 1 14
 ```
 
 ```text
-Namespace restricted must enforce security policies with Pod Security Admission.
+restricted 네임스페이스에 Pod Security Admission으로 보안 정책을 강제해야 합니다.
 
-Tasks
-1. Enforce the restricted Pod Security Standard on namespace restricted
-2. Audit at level baseline in the same namespace
-3. Try to create a pod with privileged: true in restricted and verify it is denied.
-   Save the error message to /root/mock1/q14-denied.txt
+작업
+1. restricted 네임스페이스에 restricted Pod Security Standard를 enforce로 적용하세요
+2. 같은 네임스페이스에 baseline 레벨로 audit을 설정하세요
+3. restricted에 privileged: true Pod를 만들어 보고 거부되는지 확인하세요.
+   에러 메시지를 /root/mock1/q14-denied.txt에 저장하세요
 ```
 
 ```bash
@@ -4023,7 +3998,7 @@ Tasks
 ```
 
 <details>
-<summary><b>Show solution</b></summary>
+<summary><b>풀이 보기</b></summary>
 
 ```bash
 kubectl label ns restricted \
@@ -4034,27 +4009,27 @@ kubectl run priv-pod -n restricted --image=nginx:1.27 --privileged 2> /root/mock
 cat /root/mock1/q14-denied.txt
 #   Error from server (Forbidden): pods "priv-pod" is forbidden: violates PodSecurity "restricted:latest":
 #   privileged (container "priv-pod" must not set securityContext.privileged=true), allowPrivilegeEscalation != false, ...
-# enforce rejects; audit only writes an annotation to the audit log; warn prints a warning to the client.
-# restricted requires e.g. runAsNonRoot, allowPrivilegeEscalation=false, drop ALL capabilities and a
-# seccompProfile - it does NOT require a read-only root filesystem. (PodSecurityPolicy was removed in 1.25.)
+# enforce는 거부하고, audit은 audit 로그에 어노테이션만 남기며, warn은 클라이언트에 경고를 출력한다.
+# restricted는 runAsNonRoot, allowPrivilegeEscalation=false, 모든 capability drop(ALL),
+# seccompProfile 등을 요구한다 - 읽기 전용 루트 파일시스템은 요구하지 않는다. (PodSecurityPolicy는 1.25에서 제거됨.)
 ```
 
 </details>
 
-### Exam 1 · Q15 – Multi-Container Pod with Sidecar  (Workloads & Scheduling | 8 min)
+### 1회 · Q15 – sidecar가 있는 멀티 컨테이너 Pod  (워크로드와 스케줄링 | 8분)
 
 ```bash
 ./mock.sh 1 15
 ```
 
 ```text
-Tasks (namespace default)
-Create pod app-with-logger with:
-1. Container nginx, image nginx:1.28
-2. Container logger, image busybox:1.37, that follows the nginx access log:  tail -F /logs/access.log
-3. An emptyDir volume shared by both: mounted at /var/log/nginx in nginx and at /logs in logger
-4. Both containers keep running without restarts, and requests to nginx show up in
-   kubectl logs app-with-logger -c logger
+작업 (default 네임스페이스)
+다음 조건으로 Pod app-with-logger를 만드세요:
+1. 컨테이너 nginx, 이미지 nginx:1.28
+2. 컨테이너 logger, 이미지 busybox:1.37, nginx access 로그를 따라 읽습니다:  tail -F /logs/access.log
+3. 두 컨테이너가 공유하는 emptyDir 볼륨: nginx에서는 /var/log/nginx, logger에서는 /logs에 마운트
+4. 두 컨테이너 모두 재시작 없이 계속 실행되고, nginx로 보낸 요청이
+   kubectl logs app-with-logger -c logger에 나타나야 합니다
 ```
 
 ```bash
@@ -4062,7 +4037,7 @@ Create pod app-with-logger with:
 ```
 
 <details>
-<summary><b>Show solution</b></summary>
+<summary><b>풀이 보기</b></summary>
 
 ```bash
 cat <<'EOF' | kubectl apply -f -
@@ -4091,34 +4066,33 @@ EOF
 kubectl get pod app-with-logger
 kubectl exec app-with-logger -c nginx -- curl -s localhost >/dev/null
 kubectl logs app-with-logger -c logger
-# The nginx image links access.log to /dev/stdout; mounting the emptyDir over /var/log/nginx
-# replaces those links, so nginx writes real files the sidecar can read.
-# tail -F (capital F) keeps retrying if the file doesn't exist yet - tail -f would exit and crash-loop.
-# A native sidecar (initContainers + restartPolicy: Always) is fine too.
+# nginx 이미지는 access.log를 /dev/stdout에 링크해 둔다. /var/log/nginx 위에 emptyDir을 마운트하면
+# 그 링크가 가려지므로 nginx가 sidecar가 읽을 수 있는 실제 파일에 기록한다.
+# tail -F(대문자 F)는 파일이 아직 없어도 계속 재시도한다 - tail -f는 종료되어 crash-loop에 빠진다.
+# 네이티브 sidecar(initContainers + restartPolicy: Always)를 써도 된다.
 ```
 
 </details>
+## 5. 모의고사 2회
 
-## 5. Mock Exam 2
+`./mock.sh 2 start`로 시험 전체를 시작하고, `./mock.sh 2 score`로 채점합니다.
 
-Start the whole exam with `./mock.sh 2 start`, check it with `./mock.sh 2 score`.
-
-### Exam 2 · Q1 – Service Discovery and DNS  (Services & Networking | 6 min)
+### 2회 · Q1 – Service 디스커버리와 DNS  (서비스와 네트워킹 | 6분)
 
 ```bash
 ./mock.sh 2 1
 ```
 
 ```text
-Service web-ui in namespace frontend exposes port 3000. An application in namespace backend
-must call it by DNS.
+frontend 네임스페이스의 Service web-ui가 포트 3000을 노출합니다. backend 네임스페이스의 애플리케이션이
+DNS로 이 Service를 호출해야 합니다.
 
-Tasks
-1. Write the fully qualified DNS name of the service to /root/mock2/q01-fqdn.txt
-2. Create pod dns-test in namespace backend (image busybox:1.37, command: sleep 3600)
-3. From dns-test, resolve the service name with nslookup and write the IP it resolves to
-   into /root/mock2/q01-ip.txt
-4. From dns-test, fetch http://web-ui.frontend:3000 and check the answer
+작업
+1. Service의 FQDN(전체 DNS 이름)을 /root/mock2/q01-fqdn.txt에 쓰세요
+2. backend 네임스페이스에 Pod dns-test를 만드세요 (이미지 busybox:1.37, 명령: sleep 3600)
+3. dns-test에서 nslookup으로 Service 이름을 조회하고, 조회된 IP를
+   /root/mock2/q01-ip.txt에 쓰세요
+4. dns-test에서 http://web-ui.frontend:3000 을 호출해 응답을 확인하세요
 ```
 
 ```bash
@@ -4126,7 +4100,7 @@ Tasks
 ```
 
 <details>
-<summary><b>Show solution</b></summary>
+<summary><b>풀이 보기</b></summary>
 
 ```bash
 echo web-ui.frontend.svc.cluster.local > /root/mock2/q01-fqdn.txt     # <service>.<namespace>.svc.cluster.local
@@ -4135,26 +4109,26 @@ kubectl wait --for=condition=Ready pod/dns-test -n backend
 kubectl exec dns-test -n backend -- nslookup web-ui.frontend.svc.cluster.local
 kubectl get svc web-ui -n frontend -o jsonpath='{.spec.clusterIP}' > /root/mock2/q01-ip.txt
 kubectl exec dns-test -n backend -- wget -qO- http://web-ui.frontend:3000           # hello from web-ui
-# From another namespace the short name "web-ui" does NOT resolve - you need at least web-ui.frontend.
-# DNS returns the ClusterIP of a normal Service (pod IPs only for headless Services).
+# 다른 네임스페이스에서는 짧은 이름 "web-ui"가 조회되지 않는다 - 최소한 web-ui.frontend까지 써야 한다.
+# 일반 Service는 DNS가 ClusterIP를 돌려준다 (Pod IP는 headless Service일 때만).
 ```
 
 </details>
 
-### Exam 2 · Q2 – Deployment Rolling Update and Rollback  (Workloads | 8 min)
+### 2회 · Q2 – Deployment 롤링 업데이트와 롤백  (워크로드 | 8분)
 
 ```bash
 ./mock.sh 2 2
 ```
 
 ```text
-Deployment payment-service in namespace payments was updated to a version that does not work.
+payments 네임스페이스의 Deployment payment-service가 동작하지 않는 버전으로 업데이트되었습니다.
 
-Tasks
-1. Check the rollout history of payment-service
-2. Write the number of the broken revision to /root/mock2/q02-bad-revision.txt
-3. Roll back to the last working version (image nginx:1.27)
-4. Verify the rollback completed and all 3 replicas are available
+작업
+1. payment-service의 롤아웃 히스토리를 확인하세요
+2. 문제가 있는 revision 번호를 /root/mock2/q02-bad-revision.txt에 쓰세요
+3. 마지막으로 정상 동작한 버전(이미지 nginx:1.27)으로 롤백하세요
+4. 롤백이 끝났고 레플리카 3개가 모두 available인지 확인하세요
 ```
 
 ```bash
@@ -4162,7 +4136,7 @@ Tasks
 ```
 
 <details>
-<summary><b>Show solution</b></summary>
+<summary><b>풀이 보기</b></summary>
 
 ```bash
 kubectl rollout history deployment/payment-service -n payments
@@ -4173,30 +4147,30 @@ kubectl rollout history deployment/payment-service -n payments
 kubectl rollout history deployment/payment-service -n payments --revision=4     # image nginx:1.27-payments-hotfix
 kubectl get pods -n payments                                                     # ErrImagePull / ImagePullBackOff
 echo 4 > /root/mock2/q02-bad-revision.txt
-kubectl rollout undo deployment/payment-service -n payments                      # back to the previous revision (3)
-#   or: kubectl rollout undo deployment/payment-service -n payments --to-revision=3
+kubectl rollout undo deployment/payment-service -n payments                      # 직전 revision(3)으로 되돌림
+#   또는: kubectl rollout undo deployment/payment-service -n payments --to-revision=3
 kubectl rollout status deployment/payment-service -n payments
 kubectl get deploy payment-service -n payments -o jsonpath='{.spec.template.spec.containers[0].image}{"\n"}'
-kubectl rollout history deployment/payment-service -n payments                   # revision 3 is now revision 5
+kubectl rollout history deployment/payment-service -n payments                   # revision 3이 이제 revision 5가 됨
 ```
 
 </details>
 
-### Exam 2 · Q3 – Secrets and Environment Variables  (Workloads | 7 min)
+### 2회 · Q3 – Secret과 환경 변수  (워크로드 | 7분)
 
 ```bash
 ./mock.sh 2 3
 ```
 
 ```text
-Deployment app-deploy in namespace secrets-demo (container app) needs database credentials.
+secrets-demo 네임스페이스의 Deployment app-deploy(컨테이너 app)에 데이터베이스 접속 정보가 필요합니다.
 
-Tasks
-1. Create a Secret db-creds in secrets-demo with keys:
+작업
+1. secrets-demo에 다음 키를 가진 Secret db-creds를 만드세요:
      username=dbuser   password=secret123   database=appdb
-2. Expose them to the app container as the environment variables DB_USERNAME, DB_PASSWORD and
-   DB_DATABASE, taken from the Secret (not as files, and not as plain values in the Deployment)
-3. Verify the new pod sees the variables, without the values appearing in the pod logs
+2. 이 값들을 Secret에서 가져와 app 컨테이너에 환경 변수 DB_USERNAME, DB_PASSWORD,
+   DB_DATABASE로 넣으세요 (파일로 넣지 말고, Deployment에 값을 직접 쓰지도 마세요)
+3. 새 Pod에서 변수가 보이는지 확인하세요. 단, Pod 로그에 값이 나오면 안 됩니다
 ```
 
 ```bash
@@ -4204,15 +4178,15 @@ Tasks
 ```
 
 <details>
-<summary><b>Show solution</b></summary>
+<summary><b>풀이 보기</b></summary>
 
 ```bash
 kubectl create secret generic db-creds -n secrets-demo \
   --from-literal=username=dbuser --from-literal=password=secret123 --from-literal=database=appdb
-# Quick way: one secretKeyRef per key, names upper-cased with the prefix
+# 빠른 방법: 키마다 secretKeyRef 하나씩, 이름은 대문자로 바뀌고 접두어가 붙는다
 kubectl set env deployment/app-deploy -n secrets-demo --from=secret/db-creds --prefix=DB_
 kubectl get deploy app-deploy -n secrets-demo -o yaml | grep -A4 'name: DB_'
-# Same result in YAML (under the app container):
+# YAML로 쓰면 같은 결과 (app 컨테이너 아래):
 #   env:
 #   - name: DB_USERNAME
 #     valueFrom: {secretKeyRef: {name: db-creds, key: username}}
@@ -4222,27 +4196,27 @@ kubectl get deploy app-deploy -n secrets-demo -o yaml | grep -A4 'name: DB_'
 #     valueFrom: {secretKeyRef: {name: db-creds, key: database}}
 kubectl rollout status deployment/app-deploy -n secrets-demo
 kubectl exec deploy/app-deploy -n secrets-demo -- env | grep DB_
-kubectl logs deploy/app-deploy -n secrets-demo                  # only "app started"
-# Secrets are base64-encoded, not encrypted. Anyone allowed to exec into the pod or read the
-# Secret can see the values - control that with RBAC (and encryption at rest for etcd).
+kubectl logs deploy/app-deploy -n secrets-demo                  # "app started"만 나옴
+# Secret은 base64 인코딩일 뿐 암호화가 아니다. Pod에 exec하거나 Secret을 읽을 권한이 있으면
+# 누구나 값을 볼 수 있다 - RBAC(그리고 etcd 저장 시 암호화)로 통제한다.
 ```
 
 </details>
 
-### Exam 2 · Q4 – DaemonSet Configuration  (Workloads & Scheduling | 8 min)
+### 2회 · Q4 – DaemonSet 설정  (워크로드와 스케줄링 | 8분)
 
 ```bash
 ./mock.sh 2 4
 ```
 
 ```text
-DaemonSet monitoring-agent in namespace monitoring must run on every node, including the
-control plane. Right now the control plane node is missing its agent because of its taint.
+monitoring 네임스페이스의 DaemonSet monitoring-agent는 컨트롤 플레인을 포함한 모든 노드에서 실행되어야 합니다.
+지금은 컨트롤 플레인 노드의 taint 때문에 그 노드에 agent가 없습니다.
 
-Tasks
-1. Update the DaemonSet so it tolerates node-role.kubernetes.io/control-plane:NoSchedule
-   (keep the image busybox:1.37)
-2. Verify one agent pod runs on every node
+작업
+1. DaemonSet이 node-role.kubernetes.io/control-plane:NoSchedule 을 tolerate하도록 수정하세요
+   (이미지는 busybox:1.37 그대로 유지)
+2. 모든 노드에서 agent Pod가 하나씩 실행되는지 확인하세요
 ```
 
 ```bash
@@ -4250,43 +4224,43 @@ Tasks
 ```
 
 <details>
-<summary><b>Show solution</b></summary>
+<summary><b>풀이 보기</b></summary>
 
 ```bash
 kubectl describe node controlplane | grep Taints        # node-role.kubernetes.io/control-plane:NoSchedule
-kubectl get ds monitoring-agent -n monitoring           # DESIRED = number of worker nodes only
+kubectl get ds monitoring-agent -n monitoring           # DESIRED = 워커 노드 수만큼
 kubectl patch ds monitoring-agent -n monitoring --type=json -p='[{"op":"add","path":"/spec/template/spec/tolerations","value":[{"key":"node-role.kubernetes.io/control-plane","operator":"Exists","effect":"NoSchedule"}]}]'
-# or kubectl edit ds monitoring-agent -n monitoring and add under spec.template.spec:
+# 또는 kubectl edit ds monitoring-agent -n monitoring 으로 spec.template.spec 아래에 추가:
 #   tolerations:
 #   - key: node-role.kubernetes.io/control-plane
 #     operator: Exists
 #     effect: NoSchedule
 kubectl rollout status ds monitoring-agent -n monitoring
-kubectl get pods -n monitoring -o wide                  # one pod per node, incl. controlplane
-# (The original exercise used datadog/agent:latest - a >1 GB image that also needs an API key,
-#  so this lab uses busybox.)
+kubectl get pods -n monitoring -o wide                  # 노드마다 Pod 하나, controlplane 포함
+# (원래 문제는 datadog/agent:latest를 썼는데, 1 GB가 넘는 이미지에 API 키도 필요해서
+#  이 랩에서는 busybox를 쓴다.)
 ```
 
 </details>
 
-### Exam 2 · Q5 – API Server Debugging  (Troubleshooting | 9 min)
+### 2회 · Q5 – API 서버 디버깅  (트러블슈팅 | 9분)
 
 ```bash
 ./mock.sh 2 5
 ```
 
 ```text
-The API server is slow. Audit logging is already enabled:
+API 서버가 느립니다. audit 로그는 이미 켜져 있습니다:
   policy /etc/kubernetes/audit/policy.yaml, log /var/log/kubernetes/audit/audit.log
 
-Tasks (control plane node)
-1. Save the last 50 lines of the kube-apiserver logs to /root/mock2/q05-apiserver.log
-2. Save the ss/netstat line that shows kube-apiserver listening on port 6443 to /root/mock2/q05-listen.txt
-3. Save the output of the API server's verbose readiness check (/readyz?verbose) to /root/mock2/q05-readyz.txt
-4. Using the audit log, find the user that sends the most requests and write the username to
-   /root/mock2/q05-top-user.txt
-5. Write the HTTP response code that user gets to /root/mock2/q05-code.txt
-6. Stop that client: scale its Deployment to 0 replicas (find which one it is)
+작업 (컨트롤 플레인 노드)
+1. kube-apiserver 로그의 마지막 50줄을 /root/mock2/q05-apiserver.log에 저장하세요
+2. kube-apiserver가 포트 6443에서 리슨 중임을 보여 주는 ss/netstat 줄을 /root/mock2/q05-listen.txt에 저장하세요
+3. API 서버의 상세 readiness 확인(/readyz?verbose) 출력을 /root/mock2/q05-readyz.txt에 저장하세요
+4. audit 로그에서 요청을 가장 많이 보내는 사용자를 찾아 사용자 이름을
+   /root/mock2/q05-top-user.txt에 쓰세요
+5. 그 사용자가 받는 HTTP 응답 코드를 /root/mock2/q05-code.txt에 쓰세요
+6. 그 클라이언트를 멈추세요: 해당 Deployment를 찾아 레플리카를 0으로 scale하세요
 ```
 
 ```bash
@@ -4294,50 +4268,50 @@ Tasks (control plane node)
 ```
 
 <details>
-<summary><b>Show solution</b></summary>
+<summary><b>풀이 보기</b></summary>
 
 ```bash
-# 1. logs - kubectl works while the API server is up; crictl works even when it is down
+# 1. 로그 - kubectl은 API 서버가 떠 있을 때만, crictl은 API 서버가 죽어 있어도 된다
 kubectl logs -n kube-system kube-apiserver-controlplane --tail=50 > /root/mock2/q05-apiserver.log
-#   or: crictl logs --tail=50 $(crictl ps --name kube-apiserver -q) > /root/mock2/q05-apiserver.log 2>&1
-#   (kubeadm runs it as a static pod - there is no kube-apiserver systemd unit to journalctl)
-# 2. listening socket
+#   또는: crictl logs --tail=50 $(crictl ps --name kube-apiserver -q) > /root/mock2/q05-apiserver.log 2>&1
+#   (kubeadm은 static Pod로 실행하므로 journalctl로 볼 kube-apiserver systemd 유닛이 없다)
+# 2. 리슨 소켓
 ss -tlnp | grep 6443 > /root/mock2/q05-listen.txt            # ... *:6443 ... users:(("kube-apiserver",pid=...))
-# 3. health
+# 3. 상태
 kubectl get --raw='/readyz?verbose' > /root/mock2/q05-readyz.txt
-# 4. who sends the most requests? The audit log is JSON lines - one event per line.
+# 4. 누가 요청을 가장 많이 보내나? audit 로그는 JSON lines 형식 - 한 줄에 이벤트 하나.
 jq -r '.user.username' /var/log/kubernetes/audit/audit.log | sort | uniq -c | sort -rn | head -5
-#   without jq: grep -o '"username":"[^"]*"' /var/log/kubernetes/audit/audit.log | sort | uniq -c | sort -rn | head
+#   jq 없이: grep -o '"username":"[^"]*"' /var/log/kubernetes/audit/audit.log | sort | uniq -c | sort -rn | head
 echo system:serviceaccount:reports:report-bot > /root/mock2/q05-top-user.txt
-# 5. response codes for that user
+# 5. 그 사용자의 응답 코드
 grep 'system:serviceaccount:reports:report-bot' /var/log/kubernetes/audit/audit.log | jq -r '.responseStatus.code' | sort | uniq -c
 echo 403 > /root/mock2/q05-code.txt
-# 6. the username says: ServiceAccount report-bot in namespace reports
+# 6. 사용자 이름이 알려 준다: reports 네임스페이스의 ServiceAccount report-bot
 kubectl get deploy -n reports -o wide
 kubectl scale deploy report-bot -n reports --replicas=0
-# Also useful: kubectl get --raw /metrics | grep apiserver_request_total, and APF:
+# 이것도 유용하다: kubectl get --raw /metrics | grep apiserver_request_total, 그리고 APF:
 # kubectl get --raw /debug/api_priority_and_fairness/dump_priority_levels
 ```
 
 </details>
 
-### Exam 2 · Q6 – ConfigMap Updates  (Workloads | 8 min)
+### 2회 · Q6 – ConfigMap 업데이트  (워크로드 | 8분)
 
 ```bash
 ./mock.sh 2 6
 ```
 
 ```text
-Namespace config-demo has ConfigMap app-config (key mode=blue) and two Deployments that use it:
-  volume-app - mounts the ConfigMap as a volume at /config
-  env-app    - reads the key into the environment variable MODE
+config-demo 네임스페이스에 ConfigMap app-config(키 mode=blue)와 이를 사용하는 Deployment 두 개가 있습니다:
+  volume-app - ConfigMap을 /config에 볼륨으로 마운트
+  env-app    - 키를 환경 변수 MODE로 읽음
 
-Tasks
-1. Change mode in ConfigMap app-config to green
-2. volume-app must pick up the change WITHOUT restarting its pod: verify /config/mode in the
-   running pod shows green (this can take up to about a minute)
-3. env-app still sees blue. Make it pick up the new value with a rolling restart
-   (do not delete or recreate the Deployment)
+작업
+1. ConfigMap app-config의 mode를 green으로 바꾸세요
+2. volume-app은 Pod를 재시작하지 않고 변경을 반영해야 합니다: 실행 중인 Pod의 /config/mode가
+   green인지 확인하세요 (최대 1분 정도 걸릴 수 있음)
+3. env-app은 여전히 blue를 봅니다. 롤링 재시작으로 새 값을 반영하세요
+   (Deployment를 삭제하거나 다시 만들지 마세요)
 ```
 
 ```bash
@@ -4345,41 +4319,41 @@ Tasks
 ```
 
 <details>
-<summary><b>Show solution</b></summary>
+<summary><b>풀이 보기</b></summary>
 
 ```bash
 kubectl patch configmap app-config -n config-demo -p '{"data":{"mode":"green"}}'
-#   or: kubectl edit cm app-config -n config-demo
-# Volume mounts (without subPath) are refreshed by the kubelet on its next sync - usually < 1 min.
+#   또는: kubectl edit cm app-config -n config-demo
+# 볼륨 마운트(subPath 없이)는 kubelet이 다음 sync 때 갱신한다 - 보통 1분 이내.
 P=$(kubectl get pod -n config-demo -l app=volume-app -o name)
-sleep 60; kubectl exec -n config-demo $P -- cat /config/mode            # green, same pod
+sleep 60; kubectl exec -n config-demo $P -- cat /config/mode            # green, 같은 Pod
 kubectl logs -n config-demo deploy/volume-app --tail=3
-# Environment variables are fixed when the container starts - only a new pod gets the new value:
-kubectl exec -n config-demo deploy/env-app -- printenv MODE              # still blue
+# 환경 변수는 컨테이너가 시작될 때 고정된다 - 새 Pod만 새 값을 받는다:
+kubectl exec -n config-demo deploy/env-app -- printenv MODE              # 여전히 blue
 kubectl rollout restart deployment/env-app -n config-demo
 kubectl rollout status deployment/env-app -n config-demo
 kubectl exec -n config-demo deploy/env-app -- printenv MODE              # green
-# Never updated automatically: env vars, envFrom, and subPath mounts.
-# Fully automatic restarts on change need a controller such as Stakater Reloader, or a config
-# hash annotation in the pod template that changes whenever the ConfigMap changes.
+# 자동으로 갱신되지 않는 것: 환경 변수, envFrom, subPath 마운트.
+# 변경 시 완전 자동 재시작을 하려면 Stakater Reloader 같은 컨트롤러나, ConfigMap이 바뀔 때마다
+# 함께 바뀌는 config 해시 어노테이션을 Pod 템플릿에 두어야 한다.
 ```
 
 </details>
 
-### Exam 2 · Q7 – PriorityClass and Eviction Order  (Workloads & Scheduling | 9 min)
+### 2회 · Q7 – PriorityClass와 축출 순서  (워크로드와 스케줄링 | 9분)
 
 ```bash
 ./mock.sh 2 7
 ```
 
 ```text
-Tasks
-1. Create PriorityClass critical-workload with value 1000 and PriorityClass standard-workload
-   with value 100. Both use preemptionPolicy PreemptLowerPriority. Neither is the global default.
-2. In namespace priority-demo create pods critical-pod-1 and critical-pod-2 (priority class
-   critical-workload) and standard-pod (priority class standard-workload), all image nginx:1.27
-3. If the node runs out of memory and all three pods use more memory than they request, which
-   pod does the kubelet evict first? Write its name to /root/mock2/q07-first-evicted.txt
+작업
+1. value 1000인 PriorityClass critical-workload와 value 100인 PriorityClass standard-workload를
+   만드세요. 둘 다 preemptionPolicy PreemptLowerPriority를 쓰고, 둘 다 global default가 아니어야 합니다.
+2. priority-demo 네임스페이스에 Pod critical-pod-1, critical-pod-2(priority class
+   critical-workload)와 standard-pod(priority class standard-workload)를 만드세요. 이미지는 모두 nginx:1.27
+3. 노드 메모리가 부족해지고 세 Pod 모두 request보다 메모리를 더 쓰고 있다면, kubelet은 어느 Pod를
+   먼저 축출할까요? 그 이름을 /root/mock2/q07-first-evicted.txt에 쓰세요
 ```
 
 ```bash
@@ -4387,7 +4361,7 @@ Tasks
 ```
 
 <details>
-<summary><b>Show solution</b></summary>
+<summary><b>풀이 보기</b></summary>
 
 ```bash
 cat <<'EOF' | kubectl apply -f -
@@ -4415,34 +4389,34 @@ done
 kubectl run standard-pod -n priority-demo --image=nginx:1.27 --overrides='{"spec":{"priorityClassName":"standard-workload"}}'
 kubectl get pods -n priority-demo -o custom-columns=NAME:.metadata.name,PRIORITY:.spec.priority
 echo standard-pod > /root/mock2/q07-first-evicted.txt
-# Two different mechanisms:
-# - Preemption (scheduler): a pending higher-priority pod may evict lower-priority pods to fit.
-#   preemptionPolicy: Never = the pod waits in the queue but never preempts others.
-# - Node-pressure eviction (kubelet): ranks pods by (1) usage above requests, (2) priority,
-#   (3) usage relative to requests. All three exceed their requests here, so the lowest
-#   priority pod - standard-pod - goes first.
-# Setting globalDefault: true would give every new pod without a class that priority - avoid it here.
+# 서로 다른 두 메커니즘:
+# - 선점(스케줄러): 대기 중인 높은 우선순위 Pod가 자리를 만들려고 낮은 우선순위 Pod를 축출할 수 있다.
+#   preemptionPolicy: Never = 큐에서 기다리기만 하고 다른 Pod를 선점하지 않는다.
+# - 노드 압박 축출(kubelet): (1) requests 초과 사용 여부, (2) 우선순위, (3) requests 대비 사용량
+#   순으로 Pod를 정렬한다. 여기서는 셋 다 requests를 넘으므로 우선순위가 가장 낮은
+#   Pod - standard-pod - 가 먼저 축출된다.
+# globalDefault: true로 하면 클래스를 지정하지 않은 새 Pod가 모두 그 우선순위를 받는다 - 여기서는 피한다.
 ```
 
 </details>
 
-### Exam 2 · Q8 – Service Types and Exposure  (Services & Networking | 7 min)
+### 2회 · Q8 – Service 타입과 노출  (서비스와 네트워킹 | 7분)
 
 ```bash
 ./mock.sh 2 8
 ```
 
 ```text
-Deployment legacy-app in namespace legacy (pod label app=legacy) listens on port 3000.
-It must be reachable from outside the cluster without an Ingress.
+legacy 네임스페이스의 Deployment legacy-app(Pod 레이블 app=legacy)은 포트 3000에서 리슨합니다.
+Ingress 없이 클러스터 밖에서 접근할 수 있어야 합니다.
 
-Tasks
-1. Create Service legacy-app of type NodePort in namespace legacy:
+작업
+1. legacy 네임스페이스에 NodePort 타입의 Service legacy-app을 만드세요:
    service port 8080 -> targetPort 3000, nodePort 30080
-2. Verify it answers on <node-ip>:30080 from outside the pod network
+2. Pod 네트워크 밖에서 <node-ip>:30080 으로 응답하는지 확인하세요
 
-(The original task asked for node port 8080. NodePorts must be inside the node port range,
- 30000-32767 by default, so 8080 is the service port here.)
+(원래 문제는 노드 포트 8080을 요구했습니다. NodePort는 노드 포트 범위(기본 30000-32767) 안이어야
+ 하므로 여기서는 8080을 service port로 씁니다.)
 ```
 
 ```bash
@@ -4450,7 +4424,7 @@ Tasks
 ```
 
 <details>
-<summary><b>Show solution</b></summary>
+<summary><b>풀이 보기</b></summary>
 
 ```bash
 cat <<'EOF' | kubectl apply -f -
@@ -4465,35 +4439,35 @@ spec:
     app: legacy
   ports:
   - protocol: TCP
-    port: 8080          # ClusterIP port inside the cluster
-    targetPort: 3000    # container port
-    nodePort: 30080     # opened on every node (30000-32767)
+    port: 8080          # 클러스터 안에서 쓰는 ClusterIP 포트
+    targetPort: 3000    # 컨테이너 포트
+    nodePort: 30080     # 모든 노드에 열림 (30000-32767)
 EOF
 kubectl get svc legacy-app -n legacy                  # 8080:30080/TCP
 kubectl get endpointslices -n legacy
 IP=$(kubectl get node node01 -o jsonpath='{.status.addresses[?(@.type=="InternalIP")].address}')
 curl http://$IP:30080                                 # legacy-app OK
 # kubectl expose deploy legacy-app -n legacy --type=NodePort --port=8080 --target-port=3000
-# also works, but picks a random nodePort - patch it to 30080 afterwards.
+# 도 되지만 nodePort가 임의로 정해진다 - 나중에 30080으로 patch한다.
 ```
 
 </details>
 
-### Exam 2 · Q9 – CronJob Scheduling  (Workloads | 7 min)
+### 2회 · Q9 – CronJob 스케줄링  (워크로드 | 7분)
 
 ```bash
 ./mock.sh 2 9
 ```
 
 ```text
-Tasks (namespace backup)
-1. Create CronJob backup-job: image busybox:1.37, command  sh -c 'echo Running backup; date; sleep 5'
-   - runs every day at 02:00
-   - keeps only the last 3 successful Jobs
+작업 (네임스페이스 backup)
+1. CronJob backup-job을 만드세요: 이미지 busybox:1.37, 명령  sh -c 'echo Running backup; date; sleep 5'
+   - 매일 02:00에 실행
+   - 성공한 Job은 최근 3개만 보관
    - restartPolicy OnFailure
-2. Suspend the CronJob (it must not run for the next month)
-3. While it is suspended, run it once by hand: create Job backup-manual from the CronJob and
-   make sure it completes
+2. CronJob을 일시 중지하세요 (다음 한 달 동안 실행되면 안 됨)
+3. 일시 중지된 상태에서 수동으로 한 번 실행하세요: CronJob으로부터 Job backup-manual을 만들고
+   완료되는지 확인하세요
 ```
 
 ```bash
@@ -4501,42 +4475,42 @@ Tasks (namespace backup)
 ```
 
 <details>
-<summary><b>Show solution</b></summary>
+<summary><b>풀이 보기</b></summary>
 
 ```bash
 kubectl create cronjob backup-job -n backup --image=busybox:1.37 --schedule="0 2 * * *" \
   --dry-run=client -o yaml -- sh -c 'echo Running backup; date; sleep 5' > backup-job.yaml
-# add successfulJobsHistoryLimit + suspend (kubectl create cronjob sets restartPolicy OnFailure already)
+# successfulJobsHistoryLimit + suspend 추가 (restartPolicy OnFailure는 kubectl create cronjob이 이미 넣어 줌)
 sed -i 's/^spec:$/spec:\n  successfulJobsHistoryLimit: 3\n  suspend: true/' backup-job.yaml
 kubectl apply -f backup-job.yaml
 kubectl get cronjob backup-job -n backup              # SUSPEND True, SCHEDULE 0 2 * * *
-# suspend / resume an existing CronJob:
+# 기존 CronJob 일시 중지 / 재개:
 #   kubectl patch cronjob backup-job -n backup -p '{"spec":{"suspend":true}}'
 #   kubectl patch cronjob backup-job -n backup -p '{"spec":{"suspend":false}}'
 kubectl create job backup-manual -n backup --from=cronjob/backup-job
 kubectl wait --for=condition=Complete job/backup-manual -n backup
 kubectl logs job/backup-manual -n backup
-# Cron fields: minute hour day-of-month month day-of-week. Times use the controller-manager's time
-# zone unless you set spec.timeZone (e.g. "Etc/UTC").
+# Cron 필드: 분 시 일 월 요일. spec.timeZone(예: "Etc/UTC")을 지정하지 않으면
+# controller-manager의 시간대를 따른다.
 ```
 
 </details>
 
-### Exam 2 · Q10 – Cluster Certificate Rotation  (Cluster Architecture | 10 min)
+### 2회 · Q10 – 클러스터 인증서 갱신  (클러스터 아키텍처 | 10분)
 
 ```bash
 ./mock.sh 2 10
 ```
 
 ```text
-The control plane certificates expire soon. On the control plane node:
+컨트롤 플레인 인증서가 곧 만료됩니다. 컨트롤 플레인 노드에서:
 
-Tasks
-1. Save the current expiration overview (kubeadm) to /root/mock2/q10-before.txt
-2. Renew all kubeadm-managed certificates
-3. Make the control plane components use the new certificates - the API server on port 6443
-   must serve the renewed certificate
-4. Make sure kubectl still works afterwards
+작업
+1. 현재 만료 현황(kubeadm)을 /root/mock2/q10-before.txt에 저장하세요
+2. kubeadm이 관리하는 인증서를 모두 갱신하세요
+3. 컨트롤 플레인 구성 요소가 새 인증서를 쓰게 하세요 - 포트 6443의 API 서버가
+   갱신된 인증서를 제공해야 합니다
+4. 그 뒤에도 kubectl이 동작하는지 확인하세요
 ```
 
 ```bash
@@ -4544,46 +4518,46 @@ Tasks
 ```
 
 <details>
-<summary><b>Show solution</b></summary>
+<summary><b>풀이 보기</b></summary>
 
 ```bash
 kubeadm certs check-expiration | tee /root/mock2/q10-before.txt
 kubeadm certs renew all
 #   "Done renewing certificates. You must restart the kube-apiserver, kube-controller-manager,
 #    kube-scheduler and etcd, so that they can use the new certificates."
-kubeadm certs check-expiration                       # new dates
-# Restart the static pods: move the manifests out, wait until the containers are gone, move them back.
-# (systemctl restart kubelet does NOT restart running static pod containers, and
-#  kubectl delete pod on a mirror pod does not restart the container either.)
+kubeadm certs check-expiration                       # 새 날짜
+# static Pod 재시작: 매니페스트를 밖으로 옮기고, 컨테이너가 사라질 때까지 기다렸다가, 다시 넣는다.
+# (systemctl restart kubelet으로는 실행 중인 static Pod 컨테이너가 재시작되지 않고,
+#  mirror Pod에 kubectl delete pod를 해도 컨테이너는 재시작되지 않는다.)
 mkdir -p /root/manifests-tmp
 mv /etc/kubernetes/manifests/*.yaml /root/manifests-tmp/
 sleep 20; crictl ps | grep -E 'kube-apiserver|etcd|kube-scheduler|kube-controller' || echo "all stopped"
 mv /root/manifests-tmp/*.yaml /etc/kubernetes/manifests/
 until kubectl get --raw=/readyz >/dev/null 2>&1; do sleep 5; done
-# admin.conf was renewed too - refresh your kubeconfig
+# admin.conf도 갱신되었으므로 kubeconfig를 새로 복사한다
 cp /etc/kubernetes/admin.conf /root/.kube/config
 kubectl get nodes
 echo | openssl s_client -connect 127.0.0.1:6443 2>/dev/null | openssl x509 -noout -dates
-# The CA certificates (10 years) are not renewed by "renew all". kubelet client certs rotate by themselves.
+# CA 인증서(10년)는 "renew all"로 갱신되지 않는다. kubelet 클라이언트 인증서는 자동으로 교체된다.
 ```
 
 </details>
 
-### Exam 2 · Q11 – Pod Disruption Budgets  (Workloads & Scheduling | 8 min)
+### 2회 · Q11 – Pod Disruption Budget  (워크로드와 스케줄링 | 8분)
 
 ```bash
 ./mock.sh 2 11
 ```
 
 ```text
-Deployment my-app in namespace pdb-demo runs 10 replicas (label app=my-app). It may never lose
-more than 2 pods at once to voluntary disruptions such as node drains.
+pdb-demo 네임스페이스의 Deployment my-app은 레플리카 10개(레이블 app=my-app)로 실행됩니다. 노드 drain 같은
+자발적 중단으로 한 번에 Pod를 2개보다 많이 잃으면 안 됩니다.
 
-Tasks
-1. Create PodDisruptionBudget app-pdb in pdb-demo that enforces this
-2. Test it: drain node01 (ignore DaemonSets, only the app=my-app pods, use --timeout=60s) and
-   watch the evictions get blocked. Do not use --force: pods of other questions also run on node01
-3. Uncordon node01 afterwards and make sure all 10 replicas are available again
+작업
+1. 이를 강제하는 PodDisruptionBudget app-pdb를 pdb-demo에 만드세요
+2. 테스트하세요: node01을 drain하고(DaemonSet 무시, app=my-app Pod만, --timeout=60s 사용)
+   축출이 막히는 것을 확인하세요. --force는 쓰지 마세요: node01에는 다른 문제의 Pod도 실행 중입니다
+3. 그 뒤 node01을 uncordon하고 레플리카 10개가 모두 다시 available인지 확인하세요
 ```
 
 ```bash
@@ -4591,46 +4565,46 @@ Tasks
 ```
 
 <details>
-<summary><b>Show solution</b></summary>
+<summary><b>풀이 보기</b></summary>
 
 ```bash
 kubectl create pdb app-pdb -n pdb-demo --selector=app=my-app --min-available=8
-#   (equivalent: --max-unavailable=2)
+#   (같은 의미: --max-unavailable=2)
 kubectl get pdb app-pdb -n pdb-demo                 # ALLOWED DISRUPTIONS 2
 kubectl drain node01 --ignore-daemonsets --pod-selector=app=my-app --timeout=60s
-#   (a plain drain stops at "cannot delete Pods that declare no controller" because pods from other
-#    questions run on node01; --force would delete them)
+#   (그냥 drain하면 node01에 다른 문제의 Pod가 있어서 "cannot delete Pods that declare no controller"에서
+#    멈춘다; --force를 쓰면 그 Pod들이 삭제된다)
 #   evicting pod pdb-demo/my-app-...
 #   error when evicting pods/"my-app-..." -n "pdb-demo" (will retry after 5s): Cannot evict pod as it
 #   would violate the pod's disruption budget.
-# Drain evicts 2 pods, then waits until replacements are Ready elsewhere before evicting more.
-# If the replacements can't start (e.g. the control plane is tainted), the drain stops at the budget.
+# drain은 Pod 2개를 축출한 뒤, 대체 Pod가 다른 곳에서 Ready가 될 때까지 기다렸다가 더 축출한다.
+# 대체 Pod가 뜨지 못하면(예: 컨트롤 플레인에 taint가 있음) drain은 budget에서 멈춘다.
 kubectl get pods -n pdb-demo -o wide
 kubectl uncordon node01
 kubectl rollout status deploy/my-app -n pdb-demo
 kubectl get pdb app-pdb -n pdb-demo
-# A PDB only limits voluntary disruptions that use the Eviction API (drain, kubectl evict).
-# kubectl delete pod and node failures ignore it.
+# PDB는 Eviction API를 쓰는 자발적 중단(drain, kubectl evict)만 제한한다.
+# kubectl delete pod와 노드 장애에는 적용되지 않는다.
 ```
 
 </details>
 
-### Exam 2 · Q12 – Custom Resource Definitions  (Cluster Architecture | 7 min)
+### 2회 · Q12 – Custom Resource Definition  (클러스터 아키텍처 | 7분)
 
 ```bash
 ./mock.sh 2 12
 ```
 
 ```text
-Your team installed a CRD for the kind Database.
+팀에서 kind Database용 CRD를 설치했습니다.
 
-Tasks
-1. Find the CRD and write its full name to /root/mock2/q12-crd.txt
-2. In namespace crd-demo create a Database named prod-db with
+작업
+1. CRD를 찾아 전체 이름을 /root/mock2/q12-crd.txt에 쓰세요
+2. crd-demo 네임스페이스에 다음 값으로 Database prod-db를 만드세요
      spec.engine=postgres  spec.version="15"  spec.storage=100Gi
-3. Show that prod-db is stored in etcd: save the output of an etcdctl get for its key
-   (--keys-only is enough) to /root/mock2/q12-etcd.txt
-4. Delete the Database old-db in crd-demo
+3. prod-db가 etcd에 저장되었음을 보이세요: 해당 키에 대한 etcdctl get 출력
+   (--keys-only면 충분)을 /root/mock2/q12-etcd.txt에 저장하세요
+4. crd-demo의 Database old-db를 삭제하세요
 ```
 
 ```bash
@@ -4638,12 +4612,12 @@ Tasks
 ```
 
 <details>
-<summary><b>Show solution</b></summary>
+<summary><b>풀이 보기</b></summary>
 
 ```bash
 kubectl get crd | grep -i database
 kubectl get crd databases.example.com -o jsonpath='{.metadata.name}' > /root/mock2/q12-crd.txt
-kubectl explain database.spec                     # fields: engine (postgres|mysql), version, storage
+kubectl explain database.spec                     # 필드: engine (postgres|mysql), version, storage
 cat <<'EOF' | kubectl apply -f -
 apiVersion: example.com/v1
 kind: Database
@@ -4652,12 +4626,12 @@ metadata:
   namespace: crd-demo
 spec:
   engine: postgres
-  version: "15"          # quoted - the schema says string
+  version: "15"          # 따옴표 필요 - 스키마상 string
   storage: 100Gi
 EOF
-kubectl get databases -n crd-demo                 # short name: kubectl get db -n crd-demo
-# etcd keys: /registry/<group>/<plural>/<namespace>/<name>
-# etcdctl from the etcd container (works even if etcdctl is not installed on the node):
+kubectl get databases -n crd-demo                 # 짧은 이름: kubectl get db -n crd-demo
+# etcd 키: /registry/<group>/<plural>/<namespace>/<name>
+# etcd 컨테이너의 etcdctl 사용 (노드에 etcdctl이 설치되어 있지 않아도 동작):
 ETCD=$(crictl ps --name etcd -q | head -1)
 crictl exec $ETCD etcdctl --endpoints=https://127.0.0.1:2379 \
   --cacert=/etc/kubernetes/pki/etcd/ca.crt --cert=/etc/kubernetes/pki/etcd/server.crt --key=/etc/kubernetes/pki/etcd/server.key \
@@ -4668,24 +4642,24 @@ kubectl get databases -n crd-demo
 
 </details>
 
-### Exam 2 · Q13 – Pod Security Exceptions  (Cluster Architecture | 9 min)
+### 2회 · Q13 – Pod Security 예외  (클러스터 아키텍처 | 9분)
 
 ```bash
 ./mock.sh 2 13
 ```
 
 ```text
-Namespace restricted enforces the restricted Pod Security Standard. A legacy pod root-app
-(image nginx:1.27, must run as root) is rejected there.
+restricted 네임스페이스는 restricted Pod Security Standard를 강제합니다. 레거시 Pod root-app
+(이미지 nginx:1.27, root로 실행해야 함)은 이 네임스페이스에서 거부됩니다.
 
-Pod Security Admission has no per-pod exemption label: exemptions exist only in the API server's
-admission configuration (by user, runtimeClass or namespace). Solve it with namespaces instead:
+Pod Security Admission에는 Pod 단위 예외 레이블이 없습니다: 예외는 API 서버의 admission 설정
+(사용자, runtimeClass, 네임스페이스 기준)에만 있습니다. 대신 네임스페이스로 해결하세요:
 
-Tasks
-1. Create namespace legacy-root that enforces the baseline Pod Security Standard
-   (root is allowed, privileged containers are not)
-2. Run pod root-app (nginx:1.27) there and verify it runs as uid 0
-3. Leave namespace restricted unchanged: it must still reject a root pod
+작업
+1. baseline Pod Security Standard를 강제하는 네임스페이스 legacy-root를 만드세요
+   (root는 허용, privileged 컨테이너는 불가)
+2. 그 네임스페이스에서 Pod root-app(nginx:1.27)을 실행하고 uid 0으로 실행되는지 확인하세요
+3. restricted 네임스페이스는 그대로 두세요: 여전히 root Pod를 거부해야 합니다
 ```
 
 ```bash
@@ -4693,7 +4667,7 @@ Tasks
 ```
 
 <details>
-<summary><b>Show solution</b></summary>
+<summary><b>풀이 보기</b></summary>
 
 ```bash
 kubectl run root-app -n restricted --image=nginx:1.27      # forbidden: violates PodSecurity "restricted:latest"
@@ -4702,29 +4676,29 @@ kubectl label ns legacy-root pod-security.kubernetes.io/enforce=baseline
 kubectl run root-app -n legacy-root --image=nginx:1.27
 kubectl exec root-app -n legacy-root -- id                 # uid=0(root)
 kubectl run p -n legacy-root --image=nginx:1.27 --privileged --dry-run=server   # forbidden (baseline)
-# A label such as pod-security.kubernetes.io/exempt=true on a pod does nothing.
-# Real exemptions are configured in the API server's AdmissionConfiguration
-# (--admission-control-config-file), PodSecurity plugin -> exemptions: usernames / runtimeClasses / namespaces.
-# They apply cluster-wide to everything that matches, which is why a dedicated namespace is usually better.
+# Pod에 pod-security.kubernetes.io/exempt=true 같은 레이블을 붙여도 아무 효과가 없다.
+# 진짜 예외는 API 서버의 AdmissionConfiguration(--admission-control-config-file)에서
+# PodSecurity 플러그인 -> exemptions: usernames / runtimeClasses / namespaces 로 설정한다.
+# 조건에 맞는 모든 대상에 클러스터 전체로 적용되므로, 보통은 전용 네임스페이스가 낫다.
 ```
 
 </details>
 
-### Exam 2 · Q14 – StorageClass and Dynamic Provisioning  (Storage | 8 min)
+### 2회 · Q14 – StorageClass와 동적 프로비저닝  (스토리지 | 8분)
 
 ```bash
 ./mock.sh 2 14
 ```
 
 ```text
-The cluster runs the local-path provisioner (provisioner name rancher.io/local-path).
+클러스터에서 local-path 프로비저너(프로비저너 이름 rancher.io/local-path)가 실행 중입니다.
 
-Tasks
-1. Create StorageClass ssd: provisioner rancher.io/local-path, reclaimPolicy Delete,
+작업
+1. StorageClass ssd를 만드세요: provisioner rancher.io/local-path, reclaimPolicy Delete,
    volumeBindingMode WaitForFirstConsumer
-2. In namespace storage-demo create PVC my-ssd-claim: 20Gi, ReadWriteOnce, storageClassName ssd
-3. Create pod app-using-ssd (image nginx:1.27) in storage-demo that mounts the claim at /data
-4. Verify a PersistentVolume was created automatically and the claim is Bound
+2. storage-demo 네임스페이스에 PVC my-ssd-claim을 만드세요: 20Gi, ReadWriteOnce, storageClassName ssd
+3. storage-demo에 claim을 /data에 마운트하는 Pod app-using-ssd(이미지 nginx:1.27)를 만드세요
+4. PersistentVolume이 자동으로 만들어지고 claim이 Bound 상태인지 확인하세요
 ```
 
 ```bash
@@ -4732,7 +4706,7 @@ Tasks
 ```
 
 <details>
-<summary><b>Show solution</b></summary>
+<summary><b>풀이 보기</b></summary>
 
 ```bash
 cat <<'EOF' | kubectl apply -f -
@@ -4756,7 +4730,7 @@ spec:
     requests:
       storage: 20Gi
 EOF
-kubectl get pvc -n storage-demo              # Pending - WaitForFirstConsumer waits for a pod
+kubectl get pvc -n storage-demo              # Pending - WaitForFirstConsumer라서 Pod를 기다림
 cat <<'EOF' | kubectl apply -f -
 apiVersion: v1
 kind: Pod
@@ -4776,30 +4750,30 @@ spec:
       claimName: my-ssd-claim
 EOF
 kubectl wait --for=condition=Ready pod/app-using-ssd -n storage-demo
-kubectl get pvc,pv -n storage-demo           # Bound, PV pvc-<uid> created by the provisioner
-# On a cloud cluster the provisioner would be the CSI driver, e.g. ebs.csi.aws.com (type: gp3)
-# or pd.csi.storage.gke.io (type: pd-ssd). local-path does not enforce the 20Gi size.
+kubectl get pvc,pv -n storage-demo           # Bound, 프로비저너가 만든 PV pvc-<uid>
+# 클라우드 클러스터라면 프로비저너는 CSI 드라이버다. 예: ebs.csi.aws.com (type: gp3)
+# 또는 pd.csi.storage.gke.io (type: pd-ssd). local-path는 20Gi 크기를 강제하지 않는다.
 ```
 
 </details>
 
-### Exam 2 · Q15 – Namespace Quota and Resource Management  (Workloads & Scheduling | 10 min)
+### 2회 · Q15 – 네임스페이스 Quota와 리소스 관리  (워크로드와 스케줄링 | 10분)
 
 ```bash
 ./mock.sh 2 15
 ```
 
 ```text
-Set up resource governance for namespace batch-jobs.
+batch-jobs 네임스페이스에 리소스 관리 정책을 설정하세요.
 
-Tasks
-1. ResourceQuota batch-quota: total CPU 10 cores and total memory 20Gi
-   (for requests; you may also cap limits at the same values)
-2. LimitRange batch-limits, per container: minimum 500m CPU / 256Mi memory,
-   maximum 4 CPU / 8Gi memory
-3. Try to create a pod that requests (and limits) 5 CPU / 2Gi - it must be rejected.
-   Save the error to /root/mock2/q15-rejected.txt
-4. Verify a pod with requests 1 CPU / 1Gi and limits 2 CPU / 2Gi is accepted
+작업
+1. ResourceQuota batch-quota: 전체 CPU 10코어, 전체 메모리 20Gi
+   (requests 기준; limits도 같은 값으로 제한해도 됩니다)
+2. LimitRange batch-limits, 컨테이너당: 최소 500m CPU / 256Mi 메모리,
+   최대 4 CPU / 8Gi 메모리
+3. requests(와 limits)가 5 CPU / 2Gi인 Pod를 만들어 보세요 - 거부되어야 합니다.
+   오류를 /root/mock2/q15-rejected.txt에 저장하세요
+4. requests 1 CPU / 1Gi, limits 2 CPU / 2Gi인 Pod는 허용되는지 확인하세요
 ```
 
 ```bash
@@ -4807,7 +4781,7 @@ Tasks
 ```
 
 <details>
-<summary><b>Show solution</b></summary>
+<summary><b>풀이 보기</b></summary>
 
 ```bash
 cat <<'EOF' | kubectl apply -f -
@@ -4840,36 +4814,36 @@ spec:
 EOF
 kubectl describe quota batch-quota -n batch-jobs
 kubectl describe limitrange batch-limits -n batch-jobs
-# kubectl run lost --requests/--limits in 1.24 - use --overrides (or YAML):
+# kubectl run의 --requests/--limits는 1.24에서 없어졌다 - --overrides(또는 YAML)를 쓴다:
 kubectl run too-big -n batch-jobs --image=nginx:1.27 --restart=Never --overrides='{"spec":{"containers":[{"name":"too-big","image":"nginx:1.27","resources":{"requests":{"cpu":"5","memory":"2Gi"},"limits":{"cpu":"5","memory":"2Gi"}}}]}}' 2> /root/mock2/q15-rejected.txt
 cat /root/mock2/q15-rejected.txt     # forbidden: maximum cpu usage per Container is 4, but limit is 5
 kubectl run fits -n batch-jobs --image=nginx:1.27 --restart=Never --overrides='{"spec":{"containers":[{"name":"fits","image":"nginx:1.27","resources":{"requests":{"cpu":"1","memory":"1Gi"},"limits":{"cpu":"2","memory":"2Gi"}}}]}}'
 kubectl get pod fits -n batch-jobs
-# LimitRange max with no default: containers without limits get limits = max (4 CPU / 8Gi) and,
-# if requests are missing too, requests = those limits.
+# default 없이 LimitRange max만 있으면: limits가 없는 컨테이너는 limits = max(4 CPU / 8Gi)가 되고,
+# requests도 없으면 requests = 그 limits가 된다.
 ```
 
 </details>
 
-## 6. Mock Exam 3 (Killer Shell style)
+## 6. 모의고사 3회 (Killer Shell 스타일)
 
-Start the whole exam with `./mock.sh 3 start`, check it with `./mock.sh 3 score`.
-Q8 and Q20 change the cluster heavily, so `start` skips them. Do Q8 first (`./mock.sh 3 8` right after `start`) and Q20 last.
+전체 시험은 `./mock.sh 3 start`로 시작하고 `./mock.sh 3 score`로 채점합니다.
+Q8과 Q20은 클러스터를 크게 바꾸므로 `start`에서 제외됩니다. Q8은 맨 먼저(`start` 직후 `./mock.sh 3 8`), Q20은 맨 마지막에 푸세요.
 
-### Exam 3 · Q1 – Contexts  (Cluster access with kubeconfig | 4%)
+### 3회 · Q1 – 컨텍스트  (kubeconfig로 클러스터 접근 | 4%)
 
 ```bash
 ./mock.sh 3 1
 ```
 
 ```text
-The kubeconfig file /root/mock3/1/kubeconfig belongs to another cluster (it is not usable
-against this one). Use kubectl to extract information from it:
+kubeconfig 파일 /root/mock3/1/kubeconfig는 다른 클러스터의 것입니다(이 클러스터에는
+사용할 수 없음). kubectl로 이 파일에서 정보를 뽑아내세요:
 
-1. Write all context names into /root/mock3/1/contexts, one name per line
-2. Write the name of the current context into /root/mock3/1/current-context
-3. Write the client certificate of user account-0027@internal, base64-decoded,
-   into /root/mock3/1/cert
+1. 모든 컨텍스트 이름을 한 줄에 하나씩 /root/mock3/1/contexts에 쓰세요
+2. 현재 컨텍스트 이름을 /root/mock3/1/current-context에 쓰세요
+3. 사용자 account-0027@internal의 클라이언트 인증서를 base64 디코딩해서
+   /root/mock3/1/cert에 쓰세요
 ```
 
 ```bash
@@ -4877,14 +4851,14 @@ against this one). Use kubectl to extract information from it:
 ```
 
 <details>
-<summary><b>Show solution</b></summary>
+<summary><b>풀이 보기</b></summary>
 
 ```bash
 K="kubectl --kubeconfig /root/mock3/1/kubeconfig"
-$K config get-contexts                                   # overview
+$K config get-contexts                                   # 전체 보기
 $K config get-contexts -o name > /root/mock3/1/contexts
 $K config current-context > /root/mock3/1/current-context
-# careful: account-0027 is NOT the first entry in .users - select it by name
+# 주의: account-0027은 .users의 첫 항목이 아니다 - 이름으로 골라야 한다
 $K config view --raw -o jsonpath='{.users[?(@.name=="account-0027@internal")].user.client-certificate-data}' \
   | base64 -d > /root/mock3/1/cert
 openssl x509 -in /root/mock3/1/cert -noout -subject     # CN = account-0027@internal
@@ -4892,24 +4866,24 @@ openssl x509 -in /root/mock3/1/cert -noout -subject     # CN = account-0027@inte
 
 </details>
 
-### Exam 3 · Q2 – CRD, Helm, cert-manager  (Helm / CRDs | 6%)
+### 3회 · Q2 – CRD, Helm, cert-manager  (Helm / CRD | 6%)
 
 ```bash
 ./mock.sh 3 2
 ```
 
 ```text
-Install the cert-manager operator with Helm and create a ClusterIssuer for it.
-The Helm repo jetstack is already configured.
+Helm으로 cert-manager 오퍼레이터를 설치하고 이를 위한 ClusterIssuer를 만드세요.
+Helm 저장소 jetstack은 이미 설정되어 있습니다.
 
-1. Create Namespace cert-manager
-2. Install chart jetstack/cert-manager into that Namespace as release cert-manager,
-   with the value crds.enabled=true
-3. Edit /root/mock3/2/cluster-issuer.yaml so that spec.selfSigned contains
-   crlDistributionPoints: ["http://example.com/crl"]
-4. Create the ClusterIssuer from /root/mock3/2/cluster-issuer.yaml
+1. 네임스페이스 cert-manager를 만드세요
+2. 차트 jetstack/cert-manager를 그 네임스페이스에 릴리스 이름 cert-manager로 설치하세요.
+   값은 crds.enabled=true로 하세요
+3. /root/mock3/2/cluster-issuer.yaml을 고쳐서 spec.selfSigned에
+   crlDistributionPoints: ["http://example.com/crl"]가 들어가게 하세요
+4. /root/mock3/2/cluster-issuer.yaml로 ClusterIssuer를 만드세요
 
-Issuing real certificates is not required.
+실제 인증서 발급은 하지 않아도 됩니다.
 ```
 
 ```bash
@@ -4917,15 +4891,15 @@ Issuing real certificates is not required.
 ```
 
 <details>
-<summary><b>Show solution</b></summary>
+<summary><b>풀이 보기</b></summary>
 
 ```bash
 kubectl create ns cert-manager
 helm search repo jetstack
 helm -n cert-manager install cert-manager jetstack/cert-manager --set crds.enabled=true
-kubectl -n cert-manager rollout status deploy/cert-manager-webhook   # wait for the webhook before step 4
+kubectl -n cert-manager rollout status deploy/cert-manager-webhook   # 4단계 전에 webhook이 뜰 때까지 기다린다
 kubectl get crd | grep cert-manager
-kubectl explain clusterissuer.spec.selfSigned                       # shows crlDistributionPoints <[]string>
+kubectl explain clusterissuer.spec.selfSigned                       # crlDistributionPoints <[]string> 이 보임
 cat > /root/mock3/2/cluster-issuer.yaml <<'YAML'
 apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
@@ -4942,15 +4916,15 @@ kubectl get clusterissuer                                            # READY Tru
 
 </details>
 
-### Exam 3 · Q3 – Scale down StatefulSet  (Workloads | 2%)
+### 3회 · Q3 – StatefulSet 축소  (워크로드 | 2%)
 
 ```bash
 ./mock.sh 3 3
 ```
 
 ```text
-There are two Pods named o3db-* in Namespace project-h800. Management wants them scaled
-down to one replica to save resources.
+네임스페이스 project-h800에 o3db-*라는 이름의 Pod가 두 개 있습니다. 관리팀은 리소스를
+아끼려고 이를 레플리카 하나로 줄이길 원합니다.
 ```
 
 ```bash
@@ -4958,28 +4932,28 @@ down to one replica to save resources.
 ```
 
 <details>
-<summary><b>Show solution</b></summary>
+<summary><b>풀이 보기</b></summary>
 
 ```bash
 kubectl -n project-h800 get pod | grep o3db
-kubectl -n project-h800 get deploy,ds,sts | grep o3db       # it is a StatefulSet
+kubectl -n project-h800 get deploy,ds,sts | grep o3db       # StatefulSet임
 kubectl -n project-h800 scale sts o3db --replicas 1
 kubectl -n project-h800 get sts o3db                       # READY 1/1
 ```
 
 </details>
 
-### Exam 3 · Q4 – Find Pods first to be terminated  (Scheduling / QoS | 3%)
+### 3회 · Q4 – 먼저 종료될 Pod 찾기  (스케줄링 / QoS | 3%)
 
 ```bash
 ./mock.sh 3 4
 ```
 
 ```text
-Check all Pods in Namespace project-c13 and find those that would most likely be terminated
-first if the nodes run out of cpu or memory.
+네임스페이스 project-c13의 모든 Pod를 확인해서, 노드의 cpu나 메모리가 부족해지면
+가장 먼저 종료될 가능성이 높은 Pod를 찾으세요.
 
-Write their names into /root/mock3/4/pods-terminated-first.txt, one per line.
+그 이름을 한 줄에 하나씩 /root/mock3/4/pods-terminated-first.txt에 쓰세요.
 ```
 
 ```bash
@@ -4987,38 +4961,38 @@ Write their names into /root/mock3/4/pods-terminated-first.txt, one per line.
 ```
 
 <details>
-<summary><b>Show solution</b></summary>
+<summary><b>풀이 보기</b></summary>
 
 ```bash
-# Pods without any requests/limits get QoS class BestEffort and are evicted first.
+# requests/limits가 하나도 없는 Pod는 QoS 클래스가 BestEffort가 되고 가장 먼저 축출된다.
 kubectl -n project-c13 get pod -o custom-columns=NAME:.metadata.name,QOS:.status.qosClass
 kubectl -n project-c13 get pod -o jsonpath='{range .items[*]}{.metadata.name} {.spec.containers[*].resources}{"\n"}{end}'
 kubectl -n project-c13 get pod -o jsonpath='{range .items[?(@.status.qosClass=="BestEffort")]}{.metadata.name}{"\n"}{end}' \
   > /root/mock3/4/pods-terminated-first.txt
-# Note: c13-3cc-data only has a memory limit -> requests default to the limit, but cpu is unset -> Burstable,
-# not BestEffort. c13-2x3-web has requests == limits -> Guaranteed.
+# 참고: c13-3cc-data는 메모리 limit만 있다 -> requests는 limit 값으로 기본 설정되지만 cpu가 없다 -> Burstable,
+# BestEffort가 아니다. c13-2x3-web은 requests == limits -> Guaranteed.
 ```
 
 </details>
 
-### Exam 3 · Q5 – Kustomize configure HPA Autoscaler  (Workloads / Kustomize | 8%)
+### 3회 · Q5 – Kustomize로 HPA 오토스케일러 설정  (워크로드 / Kustomize | 8%)
 
 ```bash
 ./mock.sh 3 5
 ```
 
 ```text
-The application api-gateway used an external autoscaler, which is to be replaced by a
-HorizontalPodAutoscaler. It is deployed to Namespaces api-gateway-staging and api-gateway-prod with:
+애플리케이션 api-gateway는 외부 오토스케일러를 써 왔는데, 이를 HorizontalPodAutoscaler로
+바꾸려 합니다. 이 애플리케이션은 다음 명령으로 네임스페이스 api-gateway-staging과 api-gateway-prod에 배포됩니다:
   kubectl kustomize /root/mock3/5/api-gateway/staging | kubectl apply -f -
   kubectl kustomize /root/mock3/5/api-gateway/prod    | kubectl apply -f -
 
-Using the Kustomize config in /root/mock3/5/api-gateway:
-1. Remove the ConfigMap horizontal-scaling-config completely
-2. Add an HPA named api-gateway for Deployment api-gateway: min 2, max 4 replicas,
-   scaling at 50% average CPU utilisation
-3. In prod the HPA must allow max 6 replicas
-4. Apply your changes for staging and prod so the cluster reflects them
+/root/mock3/5/api-gateway의 Kustomize 설정을 사용해서:
+1. ConfigMap horizontal-scaling-config를 완전히 없애세요
+2. Deployment api-gateway용 HPA api-gateway를 추가하세요: 레플리카 최소 2, 최대 4,
+   평균 CPU 사용률 50%에서 스케일링
+3. prod에서는 HPA가 레플리카를 최대 6개까지 허용해야 합니다
+4. 변경 사항을 staging과 prod에 적용해서 클러스터에 반영하세요
 ```
 
 ```bash
@@ -5026,14 +5000,14 @@ Using the Kustomize config in /root/mock3/5/api-gateway:
 ```
 
 <details>
-<summary><b>Show solution</b></summary>
+<summary><b>풀이 보기</b></summary>
 
 ```bash
 cd /root/mock3/5/api-gateway
-kubectl kustomize staging          # see what base + overlay produce
-# 1. delete the ConfigMap document from base/api-gateway.yaml AND from the staging/ and prod/ patches
-#    (a patch for a resource that no longer exists makes the build fail)
-# 2. add to base/api-gateway.yaml (no namespace - the overlays set it):
+kubectl kustomize staging          # base + overlay 결과 확인
+# 1. base/api-gateway.yaml에서 ConfigMap 문서를 지우고, staging/와 prod/ 패치에서도 지운다
+#    (없어진 리소스에 대한 패치가 남아 있으면 빌드가 실패한다)
+# 2. base/api-gateway.yaml에 추가한다 (namespace는 쓰지 않는다 - overlay가 정한다):
 cat >> base/api-gateway.yaml <<'YAML'
 ---
 apiVersion: autoscaling/v2
@@ -5055,7 +5029,7 @@ spec:
         type: Utilization
         averageUtilization: 50
 YAML
-# 3. add to prod/api-gateway.yaml:
+# 3. prod/api-gateway.yaml에 추가한다:
 cat >> prod/api-gateway.yaml <<'YAML'
 ---
 apiVersion: autoscaling/v2
@@ -5067,33 +5041,33 @@ spec:
 YAML
 kubectl kustomize staging | grep -B5 maxReplicas
 kubectl kustomize prod | grep -B5 maxReplicas
-# 4. apply - kustomize keeps no state, so the old ConfigMaps must be deleted by hand
+# 4. 적용 - kustomize는 상태를 저장하지 않으므로 예전 ConfigMap은 직접 지워야 한다
 kubectl kustomize staging | kubectl apply -f -
 kubectl kustomize prod | kubectl apply -f -
 kubectl -n api-gateway-staging delete cm horizontal-scaling-config
 kubectl -n api-gateway-prod delete cm horizontal-scaling-config
-# Optional: remove "replicas: 1" from the Deployment so re-applying does not fight the HPA.
+# 선택: Deployment에서 "replicas: 1"을 지우면 다시 적용해도 HPA와 충돌하지 않는다.
 ```
 
 </details>
 
-### Exam 3 · Q6 – Storage, PV, PVC, Pod volume  (Storage | 8%)
+### 3회 · Q6 – 스토리지, PV, PVC, Pod 볼륨  (스토리지 | 8%)
 
 ```bash
 ./mock.sh 3 6
 ```
 
 ```text
-1. Create PersistentVolume safari-pv: capacity 2Gi, accessMode ReadWriteOnce,
-   hostPath /Volumes/Data, no storageClassName
-2. Create PersistentVolumeClaim safari-pvc in Namespace project-t230: request 2Gi,
-   accessMode ReadWriteOnce, no storage class. It must be Bound to safari-pv
-3. Create Deployment safari in Namespace project-t230 (image httpd:2-alpine) that mounts
-   the volume at /tmp/safari-data
+1. PersistentVolume safari-pv를 만드세요: 용량 2Gi, accessMode ReadWriteOnce,
+   hostPath /Volumes/Data, storageClassName 없음
+2. 네임스페이스 project-t230에 PersistentVolumeClaim safari-pvc를 만드세요: 요청 2Gi,
+   accessMode ReadWriteOnce, 스토리지 클래스 없음. safari-pv에 Bound되어야 합니다
+3. 네임스페이스 project-t230에 Deployment safari(이미지 httpd:2-alpine)를 만들고
+   볼륨을 /tmp/safari-data에 마운트하세요
 
-Killercoda hint: if the cluster has a default StorageClass, a PVC without storageClassName
-gets the default class added automatically and will not bind to safari-pv. In that case
-set  storageClassName: ""  on the PVC (that means "no class").
+Killercoda 힌트: 클러스터에 기본 StorageClass가 있으면 storageClassName이 없는 PVC에
+기본 클래스가 자동으로 붙어서 safari-pv에 바인딩되지 않습니다. 그럴 때는
+PVC에  storageClassName: ""  을 지정하세요("클래스 없음"이라는 뜻).
 ```
 
 ```bash
@@ -5101,7 +5075,7 @@ set  storageClassName: ""  on the PVC (that means "no class").
 ```
 
 <details>
-<summary><b>Show solution</b></summary>
+<summary><b>풀이 보기</b></summary>
 
 ```bash
 cat <<'YAML' | kubectl apply -f -
@@ -5122,20 +5096,20 @@ metadata:
   name: safari-pvc
   namespace: project-t230
 spec:
-  storageClassName: ""          # only needed when the cluster has a default StorageClass
+  storageClassName: ""          # 클러스터에 기본 StorageClass가 있을 때만 필요
   accessModes: ["ReadWriteOnce"]
   resources:
     requests:
       storage: 2Gi
 YAML
-kubectl -n project-t230 get pv,pvc                 # both Bound
+kubectl -n project-t230 get pv,pvc                 # 둘 다 Bound
 kubectl -n project-t230 create deploy safari --image=httpd:2-alpine --dry-run=client -o yaml > 6_dep.yaml
-# add under spec.template.spec:
+# spec.template.spec 아래에 추가:
 #   volumes:
 #   - name: data
 #     persistentVolumeClaim:
 #       claimName: safari-pvc
-# and under the container:
+# 컨테이너 아래에 추가:
 #   volumeMounts:
 #   - name: data
 #     mountPath: /tmp/safari-data
@@ -5145,18 +5119,18 @@ kubectl -n project-t230 describe pod -l app=safari | grep -A2 Mounts:
 
 </details>
 
-### Exam 3 · Q7 – Node and Pod Resource Usage  (Monitoring | 1%)
+### 3회 · Q7 – 노드와 Pod 리소스 사용량  (모니터링 | 1%)
 
 ```bash
 ./mock.sh 3 7
 ```
 
 ```text
-metrics-server is installed. Write two bash scripts that use kubectl:
-1. /root/mock3/7/node.sh shows the resource usage of the nodes
-2. /root/mock3/7/pod.sh shows the resource usage of Pods and their containers
+metrics-server가 설치되어 있습니다. kubectl을 쓰는 bash 스크립트 두 개를 작성하세요:
+1. /root/mock3/7/node.sh는 노드의 리소스 사용량을 보여 줍니다
+2. /root/mock3/7/pod.sh는 Pod와 그 컨테이너의 리소스 사용량을 보여 줍니다
 
-Use the full command name kubectl, not an alias.
+별칭이 아니라 전체 명령 이름 kubectl을 쓰세요.
 ```
 
 ```bash
@@ -5164,7 +5138,7 @@ Use the full command name kubectl, not an alias.
 ```
 
 <details>
-<summary><b>Show solution</b></summary>
+<summary><b>풀이 보기</b></summary>
 
 ```bash
 kubectl top -h
@@ -5176,23 +5150,23 @@ bash /root/mock3/7/node.sh; bash /root/mock3/7/pod.sh
 
 </details>
 
-### Exam 3 · Q8 – Update Kubernetes Version and join cluster  (Cluster Lifecycle | 10%) – on demand
+### 3회 · Q8 – Kubernetes 버전 업데이트와 클러스터 조인  (클러스터 수명 주기 | 10%) – 필요할 때 셋업
 
 ```bash
 ./mock.sh 3 8
 ```
 
 ```text
-A colleague reports that node node01 runs an older Kubernetes version and is not even part
-of the cluster yet.
+동료가 노드 node01이 예전 Kubernetes 버전으로 돌고 있고 아직 클러스터에 들어와 있지도
+않다고 알려 왔습니다.
 
-1. Update kubelet and kubectl on node01 to the exact version the control plane runs
-2. Add node01 to the cluster using kubeadm
+1. node01의 kubelet과 kubectl을 컨트롤 플레인과 정확히 같은 버전으로 업데이트하세요
+2. kubeadm으로 node01을 클러스터에 추가하세요
 
-ssh node01 works from controlplane.
-This question is set up on demand (./mock.sh 3 8) because it removes node01 from the cluster.
-Do it FIRST, right after ./mock.sh 3 start: removing the node deletes every pod on it that no
-controller recreates, so pods you created for other questions would be lost.
+controlplane에서 ssh node01이 됩니다.
+이 문제는 node01을 클러스터에서 빼므로 필요할 때 셋업합니다(./mock.sh 3 8).
+./mock.sh 3 start 직후 맨 먼저 푸세요: 노드를 빼면 그 노드에서 컨트롤러가 다시 만들지 않는
+Pod가 모두 지워지므로, 다른 문제를 위해 만든 Pod가 사라집니다.
 ```
 
 ```bash
@@ -5200,40 +5174,40 @@ controller recreates, so pods you created for other questions would be lost.
 ```
 
 <details>
-<summary><b>Show solution</b></summary>
+<summary><b>풀이 보기</b></summary>
 
 ```bash
-kubectl get node                                    # control plane version, e.g. v1.34.1
+kubectl get node                                    # 컨트롤 플레인 버전, 예: v1.34.1
 ssh node01
 kubelet --version; kubectl version --client; kubeadm version -o short
-kubeadm upgrade node                                # fails: node is not part of a cluster -> nothing to upgrade
+kubeadm upgrade node                                # 실패: 노드가 클러스터에 속해 있지 않음 -> 업그레이드할 것 없음
 apt-get update
-apt-cache madison kubelet | grep 1.34.1              # use the control plane version
+apt-cache madison kubelet | grep 1.34.1              # 컨트롤 플레인 버전을 쓴다
 apt-mark unhold kubelet kubectl
-apt-get install -y kubelet=1.34.1-1.1 kubectl=1.34.1-1.1   # (and kubeadm too if it is not on that version)
+apt-get install -y kubelet=1.34.1-1.1 kubectl=1.34.1-1.1   # (kubeadm도 그 버전이 아니면 함께)
 apt-mark hold kubelet kubectl
-systemctl daemon-reload && systemctl restart kubelet # crash-loops until the node is joined - expected
+systemctl daemon-reload && systemctl restart kubelet # 노드가 조인될 때까지 crash-loop - 정상
 exit
-# on controlplane: create a token and print the join command
+# controlplane에서: 토큰을 만들고 join 명령을 출력한다
 kubeadm token create --print-join-command
-ssh node01 "kubeadm join <...printed command...>"    # run kubeadm reset -f first if the join complains
-kubectl get node                                     # node01 Ready, same version
+ssh node01 "kubeadm join <...printed command...>"    # join이 오류를 내면 먼저 kubeadm reset -f 실행
+kubectl get node                                     # node01 Ready, 같은 버전
 ```
 
 </details>
 
-### Exam 3 · Q9 – Contact K8s API from inside Pod  (Security | 6%)
+### 3회 · Q9 – Pod 안에서 K8s API 호출  (보안 | 6%)
 
 ```bash
 ./mock.sh 3 9
 ```
 
 ```text
-ServiceAccount secret-reader exists in Namespace project-swan.
-Create Pod api-contact (image nginx:1-alpine) in that Namespace that uses this ServiceAccount.
+네임스페이스 project-swan에 ServiceAccount secret-reader가 있습니다.
+그 네임스페이스에 이 ServiceAccount를 쓰는 Pod api-contact(이미지 nginx:1-alpine)를 만드세요.
 
-Exec into the Pod and use curl to query all Secrets (cluster-wide) from the Kubernetes API.
-Write the result into /root/mock3/9/result.json on controlplane.
+Pod에 exec로 들어가서 curl로 Kubernetes API에서 (클러스터 전체의) 모든 Secret을 조회하세요.
+결과를 controlplane의 /root/mock3/9/result.json에 쓰세요.
 ```
 
 ```bash
@@ -5241,7 +5215,7 @@ Write the result into /root/mock3/9/result.json on controlplane.
 ```
 
 <details>
-<summary><b>Show solution</b></summary>
+<summary><b>풀이 보기</b></summary>
 
 ```bash
 kubectl -n project-swan run api-contact --image=nginx:1-alpine --dry-run=client -o yaml \
@@ -5250,7 +5224,7 @@ kubectl -n project-swan exec -it api-contact -- sh
   TOKEN=$(cat /var/run/secrets/kubernetes.io/serviceaccount/token)
   CACERT=/var/run/secrets/kubernetes.io/serviceaccount/ca.crt
   curl --cacert $CACERT https://kubernetes.default/api/v1/secrets -H "Authorization: Bearer $TOKEN" > /tmp/result.json
-  # (curl -k ... works too; without the token you are system:anonymous and get 403)
+  # (curl -k ... 도 된다. 토큰이 없으면 system:anonymous가 되어 403을 받는다)
   exit
 kubectl -n project-swan exec api-contact -- cat /tmp/result.json > /root/mock3/9/result.json
 kubectl auth can-i list secrets --as system:serviceaccount:project-swan:secret-reader   # yes
@@ -5258,16 +5232,16 @@ kubectl auth can-i list secrets --as system:serviceaccount:project-swan:secret-r
 
 </details>
 
-### Exam 3 · Q10 – RBAC ServiceAccount Role RoleBinding  (Security | 6%)
+### 3회 · Q10 – RBAC ServiceAccount Role RoleBinding  (보안 | 6%)
 
 ```bash
 ./mock.sh 3 10
 ```
 
 ```text
-Create ServiceAccount processor in Namespace project-hamster. Create a Role and a RoleBinding,
-both named processor, that allow the new ServiceAccount to ONLY create Secrets and ConfigMaps
-in that Namespace.
+네임스페이스 project-hamster에 ServiceAccount processor를 만드세요. 새 ServiceAccount가
+그 네임스페이스에서 Secret과 ConfigMap 생성만 할 수 있도록, 둘 다 processor라는 이름의
+Role과 RoleBinding을 만드세요.
 ```
 
 ```bash
@@ -5275,7 +5249,7 @@ in that Namespace.
 ```
 
 <details>
-<summary><b>Show solution</b></summary>
+<summary><b>풀이 보기</b></summary>
 
 ```bash
 kubectl -n project-hamster create sa processor
@@ -5286,23 +5260,23 @@ kubectl -n project-hamster auth can-i create secret $A      # yes
 kubectl -n project-hamster auth can-i create configmap $A   # yes
 kubectl -n project-hamster auth can-i create pod $A         # no
 kubectl -n project-hamster auth can-i get configmap $A      # no
-# Valid combos: Role+RoleBinding, ClusterRole+ClusterRoleBinding, ClusterRole+RoleBinding.
-# Role+ClusterRoleBinding is not possible.
+# 가능한 조합: Role+RoleBinding, ClusterRole+ClusterRoleBinding, ClusterRole+RoleBinding.
+# Role+ClusterRoleBinding은 불가능하다.
 ```
 
 </details>
 
-### Exam 3 · Q11 – DaemonSet on all Nodes  (Scheduling | 4%)
+### 3회 · Q11 – 모든 노드에 DaemonSet  (스케줄링 | 4%)
 
 ```bash
 ./mock.sh 3 11
 ```
 
 ```text
-In Namespace project-tiger create DaemonSet ds-important, image httpd:2-alpine, with labels
-id=ds-important and uuid=18426a0b-5f59-4e10-923f-c0e078e82462.
-Its Pods must request 10 millicore cpu and 10 mebibyte memory and must run on ALL nodes,
-control planes included.
+네임스페이스 project-tiger에 DaemonSet ds-important를 만드세요. 이미지는 httpd:2-alpine,
+레이블은 id=ds-important와 uuid=18426a0b-5f59-4e10-923f-c0e078e82462입니다.
+Pod는 cpu 10 millicore와 메모리 10 mebibyte를 요청해야 하고, 컨트롤 플레인을 포함한
+모든 노드에서 실행되어야 합니다.
 ```
 
 ```bash
@@ -5310,11 +5284,11 @@ control planes included.
 ```
 
 <details>
-<summary><b>Show solution</b></summary>
+<summary><b>풀이 보기</b></summary>
 
 ```bash
 kubectl -n project-tiger create deployment ds-important --image=httpd:2-alpine --dry-run=client -o yaml > 11.yaml
-# edit: kind DaemonSet, remove replicas/strategy/status, set labels, add requests + toleration
+# 수정: kind를 DaemonSet으로, replicas/strategy/status 삭제, 레이블 지정, requests + toleration 추가
 cat > 11.yaml <<'YAML'
 apiVersion: apps/v1
 kind: DaemonSet
@@ -5352,23 +5326,23 @@ kubectl -n project-tiger get ds; kubectl -n project-tiger get pod -l id=ds-impor
 
 </details>
 
-### Exam 3 · Q12 – Deployment on all Nodes  (Scheduling | 6%)
+### 3회 · Q12 – 모든 노드에 Deployment  (스케줄링 | 6%)
 
 ```bash
 ./mock.sh 3 12
 ```
 
 ```text
-In Namespace project-jaguar:
-- Create Deployment deploy-important with 3 replicas
-- The Deployment and its Pods have label id=very-important
-- First container container1, image nginx:1-alpine
-- Second container container2, image registry.k8s.io/pause:3.10
-- Only ONE Pod of this Deployment may ever run on any one node; use
-  topologyKey: kubernetes.io/hostname
+네임스페이스 project-jaguar에서:
+- 레플리카 3개짜리 Deployment deploy-important를 만드세요
+- Deployment와 그 Pod에는 레이블 id=very-important가 있어야 합니다
+- 첫 번째 컨테이너는 container1, 이미지 nginx:1-alpine
+- 두 번째 컨테이너는 container2, 이미지 registry.k8s.io/pause:3.10
+- 이 Deployment의 Pod는 한 노드에 언제나 하나만 실행될 수 있어야 합니다.
+  topologyKey: kubernetes.io/hostname을 쓰세요
 
-On Killercoda there is one worker (and a control plane that may be tainted), so some of the
-3 Pods stay Pending - that is expected. It mimics a DaemonSet with a fixed replica count.
+Killercoda에는 워커가 하나(그리고 taint가 걸려 있을 수 있는 컨트롤 플레인)뿐이라서
+Pod 3개 중 일부는 Pending으로 남습니다. 정상입니다. 레플리카 수가 고정된 DaemonSet을 흉내 내는 것입니다.
 ```
 
 ```bash
@@ -5376,7 +5350,7 @@ On Killercoda there is one worker (and a control plane that may be tainted), so 
 ```
 
 <details>
-<summary><b>Show solution</b></summary>
+<summary><b>풀이 보기</b></summary>
 
 ```bash
 kubectl -n project-jaguar create deployment deploy-important --image=nginx:1-alpine --replicas=3 --dry-run=client -o yaml > 12.yaml
@@ -5412,7 +5386,7 @@ spec:
                 operator: In
                 values: ["very-important"]
             topologyKey: kubernetes.io/hostname
-      # alternative to affinity:
+      # affinity 대신 쓸 수 있는 방법:
       # topologySpreadConstraints:
       # - maxSkew: 1
       #   topologyKey: kubernetes.io/hostname
@@ -5422,29 +5396,29 @@ spec:
       #       id: very-important
 YAML
 kubectl apply -f 12.yaml
-kubectl -n project-jaguar get pod -o wide -l id=very-important   # one per schedulable node, rest Pending
+kubectl -n project-jaguar get pod -o wide -l id=very-important   # 스케줄 가능한 노드마다 하나, 나머지는 Pending
 kubectl -n project-jaguar describe pod <pending-pod> | grep FailedScheduling
 ```
 
 </details>
 
-### Exam 3 · Q13 – Gateway API Ingress  (Services & Networking | 7%)
+### 3회 · Q13 – Gateway API Ingress  (서비스와 네트워킹 | 7%)
 
 ```bash
 ./mock.sh 3 13
 ```
 
 ```text
-Team r500 wants to replace their Ingress (networking.k8s.io) with a Gateway API
-(gateway.networking.k8s.io) solution. The old Ingress is in /root/mock3/13/ingress.yaml.
+r500 팀은 Ingress(networking.k8s.io)를 Gateway API(gateway.networking.k8s.io) 방식으로
+바꾸려 합니다. 예전 Ingress는 /root/mock3/13/ingress.yaml에 있습니다.
 
-In Namespace project-r500, using the existing Gateway main:
-1. Create HTTPRoute traffic-director that replicates the routes of the old Ingress
-2. Extend it with path /auto, which forwards to the mobile backend if the User-Agent header is
-   exactly "mobile", and to the desktop backend otherwise
+네임스페이스 project-r500에서 기존 Gateway main을 사용해서:
+1. 예전 Ingress의 라우트를 그대로 옮긴 HTTPRoute traffic-director를 만드세요
+2. 경로 /auto를 추가하세요. User-Agent 헤더가 정확히 "mobile"이면 mobile 백엔드로,
+   그 밖에는 desktop 백엔드로 보내야 합니다
 
-The Gateway is reachable at the URL in /root/mock3/13/gateway-url (r500.gateway is in /etc/hosts).
-These must work:
+Gateway는 /root/mock3/13/gateway-url의 URL로 접속할 수 있습니다(r500.gateway는 /etc/hosts에 있음).
+다음이 동작해야 합니다:
   U=$(cat /root/mock3/13/gateway-url)
   curl $U/desktop        -> Web Desktop App
   curl $U/mobile         -> Web Mobile App
@@ -5457,7 +5431,7 @@ These must work:
 ```
 
 <details>
-<summary><b>Show solution</b></summary>
+<summary><b>풀이 보기</b></summary>
 
 ```bash
 kubectl get gatewayclass; kubectl -n project-r500 get gateway main -o yaml
@@ -5488,7 +5462,7 @@ spec:
     - name: web-mobile
       port: 80
   - matches:
-    - path:                 # path AND header in ONE match entry = both must match
+    - path:                 # path와 header가 한 match 항목에 있음 = 둘 다 일치해야 함
         type: PathPrefix
         value: /auto
       headers:
@@ -5499,7 +5473,7 @@ spec:
     - name: web-mobile
       port: 80
   - matches:
-    - path:                 # catch-all for /auto
+    - path:                 # /auto의 나머지 전부
         type: PathPrefix
         value: /auto
     backendRefs:
@@ -5508,23 +5482,23 @@ spec:
 YAML
 U=$(cat /root/mock3/13/gateway-url)
 curl $U/desktop; curl $U/mobile; curl $U/auto -H "User-Agent: mobile"; curl $U/auto
-# "- path: ... - headers: ..." (two list entries) would be OR - wrong here.
+# "- path: ... - headers: ..." (리스트 항목 두 개)로 쓰면 OR가 된다 - 여기서는 틀림.
 ```
 
 </details>
 
-### Exam 3 · Q14 – Check how long certificates are valid  (Cluster Lifecycle | 2%)
+### 3회 · Q14 – 인증서 유효 기간 확인  (클러스터 수명 주기 | 2%)
 
 ```bash
 ./mock.sh 3 14
 ```
 
 ```text
-1. Use openssl (or cfssl) to find out how long the kube-apiserver server certificate is valid.
-   Write its expiration date into /root/mock3/14/expiration.
-   Then use kubeadm to list the expiration dates and confirm both show the same date.
-2. Write the kubeadm command that would renew the kube-apiserver server certificate into
-   /root/mock3/14/kubeadm-renew-certs.sh  (do not run it)
+1. openssl(또는 cfssl)로 kube-apiserver 서버 인증서가 언제까지 유효한지 확인하세요.
+   만료 날짜를 /root/mock3/14/expiration에 쓰세요.
+   그다음 kubeadm으로 만료 날짜 목록을 보고 둘이 같은 날짜인지 확인하세요.
+2. kube-apiserver 서버 인증서를 갱신하는 kubeadm 명령을
+   /root/mock3/14/kubeadm-renew-certs.sh에 쓰세요  (실행하지는 마세요)
 ```
 
 ```bash
@@ -5532,33 +5506,33 @@ curl $U/desktop; curl $U/mobile; curl $U/auto -H "User-Agent: mobile"; curl $U/a
 ```
 
 <details>
-<summary><b>Show solution</b></summary>
+<summary><b>풀이 보기</b></summary>
 
 ```bash
 find /etc/kubernetes/pki | grep apiserver
 openssl x509 -noout -text -in /etc/kubernetes/pki/apiserver.crt | grep -A2 Validity
 openssl x509 -noout -enddate -in /etc/kubernetes/pki/apiserver.crt | cut -d= -f2 > /root/mock3/14/expiration
-kubeadm certs check-expiration | grep apiserver          # same date
+kubeadm certs check-expiration | grep apiserver          # 같은 날짜
 echo "kubeadm certs renew apiserver" > /root/mock3/14/kubeadm-renew-certs.sh
 ```
 
 </details>
 
-### Exam 3 · Q15 – NetworkPolicy  (Services & Networking | 6%)
+### 3회 · Q15 – NetworkPolicy  (서비스와 네트워킹 | 6%)
 
 ```bash
 ./mock.sh 3 15
 ```
 
 ```text
-An intruder got into the whole cluster from one hacked backend Pod. To prevent this, create
-NetworkPolicy np-backend in Namespace project-snake that allows the backend-* Pods ONLY to:
-- connect to db1-* Pods on port 1111
-- connect to db2-* Pods on port 2222
-Use the app Pod labels in your policy.
+침입자가 해킹된 backend Pod 하나를 통해 클러스터 전체에 들어왔습니다. 이를 막기 위해
+네임스페이스 project-snake에 NetworkPolicy np-backend를 만들어서 backend-* Pod가 다음만 할 수 있게 하세요:
+- 포트 1111로 db1-* Pod에 연결
+- 포트 2222로 db2-* Pod에 연결
+정책에는 Pod의 app 레이블을 쓰세요.
 
-All Pods run nginx, so you can test with: kubectl -n project-snake exec POD -- curl -s POD_IP:PORT
-After your change, backend -> vault-* on port 3333 must no longer work.
+모든 Pod가 nginx를 실행하므로 kubectl -n project-snake exec POD -- curl -s POD_IP:PORT 로 시험할 수 있습니다.
+변경 후에는 backend -> vault-* 포트 3333 연결이 더 이상 되면 안 됩니다.
 ```
 
 ```bash
@@ -5566,7 +5540,7 @@ After your change, backend -> vault-* on port 3333 must no longer work.
 ```
 
 <details>
-<summary><b>Show solution</b></summary>
+<summary><b>풀이 보기</b></summary>
 
 ```bash
 kubectl -n project-snake get pod -L app -o wide
@@ -5583,14 +5557,14 @@ spec:
   policyTypes:
   - Egress
   egress:
-  - to:                     # rule 1: db1 AND port 1111
+  - to:                     # 규칙 1: db1 AND 포트 1111
     - podSelector:
         matchLabels:
           app: db1
     ports:
     - protocol: TCP
       port: 1111
-  - to:                     # rule 2: db2 AND port 2222
+  - to:                     # 규칙 2: db2 AND 포트 2222
     - podSelector:
         matchLabels:
           app: db2
@@ -5598,27 +5572,27 @@ spec:
     - protocol: TCP
       port: 2222
 YAML
-# WRONG: one rule with both selectors and both ports = (db1 OR db2) AND (1111 OR 2222)
-# -> backend could reach db2:1111 and db1:2222.
+# 틀린 예: 규칙 하나에 셀렉터 둘과 포트 둘을 넣으면 = (db1 OR db2) AND (1111 OR 2222)
+# -> backend가 db2:1111과 db1:2222에도 접속할 수 있게 된다.
 kubectl -n project-snake exec backend-0 -- curl -s -m3 <db1-ip>:1111   # database one
-kubectl -n project-snake exec backend-0 -- curl -s -m3 <vault-ip>:3333 # times out
+kubectl -n project-snake exec backend-0 -- curl -s -m3 <vault-ip>:3333 # 타임아웃
 ```
 
 </details>
 
-### Exam 3 · Q16 – Update CoreDNS Configuration  (Services & Networking | 5%)
+### 3회 · Q16 – CoreDNS 설정 변경  (서비스와 네트워킹 | 5%)
 
 ```bash
 ./mock.sh 3 16
 ```
 
 ```text
-1. Back up the current CoreDNS configuration YAML to /root/mock3/16/coredns_backup.yaml.
-   You must be able to restore quickly from it.
-2. Change the CoreDNS configuration so that SERVICE.NAMESPACE.custom-domain resolves the same as
-   SERVICE.NAMESPACE.cluster.local (in addition to it)
+1. 현재 CoreDNS 설정 YAML을 /root/mock3/16/coredns_backup.yaml에 백업하세요.
+   이 파일로 빠르게 복구할 수 있어야 합니다.
+2. CoreDNS 설정을 바꿔서 SERVICE.NAMESPACE.custom-domain이 SERVICE.NAMESPACE.cluster.local과
+   똑같이 해석되게 하세요(cluster.local도 계속 동작해야 함)
 
-Test from a Pod with image busybox:1 - both must return an IP address:
+이미지 busybox:1인 Pod에서 시험하세요 - 둘 다 IP 주소를 돌려줘야 합니다:
   nslookup kubernetes.default.svc.cluster.local
   nslookup kubernetes.default.svc.custom-domain
 ```
@@ -5628,41 +5602,41 @@ Test from a Pod with image busybox:1 - both must return an IP address:
 ```
 
 <details>
-<summary><b>Show solution</b></summary>
+<summary><b>풀이 보기</b></summary>
 
 ```bash
 kubectl -n kube-system get deploy,cm | grep coredns
 kubectl -n kube-system get cm coredns -o yaml > /root/mock3/16/coredns_backup.yaml
 kubectl -n kube-system edit cm coredns
-#   kubernetes custom-domain cluster.local in-addr.arpa ip6.arpa {     <- add custom-domain on this line
+#   kubernetes custom-domain cluster.local in-addr.arpa ip6.arpa {     <- 이 줄에 custom-domain 추가
 kubectl -n kube-system rollout restart deploy coredns
-kubectl -n kube-system get pod -l k8s-app=kube-dns          # Running = no syntax error
+kubectl -n kube-system get pod -l k8s-app=kube-dns          # Running이면 문법 오류 없음
 kubectl run bb --image=busybox:1 -- sh -c 'sleep 1d'
 kubectl exec bb -- nslookup kubernetes.default.svc.custom-domain
 kubectl exec bb -- nslookup kubernetes.default.svc.cluster.local
-# restore if needed:
+# 필요하면 복구:
 #   sed -E '/^  (resourceVersion|uid|creationTimestamp):/d' /root/mock3/16/coredns_backup.yaml | kubectl apply -f -
 #   kubectl -n kube-system rollout restart deploy coredns
-#   (applying the file as it is fails with "the object has been modified": it still holds the old resourceVersion)
+#   (파일을 그대로 적용하면 "the object has been modified"로 실패한다: 예전 resourceVersion이 들어 있기 때문)
 ```
 
 </details>
 
-### Exam 3 · Q17 – Find Container of Pod and check info  (Troubleshooting | 3%)
+### 3회 · Q17 – Pod의 컨테이너를 찾아 정보 확인  (트러블슈팅 | 3%)
 
 ```bash
 ./mock.sh 3 17
 ```
 
 ```text
-In Namespace project-puma create Pod tigers-reunite (image httpd:2-alpine) with labels
-pod=container and container=pod. Find out which node it runs on, ssh to that node and find the
-containerd container that belongs to the Pod.
+네임스페이스 project-puma에 레이블 pod=container와 container=pod를 가진 Pod tigers-reunite
+(이미지 httpd:2-alpine)를 만드세요. 어느 노드에서 실행되는지 알아낸 뒤 그 노드에 ssh로 접속해서
+이 Pod에 속한 containerd 컨테이너를 찾으세요.
 
-Using crictl:
-1. Write the container ID and its info.runtimeType into /root/mock3/17/pod-container.txt
-   on controlplane, on one line:  <container-id> <runtimeType>
-2. Write the container's logs into /root/mock3/17/pod-container.log on controlplane
+crictl을 사용해서:
+1. 컨테이너 ID와 그 info.runtimeType을 controlplane의 /root/mock3/17/pod-container.txt에
+   한 줄로 쓰세요:  <container-id> <runtimeType>
+2. 컨테이너 로그를 controlplane의 /root/mock3/17/pod-container.log에 쓰세요
 ```
 
 ```bash
@@ -5670,34 +5644,34 @@ Using crictl:
 ```
 
 <details>
-<summary><b>Show solution</b></summary>
+<summary><b>풀이 보기</b></summary>
 
 ```bash
 kubectl -n project-puma run tigers-reunite --image=httpd:2-alpine --labels "pod=container,container=pod"
-kubectl -n project-puma get pod tigers-reunite -o wide          # NODE, e.g. node01
+kubectl -n project-puma get pod tigers-reunite -o wide          # NODE, 예: node01
 ssh node01
-crictl ps | grep tigers-reunite                                 # container ID
+crictl ps | grep tigers-reunite                                 # 컨테이너 ID
 crictl inspect <ID> | grep runtimeType                          # io.containerd.runc.v2
 exit
 echo "<ID> io.containerd.runc.v2" > /root/mock3/17/pod-container.txt
-ssh node01 "crictl logs <ID>" > /root/mock3/17/pod-container.log 2>&1   # httpd logs to stderr
+ssh node01 "crictl logs <ID>" > /root/mock3/17/pod-container.log 2>&1   # httpd는 stderr로 로그를 남긴다
 ```
 
 </details>
 
-### Exam 3 · Q18 – Preview: ETCD Information  (Cluster Architecture | 3%)
+### 3회 · Q18 – 미리 보기: ETCD 정보  (클러스터 아키텍처 | 3%)
 
 ```bash
 ./mock.sh 3 18
 ```
 
 ```text
-Find out the following about the etcd that runs on controlplane:
-- Server private key location
-- Server certificate expiration date
-- Is client certificate authentication enabled
+controlplane에서 실행되는 etcd에 대해 다음을 알아내세요:
+- 서버 개인 키 위치
+- 서버 인증서 만료 날짜
+- 클라이언트 인증서 인증이 켜져 있는지
 
-Write it into /root/mock3/18/etcd-info.txt in this format:
+다음 형식으로 /root/mock3/18/etcd-info.txt에 쓰세요:
   Server private key location: <path>
   Server certificate expiration date: <date>
   Is client certificate authentication enabled: <yes|no>
@@ -5708,7 +5682,7 @@ Write it into /root/mock3/18/etcd-info.txt in this format:
 ```
 
 <details>
-<summary><b>Show solution</b></summary>
+<summary><b>풀이 보기</b></summary>
 
 ```bash
 kubectl -n kube-system get pod | grep etcd                      # static Pod
@@ -5723,19 +5697,19 @@ TXT
 
 </details>
 
-### Exam 3 · Q19 – Preview: Kube-Proxy iptables  (Services & Networking | 4%)
+### 3회 · Q19 – 미리 보기: kube-proxy iptables  (서비스와 네트워킹 | 4%)
 
 ```bash
 ./mock.sh 3 19
 ```
 
 ```text
-Confirm kube-proxy works. In Namespace project-lynx:
-1. Create Pod p2-pod with image nginx:1-alpine
-2. Create Service p2-service that exposes the Pod inside the cluster on port 3000 -> 80
-3. Write the iptables rules of node controlplane that belong to Service p2-service into
-   /root/mock3/19/iptables.txt
-4. Delete the Service and confirm its iptables rules are gone
+kube-proxy가 동작하는지 확인하세요. 네임스페이스 project-lynx에서:
+1. 이미지 nginx:1-alpine으로 Pod p2-pod를 만드세요
+2. Pod를 클러스터 내부에 포트 3000 -> 80으로 노출하는 Service p2-service를 만드세요
+3. 노드 controlplane의 iptables 규칙 중 Service p2-service에 해당하는 것을
+   /root/mock3/19/iptables.txt에 쓰세요
+4. Service를 지우고 그 iptables 규칙이 사라졌는지 확인하세요
 ```
 
 ```bash
@@ -5743,7 +5717,7 @@ Confirm kube-proxy works. In Namespace project-lynx:
 ```
 
 <details>
-<summary><b>Show solution</b></summary>
+<summary><b>풀이 보기</b></summary>
 
 ```bash
 kubectl -n project-lynx run p2-pod --image=nginx:1-alpine
@@ -5753,26 +5727,25 @@ crictl ps | grep kube-proxy; crictl logs <id> 2>&1 | grep -i proxier   # "Using 
 iptables-save | grep p2-service
 iptables-save | grep p2-service > /root/mock3/19/iptables.txt
 kubectl -n project-lynx delete svc p2-service
-iptables-save | grep p2-service                                        # nothing
+iptables-save | grep p2-service                                        # 아무것도 없음
 ```
 
 </details>
 
-### Exam 3 · Q20 – Preview: Change Service CIDR  (Services & Networking | 7%) – on demand
+### 3회 · Q20 – 미리 보기: Service CIDR 변경  (서비스와 네트워킹 | 7%) – 필요할 때 셋업
 
 ```bash
 ./mock.sh 3 20
 ```
 
 ```text
-1. Create Pod check-ip in Namespace default, image httpd:2-alpine
-2. Expose it on port 80 as ClusterIP Service check-ip-service. Note the Service IP
-3. Change the Service CIDR of the cluster to 11.96.0.0/12
-4. Create a second Service check-ip-service2 for the same Pod - it must get an IP from the
-   new range
+1. 네임스페이스 default에 이미지 httpd:2-alpine으로 Pod check-ip를 만드세요
+2. 이 Pod를 포트 80의 ClusterIP Service check-ip-service로 노출하세요. Service IP를 적어 두세요
+3. 클러스터의 Service CIDR을 11.96.0.0/12로 바꾸세요
+4. 같은 Pod에 두 번째 Service check-ip-service2를 만드세요 - 새 범위의 IP를 받아야 합니다
 
-Set up on demand (./mock.sh 3 20): this restarts the API server and controller manager.
-Do it last; a fresh Killercoda session is recommended afterwards.
+필요할 때 셋업합니다(./mock.sh 3 20): API 서버와 컨트롤러 매니저를 재시작합니다.
+맨 마지막에 푸세요. 끝난 뒤에는 Killercoda 새 세션을 권장합니다.
 ```
 
 ```bash
@@ -5780,16 +5753,16 @@ Do it last; a fresh Killercoda session is recommended afterwards.
 ```
 
 <details>
-<summary><b>Show solution</b></summary>
+<summary><b>풀이 보기</b></summary>
 
 ```bash
 kubectl run check-ip --image=httpd:2-alpine
 kubectl expose pod check-ip --name check-ip-service --port 80
 kubectl get svc check-ip-service                       # 10.x IP
 vim /etc/kubernetes/manifests/kube-apiserver.yaml      # --service-cluster-ip-range=11.96.0.0/12
-watch crictl ps                                        # wait for the new kube-apiserver
+watch crictl ps                                        # 새 kube-apiserver가 뜰 때까지 기다린다
 vim /etc/kubernetes/manifests/kube-controller-manager.yaml   # --service-cluster-ip-range=11.96.0.0/12
-# Since K8s 1.33 the allocator uses ServiceCIDR objects - add one for the new range:
+# K8s 1.33부터 할당기는 ServiceCIDR 오브젝트를 쓴다 - 새 범위용으로 하나 추가한다:
 cat <<'YAML' | kubectl apply -f -
 apiVersion: networking.k8s.io/v1
 kind: ServiceCIDR
@@ -5799,9 +5772,9 @@ spec:
   cidrs:
   - 11.96.0.0/12
 YAML
-kubectl delete servicecidr kubernetes --wait=false     # stays Terminating while Services still use it
+kubectl delete servicecidr kubernetes --wait=false     # 아직 쓰는 Service가 있는 동안 Terminating으로 남음
 kubectl expose pod check-ip --name check-ip-service2 --port 80
-kubectl get svc                                        # check-ip-service2 has an 11.x IP
+kubectl get svc                                        # check-ip-service2가 11.x IP를 받음
 ```
 
 </details>
