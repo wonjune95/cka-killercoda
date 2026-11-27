@@ -1,21 +1,22 @@
-# CKA Killercoda Labs (50 questions + 3 mock exams)
+# CKA Killercoda 실습 랩 (연습 50문제 + 모의고사 3회)
 
-Hands-on labs built from the 31 exercises and the two mock exams in
-[norbutlepcha25/CKA-Certified-Kubernetes-Administrator](https://github.com/norbutlepcha25/CKA-Certified-Kubernetes-Administrator),
-plus labs 32-50 for the tasks of the Korean exercise book (CKA 실습문제, 35 questions) that had no lab yet.
-Each question has a lab setup, the task text, solution notes and an automatic checker.
-They are written for the Killercoda CKA playground (`controlplane` + `node01`, logged in as root).
+[norbutlepcha25/CKA-Certified-Kubernetes-Administrator](https://github.com/norbutlepcha25/CKA-Certified-Kubernetes-Administrator)의
+연습문제 31개와 모의고사 2회를 실습 랩으로 만든 저장소에, 한글 문제집(CKA 실습문제, 35문제) 가운데 랩이 없던 문제를
+32~50번 랩으로 더했습니다. 문제마다 랩 셋업, 문제, 풀이, 자동 채점기가 있습니다.
+Killercoda CKA 플레이그라운드(`controlplane` + `node01`, root 로그인) 기준으로 만들었습니다.
 
-- `lab.sh` runs the 50 practice labs (below).
-- `mock.sh` runs the three timed mock exams (see [Mock exams](#mock-exams)).
-- [GUIDE.md](GUIDE.md) has the setup steps and all 100 questions with collapsible solutions in one file.
+- `lab.sh`: 연습 랩 50개 실행 (아래 참고)
+- `mock.sh`: 시간 제한 모의고사 3회 실행 ([모의고사](#모의고사) 참고)
+- [GUIDE.md](GUIDE.md): 셋업 방법과 전체 100문제, 접어 둔 풀이를 한 파일에 모은 문서
 
-## Get the labs into Killercoda
+문제 문장은 실제 시험처럼 영어입니다. 32~50번은 문제 첫 줄에 한글 요약이, 풀이에 한글 `참고`가 있습니다.
 
-Killercoda has no file upload, so clone this repo in the Killercoda terminal:
+## Killercoda로 가져오기
+
+Killercoda에는 파일 업로드가 없으므로 Killercoda 터미널에서 이 저장소를 clone합니다.
 
 ```bash
-# in the Killercoda terminal (https://killercoda.com/playgrounds/scenario/cka)
+# Killercoda 터미널에서 (https://killercoda.com/playgrounds/scenario/cka)
 git clone https://github.com/wonjune95/cka-killercoda.git
 cd cka-killercoda
 chmod +x lab.sh mock.sh lib/*.sh Question-*/*.sh Question-*/LabSetUp.bash Mock-Exam-*/*/*.sh Mock-Exam-*/*/LabSetUp.bash
@@ -23,254 +24,246 @@ chmod +x lab.sh mock.sh lib/*.sh Question-*/*.sh Question-*/LabSetUp.bash Mock-E
 ./mock.sh list
 ```
 
-## Use
+## 사용법
 
 ```bash
-./lab.sh 5              # reset + set up question 5, then print the question
-./lab.sh 5 question     # print the question again
-./lab.sh 5 validate     # check your answer ([PASS]/[FAIL] per check)
-./lab.sh 5 solution     # show the solution notes
-./lab.sh 5 cleanup      # remove what the lab and your answer created
+./lab.sh 5              # 5번 랩 초기화 + 셋업 후 문제 출력
+./lab.sh 5 question     # 문제 다시 보기
+./lab.sh 5 validate     # 답 채점 (항목마다 [PASS]/[FAIL])
+./lab.sh 5 solution     # 풀이 보기
+./lab.sh 5 cleanup      # 랩과 내 답이 만든 것 정리
 ```
 
-Running a lab's setup again always resets it, so you can retry a question as often as you like.
-You can also run the files directly, e.g. `bash Question-05-networkpolicy/LabSetUp.bash`.
+셋업을 다시 실행하면 항상 초기화되므로 같은 문제를 몇 번이든 다시 풀 수 있습니다.
+파일을 직접 실행해도 됩니다. 예: `bash Question-05-networkpolicy/LabSetUp.bash`
 
-## Folder layout
+## 폴더 구성
 
 ```
-lab.sh                      runner
-GUIDE.md                    all questions and solutions in one file
-lib/common.sh               shared helpers (pass/fail, node helpers, ssh to node01)
-lib/cri-backup.sh           saves the kubelet runtime files on node01 (Q26, mock 1 Q07)
-lib/cri-reset.sh            puts node01 back on containerd (used by Q18, Q26, mock 1 Q07)
-Question-NN-topic/
-  LabSetUp.bash             resets the lab, installs prerequisites, breaks things for troubleshooting labs
-  Question.bash             the task
-  SolutionNotes.bash        a worked solution
-  validate.sh               automatic checks
-  cleanup.sh                removes / restores everything for this question
+lab.sh                      연습 랩 실행기
+mock.sh                     모의고사 실행기
+GUIDE.md                    전체 문제와 풀이
+lib/common.sh               공용 함수 (pass/fail, 노드 함수, node01 ssh)
+lib/cri-backup.sh           node01의 kubelet 런타임 설정 파일 백업 (Q26, 모의 1 Q07)
+lib/cri-reset.sh            node01을 containerd로 되돌림 (Q18, Q26, 모의 1 Q07)
+Question-NN-주제/
+  LabSetUp.bash             랩 초기화, 필요한 것 설치, 장애 문제는 일부러 고장 냄
+  Question.bash             문제
+  SolutionNotes.bash        풀이
+  validate.sh               자동 채점
+  cleanup.sh                이 문제가 만든 것 정리·복원
 ```
 
-## What the setups install or change
+## 셋업이 설치하거나 바꾸는 것
 
-| Q | Setup does | Session impact |
+| Q | 셋업 내용 | 세션 영향 |
 |---|---|---|
-| 09 | Adds the apt repo for the next Kubernetes minor version on both nodes, writes the target to `/root/upgrade-target.txt` | Upgrade can't be undone - fresh session to repeat |
-| 11 | Stops + disables kubelet on node01, breaks CoreDNS (typo + 0 replicas) | `cleanup` restores both |
-| 13 | Installs Helm if missing | - |
-| 15 | Installs Envoy Gateway v1.5.4 + GatewayClass `eg` (NodePort) | Stays installed |
-| 16 | Installs metrics-server if missing | Stays installed |
-| 18 | Resets any cri-dockerd install on node01 | Changes node01 runtime setup - fresh session recommended |
-| 19 | Installs ingress-nginx controller-v1.13.3 (NodePort), IngressClass `nginx` | Stays installed |
-| 23 | Creates a Deployment whose requests are too big for the nodes | - |
-| 25 | Creates `/tmp/k8s-pv` on every node | - |
-| 26 | Downloads `/root/cri-dockerd.deb` to node01, backs up the kubelet flags | `cleanup` switches node01 back to containerd |
-| 27 | **Removes the cluster CNI** (asks for `yes`; `CKA_LAB_YES=1` skips the prompt) | Fresh session, do it on its own |
-| 28 | Creates namespaces frontend/backend/database with an app in each | - |
-| 29 | Points kube-apiserver at a wrong etcd endpoint (backup in `/root/.cka-lab/`) | `cleanup` restores the manifest |
-| 30 | Creates an nginx Deployment that only allows TLS 1.3 | - |
-| 31 | Removes any previous Argo CD install | Argo CD needs ~1.5 GB RAM |
-| 33 | Installs Helm if missing and the Argo CD CRDs (v3.1.8); removes the `argo` repo and any Argo CD release | Argo CD needs ~1.5 GB RAM. Shares namespace `argocd` with 31 - each setup removes the other |
-| 35 | Installs cert-manager v1.19.1 if missing | `cleanup` removes it again (only if the lab installed it) |
-| 37 | Installs metrics-server if missing | Stays installed |
-| 39 | Your answer taints node01 (`env_type=production:NoSchedule`) | `cleanup` removes the taint - do it before other labs |
-| 40 | Your answer labels node01 `disktype=ssd` | `cleanup` removes the label |
-| 42 | Installs Envoy Gateway v1.5.4 + GatewayClass `eg` (same as 15) | Stays installed |
-| 44 | Makes `local-path` the default StorageClass (installs local-path-provisioner v0.0.32 if needed) | `cleanup` restores the original default class |
-| 46 | Copies admin.conf to `/root/CKA/admin.kubeconfig` with a wrong port | - |
+| 09 | 두 노드에 다음 마이너 버전 apt 저장소 추가, 목표 버전을 `/root/upgrade-target.txt`에 기록 | 업그레이드는 되돌릴 수 없음 - 다시 하려면 새 세션 |
+| 11 | node01의 kubelet 중지·비활성화, CoreDNS 고장 (오타 + 레플리카 0) | `cleanup`이 둘 다 복구 |
+| 13 | Helm이 없으면 설치 | - |
+| 15 | Envoy Gateway v1.5.4 + GatewayClass `eg` 설치 (NodePort) | 설치된 채로 남음 |
+| 16 | metrics-server가 없으면 설치 | 설치된 채로 남음 |
+| 18 | node01의 cri-dockerd 설치 흔적 초기화 | node01 런타임 설정이 바뀜 - 새 세션 권장 |
+| 19 | ingress-nginx controller-v1.13.3 설치 (NodePort), IngressClass `nginx` | 설치된 채로 남음 |
+| 23 | 노드에 비해 requests가 너무 큰 Deployment 생성 | - |
+| 25 | 모든 노드에 `/tmp/k8s-pv` 생성 | - |
+| 26 | node01에 `/root/cri-dockerd.deb` 다운로드, kubelet 설정 파일 백업 | `cleanup`이 node01을 containerd로 되돌림 |
+| 27 | **클러스터 CNI 제거** (`yes` 입력 필요, `CKA_LAB_YES=1`이면 묻지 않음) | 새 세션에서 단독으로 |
+| 28 | frontend/backend/database 네임스페이스와 앱 생성 | - |
+| 29 | kube-apiserver의 etcd 주소를 틀리게 바꿈 (백업은 `/root/.cka-lab/`) | `cleanup`이 매니페스트 복원 |
+| 30 | TLS 1.3만 허용하는 nginx Deployment 생성 | - |
+| 31 | 이전 Argo CD 설치 제거 | Argo CD는 RAM 약 1.5GB 필요 |
+| 33 | Helm이 없으면 설치, Argo CD CRD(v3.1.8) 설치, `argo` 저장소와 Argo CD 릴리스 제거 | RAM 약 1.5GB. 31번과 `argocd` 네임스페이스를 같이 써서 서로의 셋업이 상대를 지움 |
+| 35 | cert-manager v1.19.1이 없으면 설치 | `cleanup`이 다시 제거 (이 랩이 설치한 경우만) |
+| 37 | metrics-server가 없으면 설치 | 설치된 채로 남음 |
+| 39 | 답을 풀면 node01에 taint(`env_type=production:NoSchedule`)가 생김 | `cleanup`이 taint 제거 - 다른 랩 전에 꼭 실행 |
+| 40 | 답을 풀면 node01에 `disktype=ssd` 레이블이 생김 | `cleanup`이 레이블 제거 |
+| 42 | Envoy Gateway v1.5.4 + GatewayClass `eg` 설치 (15번과 같음) | 설치된 채로 남음 |
+| 44 | `local-path`를 기본 StorageClass로 지정 (필요하면 local-path-provisioner v0.0.32 설치) | `cleanup`이 원래 기본 클래스로 복원 |
+| 46 | admin.conf를 포트를 틀리게 바꿔 `/root/CKA/admin.kubeconfig`로 복사 | - |
 
-Tip: run the destructive labs (09, 18, 26, 27) at the end of a session, or each in a fresh one.
+팁: 되돌리기 어려운 랩(09, 18, 26, 27)은 세션 마지막에 하거나 각각 새 세션에서 하세요.
 
-## Labs 32-50 (from the Korean exercise book)
+## 32~50번 랩 (한글 문제집에서 추가)
 
-These cover the tasks of `CKA_실습문제` that had no lab here yet. The task text is English like the exam;
-the first line of each question has a Korean summary and the solution notes have Korean `참고` notes.
-"original" = a task from the real-exam question sheet in that book.
+`CKA_실습문제`에서 랩이 없던 문제를 옮겼습니다. "원본"은 문제집 안의 실제 시험 문제지에서 온 문제입니다.
 
-| Lab | Topic | Book Q | Lab | Topic | Book Q |
+| 랩 | 주제 | 문제집 | 랩 | 주제 | 문제집 |
 |---|---|---|---|---|---|
-| 32 | CSR + Role for a user | 5 | 42 | Ingress (TLS) -> Gateway API | 23 (original) |
-| 33 | Argo CD: helm template + install without CRDs | 7 (original) | 43 | Service / Pod DNS records | 25 |
-| 34 | Kustomize namespace / prefix / replicas / image | 8 | 44 | New default StorageClass | 26 (original) |
-| 35 | CRD list (default output) + explain | 10 (original) | 45 | Reuse a retained PV | 28 (original) |
-| 36 | Secret as a read-only volume | 13 | 46 | Broken kubeconfig | 30 |
-| 37 | HPA with scale-down stabilization | 14 (original) | 47 | Failing init container | 33 |
-| 38 | Liveness / readiness probes | 15 | 48 | Service selector / targetPort | 35 |
-| 39 | Taint + toleration | 18 | 49 | HA control plane (commands only) | 3 |
-| 40 | Node affinity | 19 | 50 | Pick the least-privilege NetworkPolicy | 24 (original) |
+| 32 | 사용자 CSR + Role | 5 | 42 | TLS Ingress → Gateway API | 23 (원본) |
+| 33 | Argo CD: helm template + CRD 없이 설치 | 7 (원본) | 43 | Service / Pod DNS 레코드 | 25 |
+| 34 | Kustomize 네임스페이스·접두사·레플리카·이미지 | 8 | 44 | 새 기본 StorageClass | 26 (원본) |
+| 35 | CRD 목록(기본 출력) + explain | 10 (원본) | 45 | Retain된 PV 재사용 | 28 (원본) |
+| 36 | Secret을 읽기 전용 볼륨으로 | 13 | 46 | 고장 난 kubeconfig | 30 |
+| 37 | 스케일 다운 안정화 윈도우가 있는 HPA | 14 (원본) | 47 | 실패하는 init 컨테이너 | 33 |
+| 38 | liveness / readiness 프로브 | 15 | 48 | Service 셀렉터 / targetPort | 35 |
+| 39 | taint + toleration | 18 | 49 | HA 컨트롤 플레인 (명령만) | 3 |
+| 40 | node affinity | 19 | 50 | 최소 권한 NetworkPolicy 고르기 | 24 (원본) |
 | 41 | LoadBalancer Service | 21 | | | |
 
-Lab 26 now also asks for the four sysctl settings of the original exam task (book Q1).
-Labs 32-50 and the fixes below have only been syntax-checked and code-reviewed, not run on a cluster yet.
+26번은 원본 시험 문제(문제집 1번)처럼 sysctl 설정 4개도 요구합니다.
 
-### Fixes to the existing labs and mock exams
+### 기존 랩과 모의고사 수정 사항
 
-- Q26 / mock 1 Q07: setup backs up `kubeadm-flags.env`, `config.yaml` and `/etc/default/kubelet`; cleanup restores
-  whichever one the answer changed (before, an answer in `config.yaml` left node01 NotReady). Q26 validate also reads `config.yaml`.
-- Q09: the apt source is added only if no source for that URL exists (a duplicate with another key broke apt on both
-  nodes); cleanup removes it.
-- Q29: setup only backs up a working manifest; cleanup restores it only while the etcd break is the only difference.
-- Q10: any manifest file that defines `static-web` counts (and is removed by cleanup), not only `static-web.yaml`.
-- Q20: `runAsNonRoot` may be set at pod and container level; `runAsUser: 1000` is now checked.
-- Mock 2 Q02: each revision gets its own change-cause (it was shifted by one revision).
-- Mock 2 Q11: the drain uses `--pod-selector=app=my-app` - a plain drain stopped at pods of other questions, `--force` deleted them.
-- Mock 3 Q08: do it first, right after `start` (removing node01 deletes pods without a controller). The Q15 pods are now
-  StatefulSets with the same names, so they survive it.
-- Mock 3 Q16: the backup check strips `resourceVersion`/`uid` before the dry-run apply; the restore note does the same.
+- Q26 / 모의 1 Q07: 셋업이 `kubeadm-flags.env`, `config.yaml`, `/etc/default/kubelet`를 모두 백업하고, cleanup이 답에서 바꾼
+  파일을 복원합니다 (전에는 `config.yaml`로 답하면 node01이 NotReady로 남았음). 백업은 실행마다 새로 받습니다. Q26 채점도 `config.yaml`을 읽습니다.
+- Q09: 같은 주소의 apt 저장소가 이미 있으면 추가하지 않습니다 (다른 키로 중복 등록되면 두 노드의 apt가 망가졌음). cleanup이 추가한 저장소를 지웁니다.
+- Q29: 셋업은 정상인 매니페스트만 백업하고, cleanup은 etcd 주소 말고 달라진 게 없을 때만 복원합니다.
+- Q10: 파일 이름과 상관없이 `static-web`을 정의한 매니페스트를 인정하고, cleanup도 그 파일을 지웁니다.
+- Q20: `runAsNonRoot`를 Pod와 컨테이너 양쪽에 써도 되고, `runAsUser: 1000`도 채점합니다.
+- 모의 2 Q02: revision마다 change-cause가 제자리에 붙습니다 (전에는 한 칸씩 밀렸음).
+- 모의 2 Q11: drain에 `--pod-selector=app=my-app`을 씁니다. 그냥 drain하면 다른 문제의 Pod에서 멈췄고 `--force`는 그 Pod를 지웠음.
+- 모의 3 Q08: `start` 직후 맨 먼저 풉니다 (node01을 빼면 컨트롤러 없는 Pod가 삭제됨). Q15의 Pod는 이름이 같은 StatefulSet으로 바꿔 Q08을 거쳐도 남습니다.
+- 모의 3 Q16: 백업 확인과 복원 방법 모두 `resourceVersion`/`uid`를 지운 뒤 apply합니다.
 
-## Changes from the original exercises
+## 원래 연습문제에서 바꾼 점
 
-The original text is kept where possible. These changes make every lab runnable and checkable:
+원래 문장은 되도록 그대로 두었습니다. 모든 랩을 실행하고 채점할 수 있도록 다음을 바꿨습니다.
 
-- Named things the exercise left open (e.g. Deployment `drain-test` in Q08, Job `manual-backup` in Q21,
-  `/root/kustomize-lab` in Q14, Service `tls-web` in Q30, `/root/argocd-app.yaml` in Q31).
-- Q11, Q23, Q29, Q30: the setup creates the broken or starting state that the exercise describes.
-- Q20: the audit namespace uses audit + warn only. The original also set `enforce=restricted`,
-  which would reject the privileged pod the task says should succeed.
-- Q24: the busybox Deployments run `sleep 3600`. Plain busybox exits at once and crash-loops.
-- Q26: the systemd units are `cri-docker.service` / `cri-docker.socket` (not `cri-dockerd`), and the
-  kubelet switch uses `/var/lib/kubelet/kubeadm-flags.env`.
-- Q27: the Installation resource is fixed. The original had a stray `pointerSize: Felix` line.
-- Q28: the solution uses default-deny plus explicit egress. The original's DNS-only egress policy
-  blocked frontend -> backend.
-- Images and versions are pinned to ones that exist today (Calico v3.30.3, Argo CD v3.1.9, Envoy Gateway v1.5.4).
-- Q13: Bitnami moved most free images in 2025. If the pods sit in ImagePullBackOff, the solution notes
-  give the `bitnamilegacy` override. The Helm checks still pass.
+- 문제가 정하지 않은 이름을 정했습니다 (예: Q08 Deployment `drain-test`, Q21 Job `manual-backup`,
+  Q14 `/root/kustomize-lab`, Q30 Service `tls-web`, Q31 `/root/argocd-app.yaml`).
+- Q11, Q23, Q29, Q30: 문제가 말하는 고장·시작 상태를 셋업이 만듭니다.
+- Q20: audit 네임스페이스는 audit + warn만 씁니다. 원래는 `enforce=restricted`도 있어서, 문제에서 성공해야 한다는 privileged Pod가 거부됐습니다.
+- Q24: busybox Deployment가 `sleep 3600`을 실행합니다. 그냥 busybox는 바로 종료돼 crash-loop에 빠집니다.
+- Q26: systemd 유닛 이름은 `cri-dockerd`가 아니라 `cri-docker.service` / `cri-docker.socket`이고, kubelet 전환은 `/var/lib/kubelet/kubeadm-flags.env`에서 합니다.
+- Q27: Installation 리소스를 고쳤습니다. 원래는 엉뚱한 `pointerSize: Felix` 줄이 있었습니다.
+- Q28: 풀이는 default-deny + 명시적 egress를 씁니다. 원래의 DNS만 허용하는 egress 정책은 frontend → backend를 막았습니다.
+- 이미지와 버전은 지금 존재하는 것으로 고정했습니다 (Calico v3.30.3, Argo CD v3.1.9, Envoy Gateway v1.5.4).
+- Q13: Bitnami가 2025년에 무료 이미지 대부분을 옮겼습니다. Pod가 ImagePullBackOff에 머물면 풀이의 `bitnamilegacy` 설정을 쓰세요. Helm 채점은 그래도 통과합니다.
 
-## Mock exams
+## 모의고사
 
-The two mock exams from the source repo (`mock-exams/MOCK-EXAM-01.md`, `MOCK-EXAM-02.md`) are now labs too:
-15 questions each, 120 minutes, pass mark 66% (10/15). GUIDE.md has every question with a collapsible solution.
+원본 저장소의 모의고사 2회(`mock-exams/MOCK-EXAM-01.md`, `MOCK-EXAM-02.md`)도 랩으로 만들었습니다.
+회마다 15문제, 120분, 합격선 66%(10/15)입니다. 모든 문제와 풀이는 GUIDE.md에 있습니다.
 
 ```bash
 ./mock.sh list
-./mock.sh 1 start            # set up all 15 questions and start a 120-minute clock (./mock.sh 1 start 90 for 90 min)
-./mock.sh 1 questions        # print all questions again
-./mock.sh 1 time             # time left
-./mock.sh 1 score            # check every question -> "Score: 12/15 (80%)"
-./mock.sh 1 solutions        # all solutions (after the exam)
-./mock.sh 1 cleanup          # remove everything exam 1 created
+./mock.sh 1 start            # 15문제 모두 셋업하고 120분 타이머 시작 (90분이면 ./mock.sh 1 start 90)
+./mock.sh 1 questions        # 전체 문제 다시 보기
+./mock.sh 1 time             # 남은 시간
+./mock.sh 1 score            # 전체 채점 -> "Score: 12/15 (80%)"
+./mock.sh 1 solutions        # 전체 풀이 (시험 뒤에)
+./mock.sh 1 cleanup          # 1회가 만든 것 모두 정리
 
-./mock.sh 2 7                # set up / reset only exam 2, question 7 and print it
-./mock.sh 2 7 validate       # check only that question ([PASS]/[FAIL] per check)
+./mock.sh 2 7                # 2회 7번만 셋업·초기화하고 출력
+./mock.sh 2 7 validate       # 그 문제만 채점
 ./mock.sh 2 7 solution
 ./mock.sh 2 7 cleanup
 ```
 
-Answer files that a question asks for go in `/root/mock1/` or `/root/mock2/`.
-Use a fresh Killercoda session for each exam: some questions change the control plane.
+문제가 요구하는 답 파일은 `/root/mock1/`, `/root/mock2/`에 둡니다.
+일부 문제가 컨트롤 플레인을 바꾸므로 모의고사마다 새 Killercoda 세션을 쓰세요.
+같은 세션에서 다음 회를 시작한다면 먼저 `./mock.sh N cleanup`으로 이전 회를 정리하세요.
 
-| Exam · Q | What the setup does / session impact |
+| 회 · Q | 셋업 내용 / 세션 영향 |
 |---|---|
-| 1 · Q03 | Your answer leaves node01 cordoned - later pods only land on the control plane until you uncordon |
-| 1 · Q06 | Installs Helm if missing, writes a chart to `/root/helm-charts/monitoring` |
-| 1 · Q07 | Installs docker.io + cri-dockerd v0.3.20 on node01 (1-2 min). Your answer switches node01 to Docker; `./mock.sh 1 7 cleanup` switches it back |
-| 1 · Q08 | Keeps a clean copy of the kube-apiserver manifest in `/root/.cka-lab/kube-apiserver.pristine.yaml`; your answer restarts the API server. `cleanup` restores the clean copy |
-| 1 · Q09 | Installs metrics-server if missing |
-| 1 · Q10 | Installs ingress-nginx controller-v1.13.3 (NodePort) if missing |
-| 1 · Q11 | **Breaks the kube-scheduler.** `start` skips it - run `./mock.sh 1 11` when you reach it. `cleanup` restores the manifest |
-| 1 · Q12, 2 · Q14 | Make sure a `rancher.io/local-path` provisioner and StorageClass `local-path` exist (installs local-path-provisioner v0.0.32 if needed) |
-| 2 · Q04 | Adds the standard kubeadm taint `node-role.kubernetes.io/control-plane:NoSchedule` to the control plane if it is missing; `cleanup` removes it again |
-| 2 · Q05 | **Enables API server audit logging** (restarts the API server, ~1-2 min); `cleanup` restores the clean manifest copy (shared with 1 · Q08) |
-| 2 · Q10 | Your answer renews the control plane certificates and restarts the static pods (can't be undone, harmless) |
-| 2 · Q11 | Your answer drains node01; the question ends with uncordoning it |
+| 1 · Q03 | 답을 풀면 node01이 cordon 상태로 남음 - uncordon 전까지 새 Pod는 컨트롤 플레인에만 감 |
+| 1 · Q06 | Helm이 없으면 설치, `/root/helm-charts/monitoring`에 차트 작성 |
+| 1 · Q07 | node01에 docker.io + cri-dockerd v0.3.20 설치 (1~2분). 답을 풀면 node01이 Docker로 바뀜. `./mock.sh 1 7 cleanup`이 되돌림 |
+| 1 · Q08 | kube-apiserver 매니페스트 원본을 `/root/.cka-lab/kube-apiserver.pristine.yaml`에 보관. 답을 풀면 API 서버가 재시작됨. `cleanup`이 원본 복원 |
+| 1 · Q09 | metrics-server가 없으면 설치 |
+| 1 · Q10 | ingress-nginx controller-v1.13.3(NodePort)이 없으면 설치 |
+| 1 · Q11 | **kube-scheduler를 고장 냄.** `start`는 건너뜀 - 이 문제에 도달하면 `./mock.sh 1 11` 실행. `cleanup`이 매니페스트 복원 |
+| 1 · Q12, 2 · Q14 | `rancher.io/local-path` 프로비저너와 StorageClass `local-path` 준비 (필요하면 local-path-provisioner v0.0.32 설치) |
+| 2 · Q04 | 컨트롤 플레인에 기본 kubeadm taint `node-role.kubernetes.io/control-plane:NoSchedule`가 없으면 추가, `cleanup`이 다시 제거 |
+| 2 · Q05 | **API 서버 audit 로그를 켬** (API 서버 재시작, 1~2분). `cleanup`이 원본 매니페스트 복원 (1 · Q08과 공유) |
+| 2 · Q10 | 답을 풀면 컨트롤 플레인 인증서가 갱신되고 static Pod가 재시작됨 (되돌릴 수 없지만 무해) |
+| 2 · Q11 | 답을 풀면 node01이 drain됨. 문제 마지막에 uncordon |
 
-### Mock exam 3 (Killer Shell style)
+### 모의고사 3회 (Killer Shell 스타일)
 
-`Mock-Exam-03/` has 20 questions modelled on the Killer Shell CKA simulator topics (17 + 3 "preview"
-questions): kubeconfig contexts, Helm + cert-manager CRDs, StatefulSet scaling, QoS classes,
-Kustomize + HPA, PV/PVC, `kubectl top`, kubeadm upgrade + join, API access from a Pod, RBAC,
-DaemonSet / one-Pod-per-node scheduling, Gateway API HTTPRoute, certificate expiry, NetworkPolicy,
-CoreDNS, crictl, etcd info, kube-proxy iptables and changing the Service CIDR. The tasks are rewritten
-for Killercoda; GUIDE.md lists them all with collapsible solutions.
+`Mock-Exam-03/`에는 Killer Shell CKA 시뮬레이터 주제를 본뜬 20문제(17 + "preview" 3)가 있습니다:
+kubeconfig 컨텍스트, Helm + cert-manager CRD, StatefulSet 스케일, QoS 클래스, Kustomize + HPA, PV/PVC, `kubectl top`,
+kubeadm 업그레이드 + 노드 조인, Pod에서 API 호출, RBAC, DaemonSet / 노드당 Pod 하나 스케줄링, Gateway API HTTPRoute,
+인증서 만료, NetworkPolicy, CoreDNS, crictl, etcd 정보, kube-proxy iptables, Service CIDR 변경.
+Killercoda에 맞게 다시 썼고, 전체 문제와 풀이는 GUIDE.md에 있습니다.
 
 ```bash
-./mock.sh 3 start            # 18 questions set up; Q08 and Q20 are on demand
-./mock.sh 3 score            # pass mark 66% (14/20)
+./mock.sh 3 start            # 18문제 셋업, Q08과 Q20은 필요할 때 따로
+./mock.sh 3 score            # 합격선 66% (14/20)
 ```
 
-Answer files go in `/root/mock3/`.
+답 파일은 `/root/mock3/`에 둡니다.
 
-| Exam · Q | What the setup does / session impact |
+| 회 · Q | 셋업 내용 / 세션 영향 |
 |---|---|
-| 3 · Q02 | Installs Helm if missing and adds the jetstack repo; your answer installs cert-manager (`cleanup` removes it and its CRDs) |
-| 3 · Q05, Q07 | Install metrics-server if missing |
-| 3 · Q08 | **Removes node01 from the cluster** (kubeadm reset) and downgrades its kubelet/kubectl one minor version. On demand: `./mock.sh 3 8` - do it first, right after `start` (removing the node deletes pods without a controller). `cleanup` re-joins node01 on the control plane version |
-| 3 · Q13 | Installs Envoy Gateway v1.5.4 + GatewayClass `eg` (NodePort, same as practice lab 15), adds `r500.gateway` to `/etc/hosts` |
-| 3 · Q15 | Needs a CNI that enforces NetworkPolicy (the Killercoda playground does) |
-| 3 · Q16 | Saves the original Corefile; `cleanup` restores it |
-| 3 · Q20 | **Changes the Service CIDR** (restarts kube-apiserver and kube-controller-manager). On demand: `./mock.sh 3 20`. `cleanup` restores both manifests; use a fresh session afterwards |
+| 3 · Q02 | Helm이 없으면 설치하고 jetstack 저장소 추가. 답을 풀면 cert-manager가 설치됨 (`cleanup`이 CRD까지 제거) |
+| 3 · Q05, Q07 | metrics-server가 없으면 설치 |
+| 3 · Q08 | **node01을 클러스터에서 뺌** (kubeadm reset) 그리고 kubelet/kubectl을 한 마이너 버전 낮춤. `./mock.sh 3 8`로 따로 셋업 - `start` 직후 맨 먼저 풀 것 (노드를 빼면 컨트롤러 없는 Pod가 삭제됨). `cleanup`이 컨트롤 플레인 버전으로 node01을 다시 조인 |
+| 3 · Q13 | Envoy Gateway v1.5.4 + GatewayClass `eg` 설치 (NodePort, 연습 15번과 같음), `/etc/hosts`에 `r500.gateway` 추가 |
+| 3 · Q15 | NetworkPolicy를 적용하는 CNI가 필요 (Killercoda 플레이그라운드는 됨) |
+| 3 · Q16 | 원래 Corefile 저장, `cleanup`이 복원 |
+| 3 · Q20 | **Service CIDR 변경** (kube-apiserver와 kube-controller-manager 재시작). `./mock.sh 3 20`으로 따로 셋업. `cleanup`이 두 매니페스트 복원, 이후엔 새 세션 권장 |
 
-Kubernetes 1.33+ is needed for Q20 (ServiceCIDR API). The checkers have not yet been run end to end on
-Killercoda - report a wrong [FAIL] as an issue.
+Q20에는 Kubernetes 1.33 이상이 필요합니다 (ServiceCIDR API).
 
-### Changes from the original mock exams
+### 원래 모의고사에서 바꾼 점
 
-The original questions are kept where they work. Where a question or its published solution was wrong
-or could not be checked, the lab changes it:
+원래 문제는 동작하는 한 그대로 두었습니다. 문제나 공개된 풀이가 틀렸거나 채점할 수 없으면 다음처럼 바꿨습니다.
 
-- Every question names its objects, namespaces and answer files so it can be checked automatically.
-- Exam 1 Q03: the original asked to drain the node without evicting a database pod, and the solution used
-  `--force` (which deletes that pod). The lab has a standalone `database` pod with emptyDir data; the
-  answer is to cordon and drain only the web pods (`--pod-selector`).
-- Exam 1 Q04: the solution used a GKE provisioner and `kubectl create pvc` (no such command) and `kubectl set volume` (an OpenShift `oc` command). The lab uses a
-  static hostPath PV with StorageClass `fast-ssd` (`kubernetes.io/no-provisioner`).
-- Exam 1 Q05: the solution's NetworkPolicies had `protocol` directly under the ingress rule (invalid) and the
-  frontend policy had no `ports` list. Fixed.
-- Exam 1 Q07: the solution edited `/etc/kubernetes/kubelet.conf` (the kubelet's kubeconfig). The runtime flag
-  lives in `/var/lib/kubelet/kubeadm-flags.env` (or `containerRuntimeEndpoint` in `/var/lib/kubelet/config.yaml`).
-- Exam 1 Q08: the solution parsed the audit log as a JSON array (`jq '.[]'`); it is JSON lines. The lab adds a
-  client that reads ConfigMaps so there is something to find.
-- Exam 1 Q10: "health endpoint should not require TLS" contradicted the solution. The lab makes it concrete:
-  HTTP `/health` must not be redirected, solved with a second Ingress with `ssl-redirect: "false"`.
-- Exam 1 Q11: the lab breaks the scheduler (wrong kubeconfig path) so there is something to troubleshoot.
-- Exam 1 Q13: a 2 CPU / 2Gi pod fits a 4 CPU / 8Gi quota, so it would not be rejected. The test pod is 6 CPU / 4Gi.
-  `kubectl run --requests` was removed in 1.24; the solution uses `--overrides`.
-- Exam 1 Q14: the expected error mentioned PodSecurityPolicy (removed in 1.25) and said restricted needs a
-  read-only root filesystem (it doesn't). Fixed.
-- Exam 1 Q15: `tail -f` exits if the log does not exist yet; the lab uses `tail -F`.
-- Exam 2 Q01: the solution used `wget` in an nginx image (not installed). The lab uses busybox.
-- Exam 2 Q04: `datadog/agent:latest` is a >1 GB image that also needs an API key; the lab uses busybox.
-- Exam 2 Q05: "provide the commands" became concrete tasks (save logs, port, readyz, find the noisy client
-  in the audit log, stop it). kube-apiserver is a static pod, so there is no systemd unit to `journalctl`.
-- Exam 2 Q06: the lab shows both cases - a volume mount updates without a restart, an env var needs a rollout restart.
-- Exam 2 Q07: the solution set `globalDefault: true` (changes every new pod in the cluster). The lab keeps
-  both classes non-default; the eviction-order part is answered in a file, with the kubelet's real ranking explained.
-- Exam 2 Q08: `nodePort: 8080` is outside the NodePort range (30000-32767) and would be rejected. The lab uses
-  service port 8080, targetPort 3000, nodePort 30080.
-- Exam 2 Q09: `backup-tool:latest` doesn't exist; busybox is used. "Start it again" became a manual Job from the CronJob.
-- Exam 2 Q10: `systemctl restart kubelet` and deleting the mirror pod do not restart a static pod's container.
-  The solution moves the manifests out and back, then checks the certificate served on :6443.
-- Exam 2 Q13: Pod Security Admission has no per-pod exemption label (`pod-security.kubernetes.io/exempt` on a
-  pod does nothing). The lab runs the root pod in a separate namespace that enforces baseline, and the
-  solution explains the AdmissionConfiguration exemptions.
-- Exam 2 Q14: uses the local-path provisioner instead of a GKE CSI driver.
-- Exam 2 Q15: `kubectl run --requests` replaced with `--overrides`; the test pod exceeds the LimitRange max.
+- 자동 채점을 위해 모든 문제에 오브젝트·네임스페이스·답 파일 이름을 정했습니다.
+- 1회 Q03: 원래는 database Pod를 축출하지 말고 노드를 drain하라면서 풀이는 `--force`(그 Pod를 지움)를 썼습니다. 랩에는 emptyDir 데이터를 쓰는 단독 `database` Pod가 있고, 답은 cordon 후 web Pod만 옮기는 것입니다.
+- 1회 Q04: 풀이가 GKE 프로비저너, 없는 명령 `kubectl create pvc`, OpenShift `oc` 명령인 `kubectl set volume`을 썼습니다. 랩은 StorageClass `fast-ssd`(`kubernetes.io/no-provisioner`)와 정적 hostPath PV를 씁니다.
+- 1회 Q05: 풀이의 NetworkPolicy가 ingress 규칙 바로 아래에 `protocol`을 두었고(잘못된 형식), frontend 정책에 `ports`가 없었습니다. 고쳤습니다.
+- 1회 Q07: 풀이가 kubelet의 kubeconfig인 `/etc/kubernetes/kubelet.conf`를 고쳤습니다. 런타임 플래그는 `/var/lib/kubelet/kubeadm-flags.env`(또는 `/var/lib/kubelet/config.yaml`의 `containerRuntimeEndpoint`)에 있습니다.
+- 1회 Q08: 풀이가 audit 로그를 JSON 배열(`jq '.[]'`)로 읽었습니다. 실제로는 JSON lines입니다. 찾을 대상이 있도록 ConfigMap을 읽는 클라이언트를 추가했습니다.
+- 1회 Q10: "health 엔드포인트는 TLS가 필요 없어야 한다"가 풀이와 맞지 않았습니다. HTTP `/health`는 리다이렉트되지 않아야 한다는 구체적인 요구로 바꾸고, `ssl-redirect: "false"`인 두 번째 Ingress로 풉니다.
+- 1회 Q11: 고칠 대상이 있도록 랩이 scheduler를 고장 냅니다 (kubeconfig 경로 오류).
+- 1회 Q13: 2 CPU / 2Gi Pod는 4 CPU / 8Gi 쿼터에 들어가서 거부되지 않습니다. 테스트 Pod는 6 CPU / 4Gi입니다. `kubectl run --requests`는 1.24에서 없어져 풀이는 `--overrides`를 씁니다.
+- 1회 Q14: 예상 오류가 PodSecurityPolicy(1.25에서 제거)를 언급했고, restricted에 읽기 전용 루트 파일시스템이 필요하다고 했습니다(필요 없음). 고쳤습니다.
+- 1회 Q15: `tail -f`는 로그 파일이 아직 없으면 종료됩니다. 랩은 `tail -F`를 씁니다.
+- 2회 Q01: 풀이가 nginx 이미지에서 `wget`을 썼습니다(설치돼 있지 않음). 랩은 busybox를 씁니다.
+- 2회 Q04: `datadog/agent:latest`는 1GB가 넘고 API 키도 필요합니다. 랩은 busybox를 씁니다.
+- 2회 Q05: "명령을 제시하라"를 구체적인 작업(로그 저장, 포트, readyz, audit 로그에서 요청을 많이 보내는 클라이언트 찾기, 중지)으로 바꿨습니다. kube-apiserver는 static Pod라 `journalctl`로 볼 systemd 유닛이 없습니다.
+- 2회 Q06: 볼륨 마운트는 재시작 없이 갱신되고, 환경 변수는 rollout restart가 필요하다는 두 경우를 모두 보여 줍니다.
+- 2회 Q07: 풀이가 `globalDefault: true`를 썼습니다(클러스터의 모든 새 Pod가 바뀜). 랩은 두 클래스 모두 기본값이 아니고, 축출 순서는 kubelet의 실제 순위 설명과 함께 파일로 답합니다.
+- 2회 Q08: `nodePort: 8080`은 NodePort 범위(30000-32767) 밖이라 거부됩니다. 랩은 서비스 포트 8080, targetPort 3000, nodePort 30080을 씁니다.
+- 2회 Q09: `backup-tool:latest`는 없는 이미지라 busybox를 씁니다. "다시 시작"은 CronJob에서 수동 Job을 만드는 것으로 바꿨습니다.
+- 2회 Q10: `systemctl restart kubelet`이나 미러 Pod 삭제로는 static Pod 컨테이너가 재시작되지 않습니다. 풀이는 매니페스트를 뺐다가 다시 넣고 :6443이 내보내는 인증서를 확인합니다.
+- 2회 Q13: Pod Security Admission에는 Pod 단위 예외 레이블이 없습니다 (Pod의 `pod-security.kubernetes.io/exempt`는 아무 효과 없음). 랩은 baseline을 적용하는 별도 네임스페이스에서 root Pod를 실행하고, 풀이가 AdmissionConfiguration 예외를 설명합니다.
+- 2회 Q14: GKE CSI 드라이버 대신 local-path 프로비저너를 씁니다.
+- 2회 Q15: `kubectl run --requests` 대신 `--overrides`를 쓰고, 테스트 Pod가 LimitRange 최대값을 넘게 했습니다.
 
-## Test status
+## 테스트 현황
 
-Tested on a 2-node kind cluster (Kubernetes v1.35.1, kindnet CNI, which enforces NetworkPolicy) set up like the
-Killercoda playground: logged in as root on the control plane, `ssh` to the worker, systemd, crictl.
-For each lab the setup ran, then the solution notes, then the checker. For the mock exams each checker was also
-run before the answer to make sure it fails.
+원본 저장소는 Killercoda처럼 꾸민 2노드 kind 클러스터(Kubernetes v1.35.1, NetworkPolicy를 적용하는 kindnet CNI, 컨트롤 플레인에 root 로그인,
+워커로 `ssh`, systemd, crictl)에서 랩마다 셋업 → 풀이 → 채점을 돌렸습니다. 모의고사는 풀기 전에도 채점해 FAIL이 나는지 확인했습니다.
 
-| Labs | Result |
+| 랩 | 결과 |
 |---|---|
-| Practice labs 01-08, 10-17, 19-25, 28-30 | All checks pass, including the running-pod checks: pods Running, curl through ingress-nginx and the Gateway, DNS lookups, TLS 1.2/1.3 connections, NetworkPolicy blocking |
-| Practice lab 11 | Both breaks (kubelet stopped on the worker, CoreDNS typo + 0 replicas) are created and the fixes pass |
-| Practice lab 29 | etcd endpoint break and fix pass |
-| Mock exam 1, Q1-Q6, Q8-Q15 | Pass with the solution, fail without it. Run through `./mock.sh 1 start` + `score` too |
-| Mock exam 2, all 15 | Pass with the solution, fail without it. `./mock.sh 2 start` -> solutions -> `./mock.sh 2 score` gave 15/15 |
+| 연습 01-08, 10-17, 19-25, 28-30 | 모두 통과 (Pod Running, ingress-nginx·Gateway 경유 curl, DNS 조회, TLS 1.2/1.3 연결, NetworkPolicy 차단 포함) |
+| 연습 11 | 두 고장(워커 kubelet 중지, CoreDNS 오타 + 레플리카 0)이 만들어지고 고치면 통과 |
+| 연습 29 | etcd 주소 고장과 수정 통과 |
+| 모의 1회 Q1-Q6, Q8-Q15 | 풀이로 통과, 풀기 전 FAIL. `./mock.sh 1 start` + `score`로도 확인 |
+| 모의 2회 15문제 | 풀이로 통과, 풀기 전 FAIL. `./mock.sh 2 start` → 풀이 → `./mock.sh 2 score` 결과 15/15 |
 
-Not tested (they can't run on the arm64 kind test cluster or need a real kubeadm node):
-practice labs 09 (kubeadm upgrade), 18 and 26 (cri-dockerd), 27 (CNI install), 31 (Argo CD), and mock exam 1 Q07
-(cri-dockerd). Run those on Killercoda first and report anything that fails.
+원본 저장소에서 테스트하지 않은 것 (arm64 kind 테스트 클러스터에서 실행할 수 없거나 실제 kubeadm 노드가 필요): 연습 09(kubeadm 업그레이드),
+18·26(cri-dockerd), 27(CNI 설치), 31(Argo CD), 모의 1회 Q07(cri-dockerd).
 
-Fixes made to the practice labs during this test:
+원본 테스트 중에 고친 것:
 
-- Q19 and the mock exams' ingress setup: wait until the ingress-nginx admission webhook answers. Right after
-  install the Deployment is Available but the webhook still refuses connections, so the first Ingress failed.
-- Q24 checker: a pod of the old ReplicaSet that is still terminating could be checked instead of the new one.
-- Q12, Q25 solutions: wait for the pod to be Ready before `kubectl exec`.
+- Q19와 모의고사의 ingress 셋업: ingress-nginx admission webhook이 응답할 때까지 기다립니다. 설치 직후에는 Deployment가 Available이어도 webhook이 연결을 거부해서 첫 Ingress가 실패했습니다.
+- Q24 채점: 아직 종료 중인 이전 ReplicaSet의 Pod를 새 Pod 대신 검사할 수 있었습니다.
+- Q12, Q25 풀이: `kubectl exec` 전에 Pod가 Ready가 될 때까지 기다립니다.
 
+### 32~50번 랩과 이번 수정의 테스트 (2026-11-27)
+
+2노드 kind 클러스터(Kubernetes v1.37.0, kindnet, amd64)에서 Killercoda처럼 컨트롤 플레인에 root로 들어가 워커로 `ssh`가 되게 꾸민 뒤,
+문제마다 셋업 → 채점(풀기 전) → 풀이 → 채점(풀이 후) → cleanup 순서로 돌렸습니다. `vi`·`kubectl edit`처럼 대화형인 풀이 단계는
+같은 결과를 내는 명령으로 바꿔 실행했습니다.
+
+| 대상 | 결과 |
+|---|---|
+| 연습 32~50 (19개) | 모두 풀기 전 FAIL, 풀이 후 전 항목 PASS |
+| 연습 10 (다른 파일 이름의 static Pod 매니페스트), 20 (Pod·컨테이너 양쪽 runAsNonRoot), 29 | 풀이 후 PASS, cleanup 뒤 매니페스트·etcd 주소 정상 |
+| 모의 2회 Q02 | revision 1~4의 change-cause와 이미지가 일치, 롤백 후 PASS |
+| 모의 2회 Q11 | `--pod-selector` drain이 PDB에서 막히고 다른 문제의 Pod는 그대로 남음, PASS |
+| 모의 3회 Q15 (StatefulSet), Q16 (백업 확인) | 풀이 후 PASS |
+
+이 테스트에서 고친 것: 35번 채점이 `kubectl get crd`의 2열 출력(NAME, CREATED AT)만 기본 형식으로 인정했는데,
+kubectl 1.37은 SCOPE·VERSIONS 열을 추가해서 정답이 FAIL이었습니다. 이제 열 수와 상관없이 인정합니다.
+
+kind에서 테스트할 수 없어 아직 확인하지 못한 것: 연습 09(kubeadm 업그레이드), 18·26과 모의 1회 Q07(cri-dockerd), 27(CNI 교체),
+모의 3회 Q08(노드 재조인). Killercoda에서 확인해 주세요.
+
+잘못된 [FAIL]이 나오면 이슈로 알려 주세요.
